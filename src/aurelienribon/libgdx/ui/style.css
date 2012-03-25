@@ -1,0 +1,54 @@
+javax-swing-JButton {
+	-swing-horizontalalignment: left;
+	-swing-verticalalignment: center;
+	-swing-margin: 2 3;
+	-swing-opaque: false;
+}
+
+javax-swing-JScrollPane {
+	-swing-border: null;
+}
+
+javax-swing-JCheckBox {
+	-swing-opaque: false;
+}
+
+.rootPanel {
+	-arui-fill: texture(url("/res/gfx/bg.png"));
+}
+
+.dialogPanel {
+	-arui-fill: texture(url("/res/gfx/bg.png"));
+}
+
+.dialogPanel javax-swing-JLabel {
+	-swing-foreground: #FFF;
+}
+
+.groupPanel {
+	-swing-background: #BBC8D8;
+	-swing-border: arui-groupborder(noarg);
+	-arui-border-stroke: null;
+	-arui-border-thickness: 0;
+	-arui-border-header-stroke: null;
+	-arui-border-header-thickness: 0;
+	-arui-border-header-fill: lineargradient(0, 0, 0, 1, 0, #4D6082, 1, #3D5277);
+	-arui-border-margin: 3 6;
+	-arui-border-foreground: #FFF;
+}
+
+.configPanel {
+	-arui-border-title: "1 // Configuration";
+}
+
+.librarySetupPanel {
+	-arui-border-title: "2 // Library setup";
+}
+
+.goPanel {
+	-arui-border-title: "3 // Generation";
+}
+
+.resultPanel {
+	-arui-border-title: "Overview of the project";
+}
