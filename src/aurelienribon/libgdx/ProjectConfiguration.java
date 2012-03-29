@@ -166,6 +166,7 @@ public class ProjectConfiguration {
 	}
 
 	public boolean isValid() {
+		if (directoryName.trim().equals("")) return false;
 		if (projectName.trim().equals("")) return false;
 		if (packageName.trim().equals("")) return false;
 

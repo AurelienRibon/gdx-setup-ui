@@ -91,3 +91,25 @@ javax-swing-JCheckBox {
 .libInfoHomepageLabel:hover {
 	-swing-foreground: #FFF;
 }
+
+.titleLabel {
+	-swing-font: Arial bold 20;
+	-swing-border: matteborder(0, 0, 1, 0, #FFF);
+}
+
+.questionLabel:hover {
+	-swing-foreground: #88F;
+}
+
+.helpNumber {
+	-swing-font-size: 30;
+}
+
+.versionLabel {
+	-swing-foreground: #FFF;
+	-swing-font-style: bold;
+}
+
+.versionLabel:hover {
+	-swing-foreground: #88F;
+}

@@ -46,20 +46,22 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="logoLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="152" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="versionlabel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="configPanel" alignment="0" pref="362" max="32767" attributes="0"/>
+                  <Component id="configPanel" pref="342" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="configPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="155" max="32767" attributes="0"/>
-                      <Component id="logoLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace pref="74" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="logoLabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="versionlabel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -74,6 +76,11 @@
                 </Property>
               </Properties>
             </Component>
+            <Component class="javax.swing.JLabel" name="versionlabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="v1.0.0"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel3">
@@ -84,12 +91,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="librarySetupPanel" alignment="0" pref="362" max="32767" attributes="0"/>
+                  <Component id="librarySetupPanel" alignment="0" pref="342" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="librarySetupPanel" alignment="0" pref="455" max="32767" attributes="0"/>
+                  <Component id="librarySetupPanel" alignment="0" pref="425" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -106,14 +113,14 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="resultPanel" max="32767" attributes="0"/>
+                  <Component id="resultPanel" pref="342" max="32767" attributes="0"/>
                   <Component id="goPanel" pref="362" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="resultPanel" pref="376" max="32767" attributes="0"/>
+                      <Component id="resultPanel" pref="346" max="32767" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="goPanel" min="-2" max="-2" attributes="0"/>
                   </Group>

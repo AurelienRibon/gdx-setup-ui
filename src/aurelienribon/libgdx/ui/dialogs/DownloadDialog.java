@@ -1,4 +1,4 @@
-package aurelienribon.libgdx.ui;
+package aurelienribon.libgdx.ui.dialogs;
 
 import aurelienribon.ui.css.Style;
 import java.awt.event.WindowAdapter;
@@ -15,6 +15,7 @@ import java.net.URLConnection;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.commons.io.FileUtils;
+import res.Res;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -50,7 +51,7 @@ public class DownloadDialog extends javax.swing.JDialog {
 		downloadAsync(input, output);
 
 		Style.registerCssClasses(rootPanel, ".rootPanel");
-		Style.apply(getContentPane(), new Style(getClass().getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
 	}
 
 	public interface Callback {

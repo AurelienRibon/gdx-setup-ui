@@ -1,6 +1,7 @@
-package aurelienribon.libgdx.ui;
+package aurelienribon.libgdx.ui.dialogs;
 
 import aurelienribon.libgdx.LibraryDef;
+import aurelienribon.libgdx.ui.AppContext;
 import aurelienribon.ui.css.Style;
 import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.swing.JFrame;
+import res.Res;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -31,7 +33,7 @@ public class LibraryInfoDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(nameLabel, ".libInfoNameLabel");
 		Style.registerCssClasses(descriptionLabel, ".libInfoDescLabel");
 		Style.registerCssClasses(homepageLabel, ".libInfoHomepageLabel");
-		Style.apply(getContentPane(), new Style(getClass().getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
     }
 
 	private final MouseListener urlMouseListener = new MouseAdapter() {

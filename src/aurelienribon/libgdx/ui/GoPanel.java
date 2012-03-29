@@ -1,13 +1,10 @@
 package aurelienribon.libgdx.ui;
 
-import aurelienribon.libgdx.ProjectConfiguration;
-import aurelienribon.libgdx.ProjectSetup;
+import aurelienribon.libgdx.ui.dialogs.GoDialog;
 import aurelienribon.ui.css.Style;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 /**
@@ -24,16 +21,9 @@ public class GoPanel extends javax.swing.JPanel {
 		goBtn.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
 				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(GoPanel.this);
-				ProjectConfiguration cfg = AppContext.inst().getConfig();
-
-				try {
-					ProjectSetup setup = new ProjectSetup(cfg);
-					setup.inflateProjects();
-					setup.inflateLibraries();
-					setup.copy();
-				} catch (IOException ex) {
-					JOptionPane.showMessageDialog(frame, ex.getMessage());
-				}
+				GoDialog dialog = new GoDialog(frame);
+				dialog.setLocationRelativeTo(frame);
+				dialog.setVisible(true);
 			}
 		});
 

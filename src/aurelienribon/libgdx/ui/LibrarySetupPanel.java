@@ -2,6 +2,8 @@ package aurelienribon.libgdx.ui;
 
 import aurelienribon.libgdx.LibraryDef;
 import aurelienribon.libgdx.ProjectConfiguration;
+import aurelienribon.libgdx.ui.dialogs.DownloadDialog;
+import aurelienribon.libgdx.ui.dialogs.LibraryInfoDialog;
 import aurelienribon.ui.css.Style;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,10 +28,10 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
     public LibrarySetupPanel() {
         initComponents();
-
+		
 		libgdxLabel.setToolTipText("Archive not found, please specify or download one.");
 		Style.registerCssClasses(libgdxLabel, ".libraryNotFoundLabel");
-		Style.apply(libgdxLabel, new Style(getClass().getResource("style-dynamic.css")));
+		Style.apply(libgdxLabel, new Style(Res.class.getResource("style-dynamic.css")));
 
 		initLibraries();
 		libgdxLabel.setText(cfg.getLibraryDef("libgdx").name);
@@ -122,7 +124,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			libgdxLabel.setToolTipText("Archive successfully found under \"" + zipFile.getPath() + "\"");
 			Style.unregister(libgdxLabel);
 			Style.registerCssClasses(libgdxLabel, ".libraryFoundLabel");
-			Style.apply(libgdxLabel, new Style(getClass().getResource("style-dynamic.css")));
+			Style.apply(libgdxLabel, new Style(Res.class.getResource("style-dynamic.css")));
 		}
 
 		AppContext.inst().fireConfigChangedEvent();
