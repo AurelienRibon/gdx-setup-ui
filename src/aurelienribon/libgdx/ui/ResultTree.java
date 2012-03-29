@@ -208,6 +208,7 @@ public class ResultTree extends JTree {
 				String name = (String) node.getUserObject();
 				boolean isDir = name.startsWith("#DIR#");
 				name = name.replaceFirst("#DIR#", "");
+				name = name.replace("MyGame", cfg.getProjectName());
 
 				if (isDir && name.equals("prj-common")) name = cfg.getCommonPrjName();
 				if (isDir && name.equals("prj-desktop")) name = cfg.getDesktopPrjName();

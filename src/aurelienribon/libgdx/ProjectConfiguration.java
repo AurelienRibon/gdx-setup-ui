@@ -15,8 +15,10 @@ public class ProjectConfiguration {
 	private final Map<String, LibraryDef> libraryDefs = new HashMap<String, LibraryDef>();
 	private final Map<String, String> libraryPaths = new HashMap<String, String>();
 
-	private String projectName = "my-libgdx-project";
-	private String packageName = "my.libgdx.project";
+	private String rawProjectName = "My LibGDX Game !!";
+	private String projectName = "MyLibGDXGame";
+	private String directoryName = "my-libgdx-game";
+	private String packageName = "com.me.mygame";
 	private String destinationPath = "";
 	private boolean desktopIncluded = true;
 	private boolean androidIncluded = true;
@@ -51,8 +53,16 @@ public class ProjectConfiguration {
 
 	// -------------------------------------------------------------------------
 
+	public String getRawProjectName() {
+		return rawProjectName;
+	}
+
 	public String getProjectName() {
 		return projectName;
+	}
+
+	public String getDirectoryName() {
+		return directoryName;
 	}
 
 	public String getPackageName() {
@@ -91,8 +101,20 @@ public class ProjectConfiguration {
 		return htmlSuffix;
 	}
 
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
+	public void setRawProjectName(String rawProjectName) {
+		this.rawProjectName = rawProjectName;
+		this.projectName = rawProjectName.replaceAll("\\s+", "");
+
+		if (projectName.length() > 0) {
+			projectName = projectName.substring(0, 1).toUpperCase() + projectName.substring(1);
+		}
+
+		String chars = ",;:!ù*^$?./§%µ¨£¤&é\"'(-è_çà)=~#{[|`\\^@]}<>²";
+		for (char c : chars.toCharArray()) projectName = projectName.replace("" + c, "");
+	}
+
+	public void setDirectoryName(String directoryName) {
+		this.directoryName = directoryName;
 	}
 
 	public void setPackageName(String packageName) {
@@ -128,19 +150,19 @@ public class ProjectConfiguration {
 	}
 
 	public String getCommonPrjName() {
-		return projectName + commonSuffix;
+		return directoryName + commonSuffix;
 	}
 
 	public String getDesktopPrjName() {
-		return projectName + desktopSuffix;
+		return directoryName + desktopSuffix;
 	}
 
 	public String getAndroidPrjName() {
-		return projectName + androidSuffix;
+		return directoryName + androidSuffix;
 	}
 
 	public String getHtmlPrjName() {
-		return projectName + htmlSuffix;
+		return directoryName + htmlSuffix;
 	}
 
 	public boolean isValid() {

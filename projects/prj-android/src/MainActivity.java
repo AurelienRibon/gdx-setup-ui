@@ -13,6 +13,6 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-        initialize(new MyGame(), cfg);
+        initialize(new @{PROJECT_NAME}(), cfg);
     }
 }

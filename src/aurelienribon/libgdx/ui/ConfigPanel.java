@@ -29,7 +29,8 @@ public class ConfigPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(headerPanel, ".header");
 		Style.registerCssClasses(numberLabel, ".headerNumber");
 
-		nameField.setText(cfg.getProjectName());
+		nameField.setText(cfg.getRawProjectName());
+		dirNameField.setText(cfg.getDirectoryName());
 		packageField.setText(cfg.getPackageName());
 
 		try {
@@ -39,12 +40,13 @@ public class ConfigPanel extends javax.swing.JPanel {
 		}
 
 		nameField.addMouseListener(mouseListener);
-		packageField.addMouseListener(mouseListener);
-
 		nameField.addKeyListener(keyListener);
+		dirNameField.addMouseListener(mouseListener);
+		dirNameField.addKeyListener(keyListener);
+		packageField.addMouseListener(mouseListener);
 		packageField.addKeyListener(keyListener);
-		browseBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {browse();}});
 
+		browseBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {browse();}});
 		genDesktopPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
 		genAndroidPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
 		genHtmlPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
@@ -70,13 +72,22 @@ public class ConfigPanel extends javax.swing.JPanel {
 	}
 
 	private void update() {
-		cfg.setProjectName(nameField.getText());
+		cfg.setRawProjectName(nameField.getText());
+		cfg.setDirectoryName(dirNameField.getText());
 		cfg.setPackageName(packageField.getText());
 		cfg.setDestinationPath(destinationField.getText());
 		cfg.setDesktopIncluded(genDesktopPrjChk.isSelected());
 		cfg.setAndroidIncluded(genAndroidPrjChk.isSelected());
 		cfg.setHtmlIncluded(genHtmlPrjChk.isSelected());
 		AppContext.inst().fireConfigChangedEvent();
+
+		mainClassField.setText(cfg.getPackageName() + "." + cfg.getProjectName());
+
+		try {
+			File destDir = new File(cfg.getDestinationPath());
+			destinationField.setText(destDir.getCanonicalPath());
+		} catch (IOException ex) {
+		}
 	}
 
 	private final KeyListener keyListener = new KeyAdapter() {
@@ -117,6 +128,10 @@ public class ConfigPanel extends javax.swing.JPanel {
         genAndroidPrjChk = new javax.swing.JCheckBox();
         genDesktopPrjChk = new javax.swing.JCheckBox();
         genHtmlPrjChk = new javax.swing.JCheckBox();
+        jLabel5 = new javax.swing.JLabel();
+        mainClassField = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        dirNameField = new javax.swing.JTextField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -132,7 +147,7 @@ public class ConfigPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup()
                 .addComponent(numberLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
         );
         headerPanelLayout.setVerticalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,7 +171,7 @@ public class ConfigPanel extends javax.swing.JPanel {
         browseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_browse.png"))); // NOI18N
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("Name");
+        jLabel1.setText("Prj. name");
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Destination");
@@ -170,6 +185,14 @@ public class ConfigPanel extends javax.swing.JPanel {
         genHtmlPrjChk.setSelected(true);
         genHtmlPrjChk.setText("generate html project");
 
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel5.setText("Main class");
+
+        mainClassField.setEditable(false);
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel6.setText("Dir. name");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -177,27 +200,35 @@ public class ConfigPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(destinationField, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(browseBtn))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nameField)
-                            .addComponent(packageField)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(genHtmlPrjChk)
                             .addComponent(genAndroidPrjChk)
                             .addComponent(genDesktopPrjChk)
                             .addComponent(genCommonPrjChk))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(packageField)
+                            .addComponent(mainClassField)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(destinationField, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(browseBtn))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dirNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -209,8 +240,16 @@ public class ConfigPanel extends javax.swing.JPanel {
                     .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(dirNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(packageField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(mainClassField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -227,7 +266,7 @@ public class ConfigPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {browseBtn, destinationField, jLabel1, jLabel2, jLabel3, nameField, packageField});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {browseBtn, destinationField, dirNameField, jLabel1, jLabel2, jLabel3, jLabel5, jLabel6, mainClassField, nameField, packageField});
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -235,6 +274,7 @@ public class ConfigPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton browseBtn;
     private javax.swing.JTextField destinationField;
+    private javax.swing.JTextField dirNameField;
     private javax.swing.JCheckBox genAndroidPrjChk;
     private javax.swing.JCheckBox genCommonPrjChk;
     private javax.swing.JCheckBox genDesktopPrjChk;
@@ -244,7 +284,10 @@ public class ConfigPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField mainClassField;
     private javax.swing.JTextField nameField;
     private javax.swing.JLabel numberLabel;
     private javax.swing.JTextField packageField;

@@ -25,12 +25,14 @@ public class ProjectSetup {
 	public ProjectSetup(ProjectConfiguration cfg) {
 		this.cfg = cfg;
 
+		templateManager.define("PROJECT_NAME", cfg.getProjectName());
+		templateManager.define("PROJECT_RAW_NAME", cfg.getRawProjectName());
 		templateManager.define("PACKAGE_NAME", cfg.getPackageName());
 		templateManager.define("PACKAGE_NAME_AS_PATH", cfg.getPackageName().replace('.', '/'));
-		templateManager.define("PRJ_NAME_COMMON", cfg.getCommonPrjName());
-		if (cfg.isDesktopIncluded()) templateManager.define("PRJ_NAME_DESKTOP", cfg.getDesktopPrjName());
-		if (cfg.isAndroidIncluded()) templateManager.define("PRJ_NAME_ANDROID", cfg.getAndroidPrjName());
-		if (cfg.isHtmlIncluded()) templateManager.define("PRJ_NAME_HTML", cfg.getHtmlPrjName());
+		templateManager.define("PRJ_COMMON_NAME", cfg.getCommonPrjName());
+		if (cfg.isDesktopIncluded()) templateManager.define("PRJ_DESKTOP_NAME", cfg.getDesktopPrjName());
+		if (cfg.isAndroidIncluded()) templateManager.define("PRJ_ANDROID_NAME", cfg.getAndroidPrjName());
+		if (cfg.isHtmlIncluded()) templateManager.define("PRJ_HTML_NAME", cfg.getHtmlPrjName());
 	}
 
 	// -------------------------------------------------------------------------
@@ -121,7 +123,8 @@ public class ProjectSetup {
 	private void postProcessInflate() throws IOException {
 		File src = new File(tmpDst, "prj-common");
 		File dst = new File(tmpDst, cfg.getCommonPrjName());
-		move(src, "src/MyGame.java", "src/" + cfg.getPackageName().replace('.', '/') + "/MyGame.java");
+		move(src, "src/MyGame.java", "src/" + cfg.getPackageName().replace('.', '/') + "/" + cfg.getProjectName() + ".java");
+		move(src, "src/MyGame.gwt.xml", "src/" + cfg.getProjectName() + ".gwt.xml");
 		templateDir(src);
 		FileUtils.moveDirectory(src, dst);
 
@@ -143,7 +146,7 @@ public class ProjectSetup {
 		if (cfg.isHtmlIncluded()) {
 			src = new File(tmpDst, "prj-html");
 			dst = new File(tmpDst, cfg.getHtmlPrjName());
-			move(src, "src/MyGame.gwt.xml", "src/" + cfg.getPackageName().replace('.', '/') + "/MyGame.gwt.xml");
+			move(src, "src/MyGame.gwt.xml", "src/" + cfg.getPackageName().replace('.', '/') + "/" + cfg.getProjectName() + ".gwt.xml");
 			move(src, "src/client", "src/" + cfg.getPackageName().replace('.', '/') + "/client");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>@{PRJ_NAME_DESKTOP}</name>
+	<name>@{PRJ_DESKTOP_NAME}</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -14,11 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>@{ifdef PRJ_NAME_ANDROID}
+	<linkedResources>@{ifdef PRJ_ANDROID_NAME}
 		<link>
 			<name>assets</name>
 			<type>2</type>
-			<locationURI>PARENT_LOC/@{PRJ_NAME_ANDROID}/assets</locationURI>
+			<locationURI>PARENT_LOC/@{PRJ_ANDROID_NAME}/assets</locationURI>
 		</link>@{endif}
 	</linkedResources>
 </projectDescription>

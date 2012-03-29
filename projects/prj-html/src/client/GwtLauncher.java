@@ -1,6 +1,6 @@
 package @{PACKAGE_NAME}.client;
 
-import @{PACKAGE_NAME}.MyGame;
+import @{PACKAGE_NAME}.@{PROJECT_NAME};
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
@@ -14,6 +14,6 @@ public class GwtLauncher extends GwtApplication {
 
 	@Override
 	public ApplicationListener getApplicationListener () {
-		return new MyGame();
+		return new @{PROJECT_NAME}();
 	}
 }

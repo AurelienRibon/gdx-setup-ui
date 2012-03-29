@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="libs/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-backend-lwjgl.jar" sourcepath="libs/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry kind="lib" path="libs/gdx-natives.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/@{PRJ_NAME_COMMON}"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/@{PRJ_COMMON_NAME}"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -5,6 +5,6 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="lib" path="libs/gdx-backend-android.jar" sourcepath="libs/gdx-backend-android-sources.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/@{PRJ_NAME_COMMON}"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/@{PRJ_COMMON_NAME}"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

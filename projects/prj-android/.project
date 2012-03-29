@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>@{PRJ_NAME_ANDROID}</name>
+	<name>@{PRJ_ANDROID_NAME}</name>
 	<comment></comment>
 	<projects>
 	</projects>
