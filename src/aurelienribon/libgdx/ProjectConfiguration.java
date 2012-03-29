@@ -170,7 +170,9 @@ public class ProjectConfiguration {
 		if (projectName.trim().equals("")) return false;
 		if (packageName.trim().equals("")) return false;
 
-		for (String path : libraryPaths.values()) {
+		for (String libraryName : libraries) {
+			String path = getLibraryPath(libraryName);
+			if (path == null) return false;
 			if (!path.endsWith(".zip")) return false;
 			if (!new File(path).isFile()) return false;
 		}
