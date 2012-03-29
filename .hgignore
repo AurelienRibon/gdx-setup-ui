@@ -1,5 +1,10 @@
 syntax: glob
+
 build/*
+nbproject/*
+dist/*
+tmp/*
+
 manifest.mf
 nbbuild.xml
-nbproject/*
+*.zip

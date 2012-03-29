@@ -13,20 +13,8 @@ javax-swing-JCheckBox {
 	-swing-opaque: false;
 }
 
-.rootPanel {
-	-arui-fill: texture(url("/res/gfx/bg.png"));
-}
-
-.dialogPanel {
-	-arui-fill: texture(url("/res/gfx/bg.png"));
-}
-
-.dialogPanel javax-swing-JLabel {
-	-swing-foreground: #FFF;
-}
-
 .groupPanel {
-	-swing-background: #BBC8D8;
+	-swing-background: #FAFAFA;
 	-swing-border: arui-groupborder(noarg);
 	-arui-border-stroke: null;
 	-arui-border-thickness: 0;
@@ -35,20 +23,71 @@ javax-swing-JCheckBox {
 	-arui-border-header-fill: lineargradient(0, 0, 0, 1, 0, #4D6082, 1, #3D5277);
 	-arui-border-margin: 3 6;
 	-arui-border-foreground: #FFF;
+	-arui-border-font: Sans bold 14;
 }
 
-.configPanel {
-	-arui-border-title: "1 // Configuration";
+#mainHeaderPanel {
+	-swing-background: #3FFF;
 }
 
-.librarySetupPanel {
-	-arui-border-title: "2 // Library setup";
+#configPanel {
+	-arui-border-title: "Configuration";
 }
 
-.goPanel {
-	-arui-border-title: "3 // Generation";
+#librarySetupPanel {
+	-arui-border-title: "Library selection";
 }
 
-.resultPanel {
-	-arui-border-title: "Overview of the project";
+#resultPanel {
+	-arui-border-title: "Overview";
+}
+
+#goPanel {
+	-arui-border-title: "Generation";
+}
+
+.rootPanel {
+	-arui-fill: texture(url("/res/gfx/bg.png"));
+}
+
+.rootPanel > javax-swing-JLabel {
+	-swing-foreground: #FFF;
+}
+
+.header {
+	-swing-background: #BBC8D8;
+}
+
+.header javax-swing-JLabel {
+	-swing-font-size: 10;
+	-swing-border: emptyborder(2, 5, 2, 5);
+	-swing-foreground: #3D5277;
+}
+
+.headerNumber {
+	-swing-font-size: 26;
+	-swing-border: emptyborder(0, 5, 0, 0);
+	-swing-foreground: #3D5277;
+}
+
+.sectionLabel {
+	-swing-border: matteborder(0, 0, 1, 0, #888);
+	-swing-font: Sans plain 14;
+	-swing-foreground: #888;
+}
+
+.libInfoNameLabel {
+	-swing-font: Sans bold 30;
+}
+
+.libInfoDescLabel {
+	-swing-font-size: 14;
+}
+
+.libInfoHomepageLabel {
+	-swing-foreground: #AAA;
+}
+
+.libInfoHomepageLabel:hover {
+	-swing-foreground: #FFF;
 }

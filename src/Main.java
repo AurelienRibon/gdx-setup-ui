@@ -23,7 +23,7 @@ public class Main {
 				JFrame frame = new JFrame("LibGDX Project Setup");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setContentPane(new MainPanel());
-				frame.pack();
+				frame.setSize(1000, 550);
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 			}

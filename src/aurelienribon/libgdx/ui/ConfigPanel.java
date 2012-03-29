@@ -1,6 +1,7 @@
 package aurelienribon.libgdx.ui;
 
 import aurelienribon.libgdx.ProjectConfiguration;
+import aurelienribon.ui.css.Style;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -15,7 +16,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -25,6 +25,9 @@ public class ConfigPanel extends javax.swing.JPanel {
 
     public ConfigPanel() {
         initComponents();
+
+		Style.registerCssClasses(headerPanel, ".header");
+		Style.registerCssClasses(numberLabel, ".headerNumber");
 
 		nameField.setText(cfg.getProjectName());
 		packageField.setText(cfg.getPackageName());
@@ -44,6 +47,7 @@ public class ConfigPanel extends javax.swing.JPanel {
 
 		genDesktopPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
 		genAndroidPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
+		genHtmlPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
 
 		update();
 
@@ -71,6 +75,7 @@ public class ConfigPanel extends javax.swing.JPanel {
 		cfg.setDestinationPath(destinationField.getText());
 		cfg.setDesktopIncluded(genDesktopPrjChk.isSelected());
 		cfg.setAndroidIncluded(genAndroidPrjChk.isSelected());
+		cfg.setHtmlIncluded(genHtmlPrjChk.isSelected());
 		AppContext.inst().fireConfigChangedEvent();
 	}
 
@@ -97,80 +102,117 @@ public class ConfigPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        headerPanel = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        numberLabel = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        genCommonPrjChk = new javax.swing.JCheckBox();
+        destinationField = new javax.swing.JTextField();
         nameField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        packageField = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        destinationField = new javax.swing.JTextField();
-        genCommonPrjChk = new javax.swing.JCheckBox();
-        genDesktopPrjChk = new javax.swing.JCheckBox();
-        genAndroidPrjChk = new javax.swing.JCheckBox();
         browseBtn = new javax.swing.JButton();
+        packageField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        genAndroidPrjChk = new javax.swing.JCheckBox();
+        genDesktopPrjChk = new javax.swing.JCheckBox();
+        genHtmlPrjChk = new javax.swing.JCheckBox();
 
-        jLabel1.setText("Name");
+        setLayout(new java.awt.BorderLayout());
 
-        jLabel2.setText("Package");
+        jLabel4.setText("<html> Your project needs a name.");
+        jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        jLabel3.setText("Destination");
+        numberLabel.setText("1");
 
-        destinationField.setEditable(false);
+        javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
+        headerPanel.setLayout(headerPanelLayout);
+        headerPanelLayout.setHorizontalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup()
+                .addComponent(numberLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
+        );
+        headerPanelLayout.setVerticalGroup(
+            headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel4)
+            .addComponent(numberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        add(headerPanel, java.awt.BorderLayout.NORTH);
+
+        jPanel1.setOpaque(false);
 
         genCommonPrjChk.setSelected(true);
         genCommonPrjChk.setText("generate common project (required)");
         genCommonPrjChk.setEnabled(false);
 
-        genDesktopPrjChk.setSelected(true);
-        genDesktopPrjChk.setText("generate desktop project");
+        destinationField.setEditable(false);
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText("Package");
+
+        browseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_browse.png"))); // NOI18N
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setText("Name");
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setText("Destination");
 
         genAndroidPrjChk.setSelected(true);
         genAndroidPrjChk.setText("generate android project");
 
-        browseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_browse.png"))); // NOI18N
+        genDesktopPrjChk.setSelected(true);
+        genDesktopPrjChk.setText("generate desktop project");
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        genHtmlPrjChk.setSelected(true);
+        genHtmlPrjChk.setText("generate html project");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(destinationField, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                        .addComponent(destinationField, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(browseBtn))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nameField)
                             .addComponent(packageField)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(genHtmlPrjChk)
                             .addComponent(genAndroidPrjChk)
                             .addComponent(genDesktopPrjChk)
                             .addComponent(genCommonPrjChk))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(packageField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(destinationField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(browseBtn))
@@ -180,11 +222,14 @@ public class ConfigPanel extends javax.swing.JPanel {
                 .addComponent(genDesktopPrjChk)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(genAndroidPrjChk)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(genHtmlPrjChk)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {browseBtn, destinationField, jLabel1, jLabel2, jLabel3, nameField, packageField});
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {browseBtn, destinationField, jLabel1, jLabel2, jLabel3, nameField, packageField});
 
+        add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -193,10 +238,15 @@ public class ConfigPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox genAndroidPrjChk;
     private javax.swing.JCheckBox genCommonPrjChk;
     private javax.swing.JCheckBox genDesktopPrjChk;
+    private javax.swing.JCheckBox genHtmlPrjChk;
+    private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField nameField;
+    private javax.swing.JLabel numberLabel;
     private javax.swing.JTextField packageField;
     // End of variables declaration//GEN-END:variables
 

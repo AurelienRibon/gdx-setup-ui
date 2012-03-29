@@ -1,5 +1,6 @@
 package aurelienribon.libgdx.ui;
 
+import aurelienribon.libgdx.LibraryDef;
 import aurelienribon.libgdx.ProjectConfiguration;
 import java.awt.Component;
 import java.io.IOException;
@@ -11,10 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
-import javax.swing.tree.TreePath;
 import org.apache.commons.io.FilenameUtils;
 import res.Res;
 
@@ -31,6 +30,7 @@ public class ResultTree extends JTree {
 		setRootVisible(false);
 		setShowsRootHandles(true);
 		setCellRenderer(treeCellRenderer);
+		setOpaque(false);
 
 		AppContext.inst().addListener(new AppContext.Listener() {
 			@Override public void configChanged() {
@@ -49,7 +49,7 @@ public class ResultTree extends JTree {
 
 			while ((entry = zis.getNextEntry()) != null) {
 				String name = entry.getName();
-				name = entry.isDirectory() ? "#DIR#" + name : name;
+				name = entry.isDirectory() ? "#DIR#" + name : name; // this makes name sorting easier :p
 				name = entry.isDirectory() ? name.substring(0, name.length()-1) : name;
 
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
@@ -75,20 +75,57 @@ public class ResultTree extends JTree {
 	}
 
 	private void update() {
-		DefaultMutableTreeNode commonPrjNode = nodes.get("#DIR#prj");
+		DefaultMutableTreeNode commonPrjNode = nodes.get("#DIR#prj-common");
 		DefaultMutableTreeNode desktopPrjNode = nodes.get("#DIR#prj-desktop");
 		DefaultMutableTreeNode androidPrjNode = nodes.get("#DIR#prj-android");
+		DefaultMutableTreeNode htmlPrjNode = nodes.get("#DIR#prj-html");
 
 		rootNode.removeAllChildren();
 		rootNode.add(commonPrjNode);
 		if (cfg.isDesktopIncluded()) rootNode.add(desktopPrjNode);
 		if (cfg.isAndroidIncluded()) rootNode.add(androidPrjNode);
+		if (cfg.isHtmlIncluded()) rootNode.add(htmlPrjNode);
+
+		updateSrc();
+		updateLibs();
+
+		setModel(new DefaultTreeModel(rootNode));
+	}
+
+	private void updateSrc() {
+		DefaultMutableTreeNode previousNode;
+
+		// common
+
+		DefaultMutableTreeNode commonSrcNode = nodes.get("#DIR#prj-common/src");
+		DefaultMutableTreeNode commonSrcAppNode = nodes.get("prj-common/src/MyGame.java");
+		DefaultMutableTreeNode commonSrcAppGwtNode = nodes.get("prj-common/src/MyGame.gwt.xml");
+
+		commonSrcNode.removeAllChildren();
+		previousNode = commonSrcNode;
+
+		if (!cfg.getPackageName().trim().equals("")) {
+			String[] paths = cfg.getPackageName().split("\\.");
+			for (String path : paths) {
+				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-common/src/" + path);
+				previousNode.add(node);
+				previousNode = node;
+			}
+			previousNode.add(commonSrcAppNode);
+			commonSrcNode.add(commonSrcAppGwtNode);
+		} else {
+			commonSrcNode.add(commonSrcAppNode);
+			commonSrcNode.add(commonSrcAppGwtNode);
+		}
+
+		// android
 
 		DefaultMutableTreeNode androidSrcNode = nodes.get("#DIR#prj-android/src");
 		DefaultMutableTreeNode androidSrcActivityNode = nodes.get("prj-android/src/MainActivity.java");
-		DefaultMutableTreeNode previousNode = androidSrcNode;
 
 		androidSrcNode.removeAllChildren();
+		previousNode = androidSrcNode;
+
 		if (!cfg.getPackageName().trim().equals("")) {
 			String[] paths = cfg.getPackageName().split("\\.");
 			for (String path : paths) {
@@ -97,25 +134,85 @@ public class ResultTree extends JTree {
 				previousNode = node;
 			}
 			previousNode.add(androidSrcActivityNode);
+		} else {
+			androidSrcNode.add(androidSrcActivityNode);
 		}
 
-		setModel(new DefaultTreeModel(rootNode));
+		// html
+
+		DefaultMutableTreeNode htmlSrcNode = nodes.get("#DIR#prj-html/src");
+		DefaultMutableTreeNode htmlSrcAppGwtNode = nodes.get("prj-html/src/MyGame.gwt.xml");
+		DefaultMutableTreeNode htmlSrcClientDirNode = nodes.get("#DIR#prj-html/src/client");
+
+		htmlSrcNode.removeAllChildren();
+		previousNode = htmlSrcNode;
+
+		if (!cfg.getPackageName().trim().equals("")) {
+			String[] paths = cfg.getPackageName().split("\\.");
+			for (String path : paths) {
+				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-html/src/" + path);
+				previousNode.add(node);
+				previousNode = node;
+			}
+			previousNode.add(htmlSrcClientDirNode);
+			previousNode.add(htmlSrcAppGwtNode);
+		} else {
+			commonSrcNode.add(htmlSrcClientDirNode);
+			commonSrcNode.add(htmlSrcAppGwtNode);
+		}
 	}
 
-	private final TreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer() {
+	private void updateLibs() {
+		DefaultMutableTreeNode commonLibsNode = nodes.get("#DIR#prj-common/libs");
+		DefaultMutableTreeNode desktopLibsNode = nodes.get("#DIR#prj-desktop/libs");
+		DefaultMutableTreeNode androidLibsNode = nodes.get("#DIR#prj-android/libs");
+		DefaultMutableTreeNode htmlLibsNode = nodes.get("#DIR#prj-html/war/WEB-INF/lib");
+
+		for (String libraryName : cfg.getLibraryNames()) {
+			LibraryDef def = cfg.getLibraryDef(libraryName);
+			if (!def.isUsed) continue;
+			for (String path : def.libsCommon) pathToNodes(path, commonLibsNode);
+			for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
+			for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
+			for (String path : def.libsHtml) pathToNodes(path, htmlLibsNode);
+		}
+	}
+
+	private void pathToNodes(String path, DefaultMutableTreeNode parentNode) {
+		String parentPath = (String) parentNode.getUserObject();
+		String[] names = path.split("/");
+
+		for (int i=0; i<names.length; i++) {
+			if (i == 0) names[i] = parentPath + "/" + names[i];
+			else names[i] = names[i-1] + "/" + names[i];
+
+			if (i == names.length-1) names[i] = names[i].replaceFirst("#DIR#", "");
+
+			DefaultMutableTreeNode node = nodes.get(names[i]);
+			if (node == null) {
+				node = new DefaultMutableTreeNode(names[i]);
+				nodes.put(names[i], node);
+				if (i == 0) parentNode.add(node);
+				else nodes.get(names[i-1]).add(node);
+			}
+		}
+	}
+
+	private final TreeCellRenderer treeCellRenderer = new TreeCellRenderer() {
+		private final JLabel label = new JLabel();
+
 		@Override
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-			JLabel label = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 			if (node.getUserObject() instanceof String) {
 				String name = (String) node.getUserObject();
 				boolean isDir = name.startsWith("#DIR#");
 				name = name.replaceFirst("#DIR#", "");
 
-				if (isDir && name.equals("prj")) name = cfg.getCommonPrjName();
+				if (isDir && name.equals("prj-common")) name = cfg.getCommonPrjName();
 				if (isDir && name.equals("prj-desktop")) name = cfg.getDesktopPrjName();
 				if (isDir && name.equals("prj-android")) name = cfg.getAndroidPrjName();
+				if (isDir && name.equals("prj-html")) name = cfg.getHtmlPrjName();
 
 				label.setText(FilenameUtils.getName(name));
 				label.setIcon(isDir ? Res.getImage("ic_folder.png") : Res.getImage("ic_file.png"));

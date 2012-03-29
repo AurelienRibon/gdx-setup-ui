@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import org.apache.commons.io.FileUtils;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -48,8 +49,8 @@ public class DownloadDialog extends javax.swing.JDialog {
 
 		downloadAsync(input, output);
 
-		Style.registerCssClasses(rootPanel, ".dialogPanel");
-		Style.apply(this, new Style(MainPanel.class.getResource("style.css")));
+		Style.registerCssClasses(rootPanel, ".rootPanel");
+		Style.apply(getContentPane(), new Style(getClass().getResource("style.css")));
 	}
 
 	public interface Callback {
@@ -74,7 +75,7 @@ public class DownloadDialog extends javax.swing.JDialog {
 			connection.connect();
 
 			is = new BufferedInputStream(url.openStream());
-			os = new FileOutputStream(output);
+			os = new FileOutputStream(output + ".tmp");
 
 			byte[] data = new byte[1024];
 			long length = connection.getContentLengthLong();
@@ -107,9 +108,13 @@ public class DownloadDialog extends javax.swing.JDialog {
 		dispose();
 
 		if (run == true) {
+			try {
+				FileUtils.moveFile(new File(output + ".tmp"), new File(output));
+			} catch (IOException ex) {
+			}
 			callback.completed();
 		} else {
-			File file = new File(output);
+			File file = new File(output + ".tmp");
 			file.delete();
 			callback.canceled();
 		}
@@ -125,7 +130,6 @@ public class DownloadDialog extends javax.swing.JDialog {
 
         rootPanel = new aurelienribon.ui.components.PaintedPanel();
         jLabel3 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         progressBar = new javax.swing.JProgressBar();
         countLabel = new javax.swing.JLabel();
@@ -136,12 +140,7 @@ public class DownloadDialog extends javax.swing.JDialog {
         setTitle("Download in progress...");
         setResizable(false);
 
-        rootPanel.setLayout(new java.awt.BorderLayout());
-
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic64_download.png"))); // NOI18N
-        rootPanel.add(jLabel3, java.awt.BorderLayout.WEST);
-
-        jPanel1.setOpaque(false);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setText("Downloading: ");
@@ -152,40 +151,41 @@ public class DownloadDialog extends javax.swing.JDialog {
 
         nameLabel.setText("xxx");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout rootPanelLayout = new javax.swing.GroupLayout(rootPanel);
+        rootPanel.setLayout(rootPanelLayout);
+        rootPanelLayout.setHorizontalGroup(
+            rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rootPanelLayout.createSequentialGroup()
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(rootPanelLayout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(countLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(rootPanelLayout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE))
+                    .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE))
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        rootPanelLayout.setVerticalGroup(
+            rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(rootPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nameLabel)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                .addComponent(progressBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(countLabel))
                 .addContainerGap())
         );
-
-        rootPanel.add(jPanel1, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(rootPanel, java.awt.BorderLayout.CENTER);
 
@@ -196,7 +196,6 @@ public class DownloadDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JProgressBar progressBar;
     private aurelienribon.ui.components.PaintedPanel rootPanel;

@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
@@ -27,9 +26,11 @@ public class ProjectSetup {
 		this.cfg = cfg;
 
 		templateManager.define("PACKAGE_NAME", cfg.getPackageName());
+		templateManager.define("PACKAGE_NAME_AS_PATH", cfg.getPackageName().replace('.', '/'));
 		templateManager.define("PRJ_NAME_COMMON", cfg.getCommonPrjName());
 		if (cfg.isDesktopIncluded()) templateManager.define("PRJ_NAME_DESKTOP", cfg.getDesktopPrjName());
 		if (cfg.isAndroidIncluded()) templateManager.define("PRJ_NAME_ANDROID", cfg.getAndroidPrjName());
+		if (cfg.isHtmlIncluded()) templateManager.define("PRJ_NAME_HTML", cfg.getHtmlPrjName());
 	}
 
 	// -------------------------------------------------------------------------
@@ -59,31 +60,37 @@ public class ProjectSetup {
 		postProcessInflate();
 	}
 
-	public void inflateLibrary() throws IOException {
-		InputStream is = new FileInputStream(cfg.getLibraryPath());
-		ZipInputStream zis = new ZipInputStream(is);
-		ZipEntry entry;
+	public void inflateLibraries() throws IOException {
+		File commonPrjLibsDir = new File(FilenameUtils.normalize(tmpDst.getPath() + "/" + cfg.getCommonPrjName() + "/libs"));
+		File desktopPrjLibsDir = new File(FilenameUtils.normalize(tmpDst.getPath() + "/" + cfg.getDesktopPrjName() + "/libs"));
+		File androidPrjLibsDir = new File(FilenameUtils.normalize(tmpDst.getPath() + "/" + cfg.getAndroidPrjName() + "/libs"));
+		File htmlPrjLibsDir = new File(FilenameUtils.normalize(tmpDst.getPath() + "/" + cfg.getHtmlPrjName() + "/war/WEB-INF/lib"));
 
-		File commonPrjLibsDir = new File(new File(tmpDst, cfg.getCommonPrjName()), "libs");
-		File desktopPrjLibsDir = new File(new File(tmpDst, cfg.getDesktopPrjName()), "libs");
-		File androidPrjLibsDir = new File(new File(tmpDst, cfg.getAndroidPrjName()), "libs");
+		for (String libraryName : cfg.getLibraryNames()) {
+			String libraryPath = cfg.getLibraryPath(libraryName);
+			LibraryDef libraryDef = cfg.getLibraryDef(libraryName);
 
-		while ((entry = zis.getNextEntry()) != null) {
-			if (entry.isDirectory()) continue;
+			InputStream is = new FileInputStream(libraryPath);
+			ZipInputStream zis = new ZipInputStream(is);
+			ZipEntry entry;
 
-			String name = FilenameUtils.getName(entry.getName());
-			if (name.equals("gdx.jar")) copyEntry(zis, entry, commonPrjLibsDir);
-			if (name.equals("gdx-sources.jar")) copyEntry(zis, entry, commonPrjLibsDir);
-			if (name.equals("gdx-natives.jar")) copyEntry(zis, entry, desktopPrjLibsDir);
-			if (name.equals("gdx-backend-lwjgl.jar")) copyEntry(zis, entry, desktopPrjLibsDir);
-			if (name.equals("gdx-backend-lwjgl-sources.jar")) copyEntry(zis, entry, desktopPrjLibsDir);
-			if (name.equals("gdx-backend-lwjgl-natives.jar")) copyEntry(zis, entry, desktopPrjLibsDir);
-			if (name.equals("gdx-backend-android.jar")) copyEntry(zis, entry, androidPrjLibsDir);
-			if (name.equals("gdx-backend-android-sources.jar")) copyEntry(zis, entry, androidPrjLibsDir);
-			if (entry.getName().contains("armeabi")) copyEntry(zis, entry, androidPrjLibsDir);
+			while ((entry = zis.getNextEntry()) != null) {
+				if (entry.isDirectory()) continue;
+
+				String name = entry.getName();
+
+				for (String libElem : libraryDef.libsCommon)
+					if (name.endsWith(libElem)) copyEntry(zis, libElem, commonPrjLibsDir);
+				for (String libElem : libraryDef.libsDesktop)
+					if (name.endsWith(libElem)) copyEntry(zis, libElem, desktopPrjLibsDir);
+				for (String libElem : libraryDef.libsAndroid)
+					if (name.endsWith(libElem)) copyEntry(zis, libElem, androidPrjLibsDir);
+				for (String libElem : libraryDef.libsHtml)
+					if (name.endsWith(libElem)) copyEntry(zis, libElem, htmlPrjLibsDir);
+			}
+
+			zis.close();
 		}
-
-		zis.close();
 	}
 
 	public void copy() throws IOException {
@@ -100,6 +107,11 @@ public class ProjectSetup {
 			src = new File(tmpDst, cfg.getAndroidPrjName());
 			FileUtils.copyDirectoryToDirectory(src, dst);
 		}
+
+		if (cfg.isHtmlIncluded()) {
+			src = new File(tmpDst, cfg.getHtmlPrjName());
+			FileUtils.copyDirectoryToDirectory(src, dst);
+		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -107,8 +119,9 @@ public class ProjectSetup {
 	// -------------------------------------------------------------------------
 
 	private void postProcessInflate() throws IOException {
-		File src = new File(tmpDst, "prj");
+		File src = new File(tmpDst, "prj-common");
 		File dst = new File(tmpDst, cfg.getCommonPrjName());
+		move(src, "src/MyGame.java", "src/" + cfg.getPackageName().replace('.', '/') + "/MyGame.java");
 		templateDir(src);
 		FileUtils.moveDirectory(src, dst);
 
@@ -122,11 +135,17 @@ public class ProjectSetup {
 		if (cfg.isAndroidIncluded()) {
 			src = new File(tmpDst, "prj-android");
 			dst = new File(tmpDst, cfg.getAndroidPrjName());
+			move(src, "src/MainActivity.java", "src/" + cfg.getPackageName().replace('.', '/') + "/MainActivity.java");
 			templateDir(src);
+			FileUtils.moveDirectory(src, dst);
+		}
 
-			String path1 = FilenameUtils.normalize("src/MainActivity.java");
-			String path2 = FilenameUtils.normalize("src/" + cfg.getPackageName().replaceAll("\\.", "/") + "/MainActivity.java");
-			FileUtils.moveFile(new File(src, path1), new File(src, path2));
+		if (cfg.isHtmlIncluded()) {
+			src = new File(tmpDst, "prj-html");
+			dst = new File(tmpDst, cfg.getHtmlPrjName());
+			move(src, "src/MyGame.gwt.xml", "src/" + cfg.getPackageName().replace('.', '/') + "/MyGame.gwt.xml");
+			move(src, "src/client", "src/" + cfg.getPackageName().replace('.', '/') + "/client");
+			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
 		}
 	}
@@ -136,17 +155,26 @@ public class ProjectSetup {
 			if (file.isDirectory()) {
 				templateDir(file);
 			} else {
+				if (file.getName().endsWith(".jar")) continue;
+				if (file.getName().endsWith(".zip")) continue;
 				templateManager.processOver(file);
 			}
 		}
 	}
 
-	private void copyEntry(ZipInputStream zis, ZipEntry entry, File dst) throws IOException {
-		File file = new File(dst, entry.getName());
+	private void copyEntry(ZipInputStream zis, String name, File dst) throws IOException {
+		File file = new File(dst, name);
 		file.getParentFile().mkdirs();
 
 		OutputStream os = new FileOutputStream(file);
 		IOUtils.copy(zis, os);
 		os.close();
+	}
+
+	private void move(File base, String path1, String path2) throws IOException {
+		File file1 = new File(base, FilenameUtils.normalize(path1));
+		File file2 = new File(base, FilenameUtils.normalize(path2));
+		if (file1.isDirectory()) FileUtils.moveDirectory(file1, file2);
+		else FileUtils.moveFile(file1, file2);
 	}
 }

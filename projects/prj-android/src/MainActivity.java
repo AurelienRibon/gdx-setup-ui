@@ -13,7 +13,6 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
         
-		ApplicationListener appListener = null; // your ApplicationListener here
-        initialize(appListener, cfg);
+        initialize(new MyGame(), cfg);
     }
 }
