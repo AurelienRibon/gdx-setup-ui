@@ -61,13 +61,14 @@ public class TemplateManager {
 			input = input.replaceAll("@\\{" + var + "\\}", replacements.get(var));
 		}
 
-		Pattern p = Pattern.compile("@\\{ifdef (" + varPattern + ")\\}(.*)@\\{endif\\}", Pattern.DOTALL);
+		Pattern p = Pattern.compile("@\\{ifdef (" + varPattern + ")\\}(.*?)@\\{endif\\}", Pattern.DOTALL);
 		Matcher m = p.matcher(input);
 		StringBuffer sb = new StringBuffer();
 
 		while (m.find()) {
 			String var = m.group(1);
 			String content = m.group(2);
+
 			if (replacements.containsKey(var)) m.appendReplacement(sb, content);
 			else m.appendReplacement(sb, "");
 		}

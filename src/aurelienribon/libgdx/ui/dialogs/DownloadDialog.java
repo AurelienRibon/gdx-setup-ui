@@ -4,14 +4,15 @@ import aurelienribon.ui.css.Style;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.commons.io.FileUtils;
@@ -35,23 +36,14 @@ public class DownloadDialog extends javax.swing.JDialog {
 
 		initComponents();
 		nameLabel.setText(input);
-		countLabel.setText("...");
-
-		addWindowListener(new WindowAdapter() {
-			@Override public void windowClosing(WindowEvent e) {
-				run = false;
-			}
-		});
-
-		try {
-			new File(output).getCanonicalFile().getParentFile().mkdirs();
-		} catch (IOException ex) {
-		}
-
-		downloadAsync(input, output);
+		countLabel.setText("...waiting for response from the server...");
+		addWindowListener(new WindowAdapter() {@Override public void windowClosing(WindowEvent e) {run = false;}});
 
 		Style.registerCssClasses(rootPanel, ".rootPanel");
 		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
+
+		init();
+		downloadAsync();
 	}
 
 	public interface Callback {
@@ -59,9 +51,16 @@ public class DownloadDialog extends javax.swing.JDialog {
 		public void canceled();
 	}
 
-	private void downloadAsync(final String in, final String out) {
-		Thread th = new Thread(new Runnable() {@Override public void run() {download();}});
-		th.start();
+	private void init() {
+		try {
+			new File(output).getCanonicalFile().getParentFile().mkdirs();
+		} catch (IOException ex) {
+			assert false;
+		}
+	}
+
+	private void downloadAsync() {
+		new Thread(new Runnable() {@Override public void run() {download();}}).start();
 	}
 
 	private void download() {
@@ -71,16 +70,20 @@ public class DownloadDialog extends javax.swing.JDialog {
 		InputStream is = null;
 
 		try {
-			URL url = new URL(input);
-			URLConnection connection = url.openConnection();
+			HttpURLConnection connection = (HttpURLConnection) new URL(input).openConnection();
+			connection.setDoInput(true);
+			connection.setDoOutput(false);
+			connection.setUseCaches(true);
+			connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11");
+			connection.setConnectTimeout(3000);
 			connection.connect();
 
-			is = new BufferedInputStream(url.openStream());
-			os = new FileOutputStream(output + ".tmp");
+			is = new BufferedInputStream(connection.getInputStream(), 4096);
+			os = new BufferedOutputStream(new FileOutputStream(output + ".tmp"));
 
-			byte[] data = new byte[1024];
-			long length = connection.getContentLengthLong();
-			long total = 0;
+			byte[] data = new byte[4096];
+			int length = connection.getContentLength();
+			int total = 0;
 
 			int count;
 			while (run && (count = is.read(data)) != -1) {
@@ -98,14 +101,21 @@ public class DownloadDialog extends javax.swing.JDialog {
 		}
 	}
 
-	private void setProgress(long total, long length) {
-		progressBar.setValue((int) Math.round((double) total / length * 100));
-		countLabel.setText((total/1024) + " / " + (length/1024));
+	private void setProgress(int total, int length) {
+		if (length > 0) {
+			progressBar.setIndeterminate(false);
+			progressBar.setValue((int) Math.round((double) total * 100 / length));
+			countLabel.setText((total/1024) + " / " + (length/1024));
+		} else {
+			progressBar.setIndeterminate(true);
+			countLabel.setText((total/1024) + " / unknown");
+		}
 	}
 
 	private void end(InputStream is, OutputStream os) {
 		if (os != null) try {os.flush(); os.close();} catch (IOException ex1) {}
 		if (is != null) try {is.close();} catch (IOException ex1) {}
+
 		dispose();
 
 		if (run == true) {

@@ -15,18 +15,21 @@ public class ProjectConfiguration {
 	private final Map<String, LibraryDef> libraryDefs = new HashMap<String, LibraryDef>();
 	private final Map<String, String> libraryPaths = new HashMap<String, String>();
 
-	private String rawProjectName = "My LibGDX Game !!";
-	private String projectName = "MyLibGDXGame";
-	private String directoryName = "my-libgdx-game";
-	private String packageName = "com.me.mygame";
+	private String projectName = "my-gdx-game";
+	private String mainClassName = "MyGdxGame";
+	private String packageName = "com.me.mygdxgame";
 	private String destinationPath = "";
-	private boolean desktopIncluded = true;
-	private boolean androidIncluded = true;
-	private boolean htmlIncluded = true;
-	private String commonSuffix = "";
-	private String desktopSuffix = "-desktop";
-	private String androidSuffix = "-android";
-	private String htmlSuffix = "-html";
+
+	public boolean isDesktopIncluded = true;
+	public boolean isAndroidIncluded = true;
+	public boolean isHtmlIncluded = true;
+	public String commonSuffix = "";
+	public String desktopSuffix = "-desktop";
+	public String androidSuffix = "-android";
+	public String htmlSuffix = "-html";
+	public String androidMinSdkVersion = "5";
+	public String androidTargetSdkVersion = "15";
+	public String androidMaxSdkVersion = "";
 
 	// -------------------------------------------------------------------------
 
@@ -53,16 +56,12 @@ public class ProjectConfiguration {
 
 	// -------------------------------------------------------------------------
 
-	public String getRawProjectName() {
-		return rawProjectName;
-	}
-
 	public String getProjectName() {
 		return projectName;
 	}
 
-	public String getDirectoryName() {
-		return directoryName;
+	public String getMainClassName() {
+		return mainClassName;
 	}
 
 	public String getPackageName() {
@@ -73,48 +72,12 @@ public class ProjectConfiguration {
 		return destinationPath;
 	}
 
-	public boolean isDesktopIncluded() {
-		return desktopIncluded;
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
-	public boolean isAndroidIncluded() {
-		return androidIncluded;
-	}
-
-	public boolean isHtmlIncluded() {
-		return htmlIncluded;
-	}
-
-	public String getCommonSuffix() {
-		return commonSuffix;
-	}
-
-	public String getDesktopSuffix() {
-		return desktopSuffix;
-	}
-
-	public String getAndroidSuffix() {
-		return androidSuffix;
-	}
-
-	public String getHtmlSuffix() {
-		return htmlSuffix;
-	}
-
-	public void setRawProjectName(String rawProjectName) {
-		this.rawProjectName = rawProjectName;
-		this.projectName = rawProjectName.replaceAll("\\s+", "");
-
-		if (projectName.length() > 0) {
-			projectName = projectName.substring(0, 1).toUpperCase() + projectName.substring(1);
-		}
-
-		String chars = ",;:!ù*^$?./§%µ¨£¤&é\"'(-è_çà)=~#{[|`\\^@]}<>²";
-		for (char c : chars.toCharArray()) projectName = projectName.replace("" + c, "");
-	}
-
-	public void setDirectoryName(String directoryName) {
-		this.directoryName = directoryName;
+	public void setMainClassName(String mainClassName) {
+		this.mainClassName = mainClassName;
 	}
 
 	public void setPackageName(String packageName) {
@@ -125,58 +88,56 @@ public class ProjectConfiguration {
 		this.destinationPath = destinationPath;
 	}
 
-	public void setDesktopIncluded(boolean desktopIncluded) {
-		this.desktopIncluded = desktopIncluded;
-	}
-
-	public void setAndroidIncluded(boolean androidIncluded) {
-		this.androidIncluded = androidIncluded;
-	}
-
-	public void setHtmlIncluded(boolean htmlIncluded) {
-		this.htmlIncluded = htmlIncluded;
-	}
-
-	public void setCommonSuffix(String commonSuffix) {
-		this.commonSuffix = commonSuffix;
-	}
-
-	public void setDesktopSuffix(String desktopSuffix) {
-		this.desktopSuffix = desktopSuffix;
-	}
-
-	public void setAndroidSuffix(String androidSuffix) {
-		this.androidSuffix = androidSuffix;
-	}
+	// -------------------------------------------------------------------------
 
 	public String getCommonPrjName() {
-		return directoryName + commonSuffix;
+		return projectName + commonSuffix;
 	}
 
 	public String getDesktopPrjName() {
-		return directoryName + desktopSuffix;
+		return projectName + desktopSuffix;
 	}
 
 	public String getAndroidPrjName() {
-		return directoryName + androidSuffix;
+		return projectName + androidSuffix;
 	}
 
 	public String getHtmlPrjName() {
-		return directoryName + htmlSuffix;
+		return projectName + htmlSuffix;
 	}
 
 	public boolean isValid() {
-		if (directoryName.trim().equals("")) return false;
 		if (projectName.trim().equals("")) return false;
 		if (packageName.trim().equals("")) return false;
+		if (packageName.endsWith(".")) return false;
+		if (mainClassName.trim().equals("")) return false;
 
 		for (String libraryName : libraries) {
-			String path = getLibraryPath(libraryName);
-			if (path == null) return false;
-			if (!path.endsWith(".zip")) return false;
-			if (!new File(path).isFile()) return false;
+			if (!isLibraryValid(libraryName)) return false;
 		}
 
 		return true;
+	}
+
+	public boolean isLibraryValid(String libraryName) {
+		String path = getLibraryPath(libraryName);
+		if (path == null) return false;
+		if (!path.endsWith(".zip")) return false;
+		if (!new File(path).isFile()) return false;
+		return true;
+	}
+
+	public String getErrorMessage() {
+		if (projectName.trim().equals("")) return "Project name is not set.";
+		if (packageName.trim().equals("")) return "Package name is not set.";
+		if (packageName.endsWith(".")) return "Package name ends with a dot.";
+		if (mainClassName.trim().equals("")) return "Main class name is not set.";
+
+		for (String libraryName : libraries) {
+			if (!isLibraryValid(libraryName))
+				return "At least one selected library has a missing or invalid archive.";
+		}
+
+		return "No error found";
 	}
 }

@@ -28,24 +28,32 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
     public LibrarySetupPanel() {
         initComponents();
-		
-		libgdxLabel.setToolTipText("Archive not found, please specify or download one.");
-		Style.registerCssClasses(libgdxLabel, ".libraryNotFoundLabel");
-		Style.apply(libgdxLabel, new Style(Res.class.getResource("style-dynamic.css")));
-
-		initLibraries();
-		libgdxLabel.setText(cfg.getLibraryDef("libgdx").name);
-
-		Style.registerCssClasses(headerPanel, ".header");
-		Style.registerCssClasses(numberLabel, ".headerNumber");
-		Style.registerCssClasses(sectionLabel1, ".sectionLabel");
-		Style.registerCssClasses(sectionLabel2, ".sectionLabel");
 
 		libgdxInfoBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {showInfo("libgdx");}});
 		libgdxBrowseBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {browse("libgdx");}});
 		libgdxGetStableBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {getStable("libgdx");}});
 		libgdxGetNightliesBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {getLatest("libgdx");}});
+
+		Style.registerCssClasses(headerPanel, ".header");
+		Style.registerCssClasses(numberLabel, ".headerNumber");
+		Style.registerCssClasses(sectionLabel1, ".sectionLabel");
+		Style.registerCssClasses(sectionLabel2, ".sectionLabel");
+		Style.registerCssClasses(legendPanel, ".legendPanel");
     }
+
+	public void init() {
+		libgdxLabel.setToolTipText("Archive not found, please specify or download one.");
+		
+		Style.registerCssClasses(libgdxLabel, ".libraryNotFoundLabel");
+		Style.registerCssClasses(legendLibFoundLabel, ".libraryFoundLabel");
+		Style.registerCssClasses(legendLibNotFoundLabel, ".libraryNotFoundLabel");
+		Style.apply(libgdxLabel, new Style(Res.class.getResource("style-dynamic.css")));
+		Style.apply(legendLibFoundLabel, new Style(Res.class.getResource("style-dynamic.css")));
+		Style.apply(legendLibNotFoundLabel, new Style(Res.class.getResource("style-dynamic.css")));
+
+		initLibraries();
+		libgdxLabel.setText(cfg.getLibraryDef("libgdx").name);
+	}
 
 	private void initLibraries() {
 		try {
@@ -54,7 +62,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			def.isUsed = true;
 			cfg.registerLibrary("libgdx", def);
 		} catch (IOException ex) {
-			throw new RuntimeException(ex);
+			assert false;
 		}
 
 		for (File file : new File(".").listFiles()) {
@@ -83,7 +91,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 		JFileChooser chooser = new JFileChooser(new File(path));
 		chooser.setFileFilter(new FileNameExtensionFilter("Zip files (*.zip)", "zip"));
-		chooser.setDialogTitle("Please select the zip archive for library " + libraryName);
+		chooser.setDialogTitle("Please select the zip archive for \"" + libraryName + "\"");
 
 		if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 			select(libraryName, chooser.getSelectedFile());
@@ -146,7 +154,6 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         numberLabel = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        sectionLabel2 = new javax.swing.JLabel();
         sectionLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         libgdxLabel = new javax.swing.JLabel();
@@ -154,7 +161,13 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
         libgdxBrowseBtn = new javax.swing.JButton();
         libgdxGetStableBtn = new javax.swing.JButton();
         libgdxGetNightliesBtn = new javax.swing.JButton();
+        sectionLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        legendPanel = new aurelienribon.ui.components.PaintedPanel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        legendLibNotFoundLabel = new javax.swing.JLabel();
+        legendLibFoundLabel = new javax.swing.JLabel();
 
         thirdPartyLibPanel.setOpaque(false);
 
@@ -184,7 +197,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        jLabel4.setText("<html> Select the libraries you want to include.<br/>Direct downloads are available.");
+        jLabel4.setText("<html> Select the libraries you want to include. Direct downloads are available to stable and nightly releases.");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         numberLabel.setText("2");
@@ -196,19 +209,17 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup()
                 .addComponent(numberLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE))
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE))
         );
         headerPanelLayout.setVerticalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel4)
+            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(numberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         add(headerPanel, java.awt.BorderLayout.NORTH);
 
         jPanel3.setOpaque(false);
-
-        sectionLabel2.setText("Third-party");
 
         sectionLabel1.setText("Required");
 
@@ -233,7 +244,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(libgdxLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
+                .addComponent(libgdxLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(libgdxInfoBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -252,7 +263,48 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
             .addComponent(libgdxGetNightliesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        sectionLabel2.setText("Third-party");
+
         jLabel1.setText("Coming soon...");
+
+        jLabel5.setText(":  library not found");
+
+        jLabel3.setText(":  library found (see tooltip for library path)");
+
+        legendLibNotFoundLabel.setText("library");
+
+        legendLibFoundLabel.setText("library");
+
+        javax.swing.GroupLayout legendPanelLayout = new javax.swing.GroupLayout(legendPanel);
+        legendPanel.setLayout(legendPanelLayout);
+        legendPanelLayout.setHorizontalGroup(
+            legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(legendPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(legendPanelLayout.createSequentialGroup()
+                        .addComponent(legendLibFoundLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(legendPanelLayout.createSequentialGroup()
+                        .addComponent(legendLibNotFoundLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        legendPanelLayout.setVerticalGroup(
+            legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(legendPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(legendLibFoundLabel)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(legendLibNotFoundLabel)
+                    .addComponent(jLabel5))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -268,6 +320,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
                         .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addComponent(legendPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -280,7 +333,8 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
                 .addComponent(sectionLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
+                .addComponent(legendPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         add(jPanel3, java.awt.BorderLayout.CENTER);
@@ -291,9 +345,14 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
     private javax.swing.JButton getBtn;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel legendLibFoundLabel;
+    private javax.swing.JLabel legendLibNotFoundLabel;
+    private aurelienribon.ui.components.PaintedPanel legendPanel;
     private javax.swing.JCheckBox libLabelChk;
     private javax.swing.JButton libgdxBrowseBtn;
     private javax.swing.JButton libgdxGetNightliesBtn;

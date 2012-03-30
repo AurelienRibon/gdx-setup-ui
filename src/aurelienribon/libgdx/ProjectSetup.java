@@ -26,13 +26,19 @@ public class ProjectSetup {
 		this.cfg = cfg;
 
 		templateManager.define("PROJECT_NAME", cfg.getProjectName());
-		templateManager.define("PROJECT_RAW_NAME", cfg.getRawProjectName());
+		templateManager.define("MAINCLASS_NAME", cfg.getMainClassName());
 		templateManager.define("PACKAGE_NAME", cfg.getPackageName());
 		templateManager.define("PACKAGE_NAME_AS_PATH", cfg.getPackageName().replace('.', '/'));
+
 		templateManager.define("PRJ_COMMON_NAME", cfg.getCommonPrjName());
-		if (cfg.isDesktopIncluded()) templateManager.define("PRJ_DESKTOP_NAME", cfg.getDesktopPrjName());
-		if (cfg.isAndroidIncluded()) templateManager.define("PRJ_ANDROID_NAME", cfg.getAndroidPrjName());
-		if (cfg.isHtmlIncluded()) templateManager.define("PRJ_HTML_NAME", cfg.getHtmlPrjName());
+		if (cfg.isDesktopIncluded) templateManager.define("PRJ_DESKTOP_NAME", cfg.getDesktopPrjName());
+		if (cfg.isAndroidIncluded) templateManager.define("PRJ_ANDROID_NAME", cfg.getAndroidPrjName());
+		if (cfg.isHtmlIncluded) templateManager.define("PRJ_HTML_NAME", cfg.getHtmlPrjName());
+
+		if (!cfg.androidMinSdkVersion.equals("")) templateManager.define("ANDROID_MIN_SDK", cfg.androidMinSdkVersion);
+		if (!cfg.androidTargetSdkVersion.equals("")) templateManager.define("ANDROID_TARGET_SDK", cfg.androidTargetSdkVersion);
+		if (!cfg.androidMaxSdkVersion.equals("")) templateManager.define("ANDROID_MAX_SDK", cfg.androidMaxSdkVersion);
+		if (!cfg.androidMinSdkVersion.equals("") || !cfg.androidTargetSdkVersion.equals("") || !cfg.androidMaxSdkVersion.equals("")) templateManager.define("ANDROID_USES_SDK");
 	}
 
 	// -------------------------------------------------------------------------
@@ -100,17 +106,17 @@ public class ProjectSetup {
 		File dst = new File(cfg.getDestinationPath());
 		FileUtils.copyDirectoryToDirectory(src, dst);
 
-		if (cfg.isDesktopIncluded()) {
+		if (cfg.isDesktopIncluded) {
 			src = new File(tmpDst, cfg.getDesktopPrjName());
 			FileUtils.copyDirectoryToDirectory(src, dst);
 		}
 
-		if (cfg.isAndroidIncluded()) {
+		if (cfg.isAndroidIncluded) {
 			src = new File(tmpDst, cfg.getAndroidPrjName());
 			FileUtils.copyDirectoryToDirectory(src, dst);
 		}
 
-		if (cfg.isHtmlIncluded()) {
+		if (cfg.isHtmlIncluded) {
 			src = new File(tmpDst, cfg.getHtmlPrjName());
 			FileUtils.copyDirectoryToDirectory(src, dst);
 		}
@@ -123,19 +129,19 @@ public class ProjectSetup {
 	private void postProcessInflate() throws IOException {
 		File src = new File(tmpDst, "prj-common");
 		File dst = new File(tmpDst, cfg.getCommonPrjName());
-		move(src, "src/MyGame.java", "src/" + cfg.getPackageName().replace('.', '/') + "/" + cfg.getProjectName() + ".java");
-		move(src, "src/MyGame.gwt.xml", "src/" + cfg.getProjectName() + ".gwt.xml");
+		move(src, "src/MyGame.java", "src/" + cfg.getPackageName().replace('.', '/') + "/" + cfg.getMainClassName() + ".java");
+		move(src, "src/MyGame.gwt.xml", "src/" + cfg.getMainClassName() + ".gwt.xml");
 		templateDir(src);
 		FileUtils.moveDirectory(src, dst);
 
-		if (cfg.isDesktopIncluded()) {
+		if (cfg.isDesktopIncluded) {
 			src = new File(tmpDst, "prj-desktop");
 			dst = new File(tmpDst, cfg.getDesktopPrjName());
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
 		}
 
-		if (cfg.isAndroidIncluded()) {
+		if (cfg.isAndroidIncluded) {
 			src = new File(tmpDst, "prj-android");
 			dst = new File(tmpDst, cfg.getAndroidPrjName());
 			move(src, "src/MainActivity.java", "src/" + cfg.getPackageName().replace('.', '/') + "/MainActivity.java");
@@ -143,10 +149,10 @@ public class ProjectSetup {
 			FileUtils.moveDirectory(src, dst);
 		}
 
-		if (cfg.isHtmlIncluded()) {
+		if (cfg.isHtmlIncluded) {
 			src = new File(tmpDst, "prj-html");
 			dst = new File(tmpDst, cfg.getHtmlPrjName());
-			move(src, "src/MyGame.gwt.xml", "src/" + cfg.getPackageName().replace('.', '/') + "/" + cfg.getProjectName() + ".gwt.xml");
+			move(src, "src/MyGame.gwt.xml", "src/" + cfg.getPackageName().replace('.', '/') + "/" + cfg.getMainClassName() + ".gwt.xml");
 			move(src, "src/client", "src/" + cfg.getPackageName().replace('.', '/') + "/client");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);

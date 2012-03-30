@@ -4,11 +4,9 @@ import aurelienribon.libgdx.ProjectConfiguration;
 import aurelienribon.libgdx.ProjectSetup;
 import aurelienribon.libgdx.ui.AppContext;
 import aurelienribon.ui.css.Style;
-import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.net.URI;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -29,6 +27,8 @@ public class GoDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(title2, ".titleLabel");
 		Style.registerCssClasses(importQuestion, ".questionLabel");
 		Style.registerCssClasses(fixHtmlQuestion, ".questionLabel");
+		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
+		Style.registerCssClasses(progressArea, ".progressArea");
 		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
 
 		importQuestion.addMouseListener(new MouseAdapter() {
@@ -49,38 +49,33 @@ public class GoDialog extends javax.swing.JDialog {
 			}
 		});
 
-		step1.setVisible(false);
-		step2.setVisible(false);
-		step3.setVisible(false);
-		done.setVisible(false);
-		title2.setVisible(false);
-		importQuestion.setVisible(false);
-		fixHtmlQuestion.setVisible(false);
-
 		ProjectConfiguration cfg = AppContext.inst().getConfig();
 		setup = new ProjectSetup(cfg);
 
 		new Thread(new Runnable() {
 			@Override public void run() {
 				try {
-					SwingUtilities.invokeLater(new Runnable() {@Override public void run() {step1.setVisible(true);}});
+					report("Decompressing projects...");
 					setup.inflateProjects();
-					SwingUtilities.invokeLater(new Runnable() {@Override public void run() {step2.setVisible(true);}});
+					report(" done\nDecompressing libraries...");
 					setup.inflateLibraries();
-					SwingUtilities.invokeLater(new Runnable() {@Override public void run() {step3.setVisible(true);}});
+					report(" done\nCopying projects...");
 					setup.copy();
-					SwingUtilities.invokeLater(new Runnable() {@Override public void run() {done.setVisible(true);}});
-					SwingUtilities.invokeLater(new Runnable() {@Override public void run() {title2.setVisible(true);}});
-					SwingUtilities.invokeLater(new Runnable() {@Override public void run() {importQuestion.setVisible(true);}});
-					SwingUtilities.invokeLater(new Runnable() {@Override public void run() {fixHtmlQuestion.setVisible(true);}});
+					report(" done\nAll done!");
 				} catch (final IOException ex) {
-					SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
-						JOptionPane.showMessageDialog(GoDialog.this, ex.getMessage());
-					}});
+					report("\n[error] " + ex.getMessage());
 				}
 			}
 		}).start();
     }
+
+	private void report(final String txt) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override public void run() {
+				progressArea.append(txt);
+			}
+		});
+	}
 
 	// -------------------------------------------------------------------------
 	// Generated stuff
@@ -92,32 +87,51 @@ public class GoDialog extends javax.swing.JDialog {
 
         rootPanel = new aurelienribon.ui.components.PaintedPanel();
         title1 = new javax.swing.JLabel();
-        step1 = new javax.swing.JLabel();
-        step2 = new javax.swing.JLabel();
-        step3 = new javax.swing.JLabel();
-        done = new javax.swing.JLabel();
         title2 = new javax.swing.JLabel();
+        paintedPanel1 = new aurelienribon.ui.components.PaintedPanel();
         importQuestion = new javax.swing.JLabel();
         fixHtmlQuestion = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        progressArea = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Generation");
 
         title1.setText("Generation in progress");
 
-        step1.setText("Decompressing projects...");
-
-        step2.setText("Decompressing libraries...");
-
-        step3.setText("Copying projects...");
-
-        done.setText("Done!");
-
         title2.setText("Frequently Asked Questions");
+
+        paintedPanel1.setOpaque(false);
 
         importQuestion.setText("How do I import the projects into eclipse?");
 
         fixHtmlQuestion.setText("How do I fix the \"gwt-servlet not found\" error in my html project?");
+
+        javax.swing.GroupLayout paintedPanel1Layout = new javax.swing.GroupLayout(paintedPanel1);
+        paintedPanel1.setLayout(paintedPanel1Layout);
+        paintedPanel1Layout.setHorizontalGroup(
+            paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paintedPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(importQuestion)
+                    .addComponent(fixHtmlQuestion))
+                .addContainerGap(71, Short.MAX_VALUE))
+        );
+        paintedPanel1Layout.setVerticalGroup(
+            paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paintedPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(importQuestion)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fixHtmlQuestion)
+                .addContainerGap())
+        );
+
+        progressArea.setColumns(20);
+        progressArea.setEditable(false);
+        progressArea.setRows(5);
+        jScrollPane1.setViewportView(progressArea);
 
         javax.swing.GroupLayout rootPanelLayout = new javax.swing.GroupLayout(rootPanel);
         rootPanel.setLayout(rootPanelLayout);
@@ -127,16 +141,9 @@ public class GoDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(title1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(rootPanelLayout.createSequentialGroup()
-                        .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(step1)
-                            .addComponent(step2)
-                            .addComponent(step3)
-                            .addComponent(done)
-                            .addComponent(importQuestion)
-                            .addComponent(fixHtmlQuestion))
-                        .addGap(0, 144, Short.MAX_VALUE))
-                    .addComponent(title2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(title2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(paintedPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
         rootPanelLayout.setVerticalGroup(
@@ -145,20 +152,12 @@ public class GoDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(title1)
                 .addGap(18, 18, 18)
-                .addComponent(step1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(step2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(step3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(done)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(title2)
                 .addGap(18, 18, 18)
-                .addComponent(importQuestion)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fixHtmlQuestion)
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         getContentPane().add(rootPanel, java.awt.BorderLayout.CENTER);
@@ -166,13 +165,12 @@ public class GoDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel done;
     private javax.swing.JLabel fixHtmlQuestion;
     private javax.swing.JLabel importQuestion;
+    private javax.swing.JScrollPane jScrollPane1;
+    private aurelienribon.ui.components.PaintedPanel paintedPanel1;
+    private javax.swing.JTextArea progressArea;
     private aurelienribon.ui.components.PaintedPanel rootPanel;
-    private javax.swing.JLabel step1;
-    private javax.swing.JLabel step2;
-    private javax.swing.JLabel step3;
     private javax.swing.JLabel title1;
     private javax.swing.JLabel title2;
     // End of variables declaration//GEN-END:variables

@@ -71,6 +71,7 @@ public class ResultTree extends JTree {
 			}
 
 		} catch (IOException ex) {
+			assert false;
 		}
 	}
 
@@ -82,9 +83,9 @@ public class ResultTree extends JTree {
 
 		rootNode.removeAllChildren();
 		rootNode.add(commonPrjNode);
-		if (cfg.isDesktopIncluded()) rootNode.add(desktopPrjNode);
-		if (cfg.isAndroidIncluded()) rootNode.add(androidPrjNode);
-		if (cfg.isHtmlIncluded()) rootNode.add(htmlPrjNode);
+		if (cfg.isDesktopIncluded) rootNode.add(desktopPrjNode);
+		if (cfg.isAndroidIncluded) rootNode.add(androidPrjNode);
+		if (cfg.isHtmlIncluded) rootNode.add(htmlPrjNode);
 
 		updateSrc();
 		updateLibs();
@@ -207,8 +208,9 @@ public class ResultTree extends JTree {
 			if (node.getUserObject() instanceof String) {
 				String name = (String) node.getUserObject();
 				boolean isDir = name.startsWith("#DIR#");
+
 				name = name.replaceFirst("#DIR#", "");
-				name = name.replace("MyGame", cfg.getProjectName());
+				name = name.replace("MyGame", cfg.getMainClassName());
 
 				if (isDir && name.equals("prj-common")) name = cfg.getCommonPrjName();
 				if (isDir && name.equals("prj-desktop")) name = cfg.getDesktopPrjName();

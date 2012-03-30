@@ -76,6 +76,15 @@ javax-swing-JCheckBox {
 	-swing-foreground: #888;
 }
 
+.legendPanel {
+	-swing-background: #BBC8D8;
+}
+
+.legendPanel javax-swing-JLabel {
+	-swing-font-size: 10;
+	-swing-foreground: #3D5277;
+}
+
 .libInfoNameLabel {
 	-swing-font: Sans bold 30;
 }
@@ -112,4 +121,26 @@ javax-swing-JCheckBox {
 
 .versionLabel:hover {
 	-swing-foreground: #88F;
+}
+
+.linkLabel {
+	-swing-foreground: #008;
+}
+
+.linkLabel:hover {
+	-swing-foreground: #55F;
+}
+
+.optionGroupPanel {
+	-arui-fill: #3FFF;
+	-swing-opaque: false;
+}
+
+.optionGroupPanel > javax-swing-JLabel {
+	-swing-foreground: #FFF;
+}
+
+.progressArea {
+	-swing-margin: 5 10;
+	-swing-font-size: 11;
 }
