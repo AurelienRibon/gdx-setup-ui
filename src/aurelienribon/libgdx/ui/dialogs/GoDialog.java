@@ -8,7 +8,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import res.Res;
 
@@ -61,6 +60,8 @@ public class GoDialog extends javax.swing.JDialog {
 					setup.inflateLibraries();
 					report(" done\nCopying projects...");
 					setup.copy();
+					report(" done\nCleaning...");
+					setup.clean();
 					report(" done\nAll done!");
 				} catch (final IOException ex) {
 					report("\n[error] " + ex.getMessage());

@@ -30,7 +30,7 @@ public class LibraryInfoDialog extends javax.swing.JDialog {
 		homepageLabel.addMouseListener(urlMouseListener);
 
 		Style.registerCssClasses(rootPanel, ".rootPanel");
-		Style.registerCssClasses(nameLabel, ".libInfoNameLabel");
+		Style.registerCssClasses(nameLabel, ".titleLabel");
 		Style.registerCssClasses(descriptionLabel, ".libInfoDescLabel");
 		Style.registerCssClasses(homepageLabel, ".libInfoHomepageLabel");
 		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
@@ -79,10 +79,8 @@ public class LibraryInfoDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(rootPanelLayout.createSequentialGroup()
-                        .addComponent(nameLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(homepageLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE))
+                    .addComponent(homepageLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
+                    .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         rootPanelLayout.setVerticalGroup(

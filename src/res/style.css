@@ -1,3 +1,7 @@
+/*******************************************************************************
+ * General
+ ******************************************************************************/
+
 javax-swing-JButton {
 	-swing-horizontalalignment: left;
 	-swing-verticalalignment: center;
@@ -13,6 +17,10 @@ javax-swing-JCheckBox {
 	-swing-opaque: false;
 }
 
+/*******************************************************************************
+ * Groups
+ ******************************************************************************/
+
 .groupPanel {
 	-swing-background: #FAFAFA;
 	-swing-border: arui-groupborder(noarg);
@@ -24,10 +32,6 @@ javax-swing-JCheckBox {
 	-arui-border-margin: 3 6;
 	-arui-border-foreground: #FFF;
 	-arui-border-font: Sans bold 14;
-}
-
-#mainHeaderPanel {
-	-swing-background: #3FFF;
 }
 
 #configPanel {
@@ -46,6 +50,10 @@ javax-swing-JCheckBox {
 	-arui-border-title: "Generation";
 }
 
+/*******************************************************************************
+ * Root panels
+ ******************************************************************************/
+
 .rootPanel {
 	-arui-fill: texture(url("/res/gfx/bg.png"));
 }
@@ -53,6 +61,10 @@ javax-swing-JCheckBox {
 .rootPanel > javax-swing-JLabel {
 	-swing-foreground: #FFF;
 }
+
+/*******************************************************************************
+ * Headers
+ ******************************************************************************/
 
 .header {
 	-swing-background: #BBC8D8;
@@ -70,6 +82,48 @@ javax-swing-JCheckBox {
 	-swing-foreground: #3D5277;
 }
 
+/*******************************************************************************
+ * Fake panels
+ ******************************************************************************/
+
+.optionGroupPanel {
+	-arui-fill: #3FFF;
+	-swing-opaque: false;
+}
+
+.optionGroupPanel > javax-swing-JLabel {
+	-swing-foreground: #FFF;
+}
+
+/*******************************************************************************
+ * Dialogs
+ ******************************************************************************/
+
+.titleLabel {
+	-swing-font: Arial bold 20;
+	-swing-border: matteborder(0, 0, 1, 0, #FFF);
+}
+
+.questionLabel:hover {
+	-swing-foreground: #88F;
+}
+
+/*******************************************************************************
+ * Links
+ ******************************************************************************/
+
+.linkLabel {
+	-swing-foreground: #008;
+}
+
+.linkLabel:hover {
+	-swing-foreground: #55F;
+}
+
+/*******************************************************************************
+ * LibSetup panel
+ ******************************************************************************/
+
 .sectionLabel {
 	-swing-border: matteborder(0, 0, 1, 0, #888);
 	-swing-font: Sans plain 14;
@@ -85,9 +139,9 @@ javax-swing-JCheckBox {
 	-swing-foreground: #3D5277;
 }
 
-.libInfoNameLabel {
-	-swing-font: Sans bold 30;
-}
+/*******************************************************************************
+ * LibInfo dialog
+ ******************************************************************************/
 
 .libInfoDescLabel {
 	-swing-font-size: 14;
@@ -101,18 +155,18 @@ javax-swing-JCheckBox {
 	-swing-foreground: #FFF;
 }
 
-.titleLabel {
-	-swing-font: Arial bold 20;
-	-swing-border: matteborder(0, 0, 1, 0, #FFF);
+/*******************************************************************************
+ * Go dialog
+ ******************************************************************************/
+
+.progressArea {
+	-swing-margin: 5 10;
+	-swing-font-size: 11;
 }
 
-.questionLabel:hover {
-	-swing-foreground: #88F;
-}
-
-.helpNumber {
-	-swing-font-size: 30;
-}
+/*******************************************************************************
+ * Misc
+ ******************************************************************************/
 
 .versionLabel {
 	-swing-foreground: #FFF;
@@ -123,24 +177,6 @@ javax-swing-JCheckBox {
 	-swing-foreground: #88F;
 }
 
-.linkLabel {
-	-swing-foreground: #008;
-}
-
-.linkLabel:hover {
-	-swing-foreground: #55F;
-}
-
-.optionGroupPanel {
-	-arui-fill: #3FFF;
-	-swing-opaque: false;
-}
-
-.optionGroupPanel > javax-swing-JLabel {
-	-swing-foreground: #FFF;
-}
-
-.progressArea {
-	-swing-margin: 5 10;
-	-swing-font-size: 11;
+.helpNumber {
+	-swing-font-size: 30;
 }

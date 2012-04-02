@@ -19,7 +19,7 @@ import res.Res;
  */
 public class ProjectSetup {
 	private final ProjectConfiguration cfg;
-	private final File tmpDst = new File("tmp", "projects");
+	private final File tmpDst = new File("__libgdx_setup_tmp");
 	private final TemplateManager templateManager = new TemplateManager();
 
 	public ProjectSetup(ProjectConfiguration cfg) {
@@ -122,6 +122,10 @@ public class ProjectSetup {
 		}
 	}
 
+	public void clean() throws IOException {
+		FileUtils.deleteDirectory(tmpDst);
+	}
+
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
@@ -137,6 +141,7 @@ public class ProjectSetup {
 		if (cfg.isDesktopIncluded) {
 			src = new File(tmpDst, "prj-desktop");
 			dst = new File(tmpDst, cfg.getDesktopPrjName());
+			move(src, "src/Main.java", "src/" + cfg.getPackageName().replace('.', '/') + "/Main.java");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
 		}

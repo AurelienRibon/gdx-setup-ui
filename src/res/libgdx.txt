@@ -12,10 +12,10 @@ Write your game once, deploy to Windows, Linux, Mac OSX and Android!
 http://libgdx.badlogicgames.com/
 
 [stable-version]
-0.9.2
+0.9.3
 
 [stable-url]
-http://libgdx.googlecode.com/files/libgdx-0.9.2.zip
+http://libgdx.googlecode.com/files/libgdx-0.9.3.zip
 
 [latest-url]
 http://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip

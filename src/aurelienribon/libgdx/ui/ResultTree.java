@@ -119,6 +119,26 @@ public class ResultTree extends JTree {
 			commonSrcNode.add(commonSrcAppGwtNode);
 		}
 
+		// desktop
+
+		DefaultMutableTreeNode desktopSrcNode = nodes.get("#DIR#prj-desktop/src");
+		DefaultMutableTreeNode desktopSrcMainNode = nodes.get("prj-desktop/src/Main.java");
+
+		desktopSrcNode.removeAllChildren();
+		previousNode = desktopSrcNode;
+
+		if (!cfg.getPackageName().trim().equals("")) {
+			String[] paths = cfg.getPackageName().split("\\.");
+			for (String path : paths) {
+				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-desktop/src/" + path);
+				previousNode.add(node);
+				previousNode = node;
+			}
+			previousNode.add(desktopSrcMainNode);
+		} else {
+			desktopSrcNode.add(desktopSrcMainNode);
+		}
+
 		// android
 
 		DefaultMutableTreeNode androidSrcNode = nodes.get("#DIR#prj-android/src");

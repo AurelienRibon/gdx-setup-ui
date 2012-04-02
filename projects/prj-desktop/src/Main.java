@@ -1,4 +1,5 @@
-import @{PACKAGE_NAME}.@{MAINCLASS_NAME};
+package @{PACKAGE_NAME};
+
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 

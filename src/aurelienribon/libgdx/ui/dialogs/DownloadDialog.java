@@ -1,16 +1,14 @@
 package aurelienribon.libgdx.ui.dialogs;
 
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.HttpUtils;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.JFrame;
@@ -23,113 +21,84 @@ import res.Res;
  */
 public class DownloadDialog extends javax.swing.JDialog {
 	private final Callback callback;
-	private final String input;
-	private final String output;
-	private boolean run = false;
+	private final String out;
 
-	public DownloadDialog(JFrame parent, Callback callback, String input, String output) {
+	public DownloadDialog(JFrame parent, Callback callback, String in, String out) {
 		super(parent, true);
-
 		this.callback = callback;
-		this.input = input;
-		this.output = output;
+		this.out = out;
 
 		initComponents();
-		nameLabel.setText(input);
+		nameLabel.setText(in);
 		countLabel.setText("...waiting for response from the server...");
-		addWindowListener(new WindowAdapter() {@Override public void windowClosing(WindowEvent e) {run = false;}});
 
 		Style.registerCssClasses(rootPanel, ".rootPanel");
 		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
 
-		init();
-		downloadAsync();
-	}
-
-	public interface Callback {
-		public void completed();
-		public void canceled();
-	}
-
-	private void init() {
 		try {
-			new File(output).getCanonicalFile().getParentFile().mkdirs();
+			new File(out).getCanonicalFile().getParentFile().mkdirs();
 		} catch (IOException ex) {
 			assert false;
 		}
-	}
-
-	private void downloadAsync() {
-		new Thread(new Runnable() {@Override public void run() {download();}}).start();
-	}
-
-	private void download() {
-		run = true;
-
-		OutputStream os = null;
-		InputStream is = null;
 
 		try {
-			HttpURLConnection connection = (HttpURLConnection) new URL(input).openConnection();
-			connection.setDoInput(true);
-			connection.setDoOutput(false);
-			connection.setUseCaches(true);
-			connection.setRequestProperty("user-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11");
-			connection.setConnectTimeout(3000);
-			connection.connect();
+			URL inputURL = new URL(in);
+			OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(out + ".tmp"));
 
-			is = new BufferedInputStream(connection.getInputStream(), 4096);
-			os = new BufferedOutputStream(new FileOutputStream(output + ".tmp"));
-
-			byte[] data = new byte[4096];
-			int length = connection.getContentLength();
-			int total = 0;
-
-			int count;
-			while (run && (count = is.read(data)) != -1) {
-                total += count;
-                os.write(data, 0, count);
-				setProgress(total, length);
-            }
+			final HttpUtils.DownloadTask task = HttpUtils.downloadAsync(inputURL, outputStream, fullCallback);
+			addWindowListener(new WindowAdapter() {@Override public void windowClosing(WindowEvent e) {task.stop();}});
 
 		} catch (MalformedURLException ex) {
+			assert false;
 		} catch (IOException ex) {
-			JOptionPane.showMessageDialog(this, ex.getMessage());
-			run = false;
-		} finally {
-			end(is, os);
+			JOptionPane.showMessageDialog(getContentPane(), ex.getMessage());
 		}
 	}
 
-	private void setProgress(int total, int length) {
-		if (length > 0) {
-			progressBar.setIndeterminate(false);
-			progressBar.setValue((int) Math.round((double) total * 100 / length));
-			countLabel.setText((total/1024) + " / " + (length/1024));
-		} else {
-			progressBar.setIndeterminate(true);
-			countLabel.setText((total/1024) + " / unknown");
-		}
+	public static interface Callback {
+		public void completed();
 	}
 
-	private void end(InputStream is, OutputStream os) {
-		if (os != null) try {os.flush(); os.close();} catch (IOException ex1) {}
-		if (is != null) try {is.close();} catch (IOException ex1) {}
-
-		dispose();
-
-		if (run == true) {
+	private final HttpUtils.Callback fullCallback = new HttpUtils.Callback() {
+		@Override
+		public void completed() {
 			try {
-				FileUtils.moveFile(new File(output + ".tmp"), new File(output));
+				FileUtils.moveFile(new File(out + ".tmp"), new File(out));
+				dispose();
+				callback.completed();
 			} catch (IOException ex) {
+				String msg = "Could not rename \"" + out + ".tmp" + "\" into \"" + out + "\"";
+				JOptionPane.showMessageDialog(getContentPane(), msg);
 			}
-			callback.completed();
-		} else {
-			File file = new File(output + ".tmp");
-			file.delete();
-			callback.canceled();
 		}
-	}
+
+		@Override
+		public void canceled() {
+			FileUtils.deleteQuietly(new File(out + ".tmp"));
+				dispose();
+		}
+
+		@Override
+		public void error(IOException ex) {
+			FileUtils.deleteQuietly(new File(out + ".tmp"));
+			String msg = "Something went wrong during the download.\n"
+				+ ex.getClass().getSimpleName() + ": " + ex.getMessage();
+			JOptionPane.showMessageDialog(getContentPane(), msg);
+			dispose();
+		}
+
+		@Override
+		public void updated(int length, int totalLength) {
+			if (totalLength > 0) {
+				progressBar.setIndeterminate(false);
+				progressBar.setValue((int) Math.round((double) length * 100 / totalLength));
+				countLabel.setText((length/1024) + " / " + (totalLength/1024));
+			} else {
+				progressBar.setIndeterminate(true);
+				countLabel.setText((length/1024) + " / unknown");
+			}
+		}
+	};
 
 	// -------------------------------------------------------------------------
 	// Generated stuff
