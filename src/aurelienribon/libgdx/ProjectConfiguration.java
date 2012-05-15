@@ -15,10 +15,10 @@ public class ProjectConfiguration {
 	private final Map<String, LibraryDef> libraryDefs = new HashMap<String, LibraryDef>();
 	private final Map<String, String> libraryPaths = new HashMap<String, String>();
 
-	private String projectName = "my-gdx-game";
-	private String mainClassName = "MyGdxGame";
-	private String packageName = "com.me.mygdxgame";
-	private String destinationPath = "";
+	public String projectName = "my-gdx-game";
+	public String mainClassName = "MyGdxGame";
+	public String packageName = "com.me.mygdxgame";
+	public String destinationPath = "";
 
 	public boolean isDesktopIncluded = true;
 	public boolean isAndroidIncluded = true;
@@ -52,40 +52,6 @@ public class ProjectConfiguration {
 
 	public void setLibraryPath(String libraryName, String libraryPath) {
 		libraryPaths.put(libraryName, libraryPath);
-	}
-
-	// -------------------------------------------------------------------------
-
-	public String getProjectName() {
-		return projectName;
-	}
-
-	public String getMainClassName() {
-		return mainClassName;
-	}
-
-	public String getPackageName() {
-		return packageName;
-	}
-
-	public String getDestinationPath() {
-		return destinationPath;
-	}
-
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
-	public void setMainClassName(String mainClassName) {
-		this.mainClassName = mainClassName;
-	}
-
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
-	}
-
-	public void setDestinationPath(String destinationPath) {
-		this.destinationPath = destinationPath;
 	}
 
 	// -------------------------------------------------------------------------

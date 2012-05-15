@@ -18,6 +18,10 @@ javax-swing-JToolBar {
 	-swing-opaque: false;
 }
 
+javax-swing-JToolBar > javax-swing-JButton {
+	-swing-margin: 1;
+}
+
 /*******************************************************************************
  * Groups
  ******************************************************************************/

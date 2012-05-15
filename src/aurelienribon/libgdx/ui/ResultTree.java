@@ -105,8 +105,8 @@ public class ResultTree extends JTree {
 		commonSrcNode.removeAllChildren();
 		previousNode = commonSrcNode;
 
-		if (!cfg.getPackageName().trim().equals("")) {
-			String[] paths = cfg.getPackageName().split("\\.");
+		if (!cfg.packageName.trim().equals("")) {
+			String[] paths = cfg.packageName.split("\\.");
 			for (String path : paths) {
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-common/src/" + path);
 				previousNode.add(node);
@@ -127,8 +127,8 @@ public class ResultTree extends JTree {
 		desktopSrcNode.removeAllChildren();
 		previousNode = desktopSrcNode;
 
-		if (!cfg.getPackageName().trim().equals("")) {
-			String[] paths = cfg.getPackageName().split("\\.");
+		if (!cfg.packageName.trim().equals("")) {
+			String[] paths = cfg.packageName.split("\\.");
 			for (String path : paths) {
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-desktop/src/" + path);
 				previousNode.add(node);
@@ -147,8 +147,8 @@ public class ResultTree extends JTree {
 		androidSrcNode.removeAllChildren();
 		previousNode = androidSrcNode;
 
-		if (!cfg.getPackageName().trim().equals("")) {
-			String[] paths = cfg.getPackageName().split("\\.");
+		if (!cfg.packageName.trim().equals("")) {
+			String[] paths = cfg.packageName.split("\\.");
 			for (String path : paths) {
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-android/src/" + path);
 				previousNode.add(node);
@@ -168,8 +168,8 @@ public class ResultTree extends JTree {
 		htmlSrcNode.removeAllChildren();
 		previousNode = htmlSrcNode;
 
-		if (!cfg.getPackageName().trim().equals("")) {
-			String[] paths = cfg.getPackageName().split("\\.");
+		if (!cfg.packageName.trim().equals("")) {
+			String[] paths = cfg.packageName.split("\\.");
 			for (String path : paths) {
 				DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-html/src/" + path);
 				previousNode.add(node);
@@ -230,7 +230,7 @@ public class ResultTree extends JTree {
 				boolean isDir = name.startsWith("#DIR#");
 
 				name = name.replaceFirst("#DIR#", "");
-				name = name.replace("MyGame", cfg.getMainClassName());
+				name = name.replace("MyGame", cfg.mainClassName);
 
 				if (isDir && name.equals("prj-common")) name = cfg.getCommonPrjName();
 				if (isDir && name.equals("prj-desktop")) name = cfg.getDesktopPrjName();

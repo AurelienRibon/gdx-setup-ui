@@ -25,10 +25,10 @@ public class ProjectSetup {
 	public ProjectSetup(ProjectConfiguration cfg) {
 		this.cfg = cfg;
 
-		templateManager.define("PROJECT_NAME", cfg.getProjectName());
-		templateManager.define("MAINCLASS_NAME", cfg.getMainClassName());
-		templateManager.define("PACKAGE_NAME", cfg.getPackageName());
-		templateManager.define("PACKAGE_NAME_AS_PATH", cfg.getPackageName().replace('.', '/'));
+		templateManager.define("PROJECT_NAME", cfg.projectName);
+		templateManager.define("MAINCLASS_NAME", cfg.mainClassName);
+		templateManager.define("PACKAGE_NAME", cfg.packageName);
+		templateManager.define("PACKAGE_NAME_AS_PATH", cfg.packageName.replace('.', '/'));
 
 		templateManager.define("PRJ_COMMON_NAME", cfg.getCommonPrjName());
 		if (cfg.isDesktopIncluded) templateManager.define("PRJ_DESKTOP_NAME", cfg.getDesktopPrjName());
@@ -65,14 +65,13 @@ public class ProjectSetup {
 		}
 
 		zis.close();
-		postProcessInflate();
 	}
 
 	public void inflateLibraries() throws IOException {
-		File commonPrjLibsDir = new File(FilenameUtils.normalize(tmpDst.getPath() + "/" + cfg.getCommonPrjName() + "/libs"));
-		File desktopPrjLibsDir = new File(FilenameUtils.normalize(tmpDst.getPath() + "/" + cfg.getDesktopPrjName() + "/libs"));
-		File androidPrjLibsDir = new File(FilenameUtils.normalize(tmpDst.getPath() + "/" + cfg.getAndroidPrjName() + "/libs"));
-		File htmlPrjLibsDir = new File(FilenameUtils.normalize(tmpDst.getPath() + "/" + cfg.getHtmlPrjName() + "/war/WEB-INF/lib"));
+		File commonPrjLibsDir = new File(tmpDst, "/prj-common/libs");
+		File desktopPrjLibsDir = new File(tmpDst, "/prj-desktop/libs");
+		File androidPrjLibsDir = new File(tmpDst, "/prj-android/libs");
+		File htmlPrjLibsDir = new File(tmpDst, "/prj-html/war/WEB-INF/lib");
 
 		for (String libraryName : cfg.getLibraryNames()) {
 			String libraryPath = cfg.getLibraryPath(libraryName);
@@ -101,9 +100,43 @@ public class ProjectSetup {
 		}
 	}
 
+	public void postProcess() throws IOException {
+		File src = new File(tmpDst, "prj-common");
+		File dst = new File(tmpDst, cfg.getCommonPrjName());
+		move(src, "src/MyGame.java", "src/" + cfg.packageName.replace('.', '/') + "/" + cfg.mainClassName + ".java");
+		move(src, "src/MyGame.gwt.xml", "src/" + cfg.mainClassName + ".gwt.xml");
+		templateDir(src);
+		FileUtils.moveDirectory(src, dst);
+
+		if (cfg.isDesktopIncluded) {
+			src = new File(tmpDst, "prj-desktop");
+			dst = new File(tmpDst, cfg.getDesktopPrjName());
+			move(src, "src/Main.java", "src/" + cfg.packageName.replace('.', '/') + "/Main.java");
+			templateDir(src);
+			FileUtils.moveDirectory(src, dst);
+		}
+
+		if (cfg.isAndroidIncluded) {
+			src = new File(tmpDst, "prj-android");
+			dst = new File(tmpDst, cfg.getAndroidPrjName());
+			move(src, "src/MainActivity.java", "src/" + cfg.packageName.replace('.', '/') + "/MainActivity.java");
+			templateDir(src);
+			FileUtils.moveDirectory(src, dst);
+		}
+
+		if (cfg.isHtmlIncluded) {
+			src = new File(tmpDst, "prj-html");
+			dst = new File(tmpDst, cfg.getHtmlPrjName());
+			move(src, "src/GwtDefinition.gwt.xml", "src/" + cfg.packageName.replace('.', '/') + "/GwtDefinition.gwt.xml");
+			move(src, "src/client", "src/" + cfg.packageName.replace('.', '/') + "/client");
+			templateDir(src);
+			FileUtils.moveDirectory(src, dst);
+		}
+	}
+
 	public void copy() throws IOException {
 		File src = new File(tmpDst, cfg.getCommonPrjName());
-		File dst = new File(cfg.getDestinationPath());
+		File dst = new File(cfg.destinationPath);
 		FileUtils.copyDirectoryToDirectory(src, dst);
 
 		if (cfg.isDesktopIncluded) {
@@ -129,40 +162,6 @@ public class ProjectSetup {
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
-
-	private void postProcessInflate() throws IOException {
-		File src = new File(tmpDst, "prj-common");
-		File dst = new File(tmpDst, cfg.getCommonPrjName());
-		move(src, "src/MyGame.java", "src/" + cfg.getPackageName().replace('.', '/') + "/" + cfg.getMainClassName() + ".java");
-		move(src, "src/MyGame.gwt.xml", "src/" + cfg.getMainClassName() + ".gwt.xml");
-		templateDir(src);
-		FileUtils.moveDirectory(src, dst);
-
-		if (cfg.isDesktopIncluded) {
-			src = new File(tmpDst, "prj-desktop");
-			dst = new File(tmpDst, cfg.getDesktopPrjName());
-			move(src, "src/Main.java", "src/" + cfg.getPackageName().replace('.', '/') + "/Main.java");
-			templateDir(src);
-			FileUtils.moveDirectory(src, dst);
-		}
-
-		if (cfg.isAndroidIncluded) {
-			src = new File(tmpDst, "prj-android");
-			dst = new File(tmpDst, cfg.getAndroidPrjName());
-			move(src, "src/MainActivity.java", "src/" + cfg.getPackageName().replace('.', '/') + "/MainActivity.java");
-			templateDir(src);
-			FileUtils.moveDirectory(src, dst);
-		}
-
-		if (cfg.isHtmlIncluded) {
-			src = new File(tmpDst, "prj-html");
-			dst = new File(tmpDst, cfg.getHtmlPrjName());
-			move(src, "src/GwtDefinition.gwt.xml", "src/" + cfg.getPackageName().replace('.', '/') + "/GwtDefinition.gwt.xml");
-			move(src, "src/client", "src/" + cfg.getPackageName().replace('.', '/') + "/client");
-			templateDir(src);
-			FileUtils.moveDirectory(src, dst);
-		}
-	}
 
 	private void templateDir(File dir) throws IOException {
 		String[] filteredExts = new String[] {".jar", ".zip", ".png"};

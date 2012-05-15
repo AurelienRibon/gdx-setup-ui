@@ -29,12 +29,12 @@ public class ConfigPanel extends javax.swing.JPanel {
     public ConfigPanel() {
         initComponents();
 
-		nameField.setText(cfg.getProjectName());
-		packageField.setText(cfg.getPackageName());
-		mainClassField.setText(cfg.getMainClassName());
+		nameField.setText(cfg.projectName);
+		packageField.setText(cfg.packageName);
+		mainClassField.setText(cfg.mainClassName);
 
 		try {
-			File destDir = new File(cfg.getDestinationPath());
+			File destDir = new File(cfg.destinationPath);
 			destinationField.setText(destDir.getCanonicalPath());
 		} catch (IOException ex) {
 			assert false;
@@ -76,7 +76,7 @@ public class ConfigPanel extends javax.swing.JPanel {
     }
 
 	private void browse() {
-		String path = cfg.getDestinationPath();
+		String path = cfg.destinationPath;
 		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
 		JFileChooser chooser = new JFileChooser(new File(path));
@@ -90,10 +90,10 @@ public class ConfigPanel extends javax.swing.JPanel {
 	}
 
 	private void update() {
-		cfg.setProjectName(nameField.getText());
-		cfg.setPackageName(packageField.getText());
-		cfg.setMainClassName(mainClassField.getText());
-		cfg.setDestinationPath(destinationField.getText());
+		cfg.projectName = nameField.getText();
+		cfg.packageName = packageField.getText();
+		cfg.mainClassName = mainClassField.getText();
+		cfg.destinationPath = destinationField.getText();
 		cfg.isDesktopIncluded = genDesktopPrjChk.isSelected();
 		cfg.isAndroidIncluded = genAndroidPrjChk.isSelected();
 		cfg.isHtmlIncluded = genHtmlPrjChk.isSelected();
