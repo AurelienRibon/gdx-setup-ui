@@ -33,7 +33,7 @@ public class LibraryInfoDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(nameLabel, ".titleLabel");
 		Style.registerCssClasses(descriptionLabel, ".libInfoDescLabel");
 		Style.registerCssClasses(homepageLabel, ".libInfoHomepageLabel");
-		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
     }
 
 	private final MouseListener urlMouseListener = new MouseAdapter() {

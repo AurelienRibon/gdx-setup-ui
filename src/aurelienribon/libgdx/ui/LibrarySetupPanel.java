@@ -51,9 +51,9 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(libgdxLabel, ".libraryNotFoundLabel");
 		Style.registerCssClasses(legendLibFoundLabel, ".libraryFoundLabel");
 		Style.registerCssClasses(legendLibNotFoundLabel, ".libraryNotFoundLabel");
-		Style.apply(libgdxLabel, new Style(Res.class.getResource("style-dynamic.css")));
-		Style.apply(legendLibFoundLabel, new Style(Res.class.getResource("style-dynamic.css")));
-		Style.apply(legendLibNotFoundLabel, new Style(Res.class.getResource("style-dynamic.css")));
+		Style.apply(libgdxLabel, new Style(Res.getUrl("css/style-dynamic.css")));
+		Style.apply(legendLibFoundLabel, new Style(Res.getUrl("css/style-dynamic.css")));
+		Style.apply(legendLibNotFoundLabel, new Style(Res.getUrl("css/style-dynamic.css")));
 
 		try {
 			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
@@ -95,7 +95,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 				libgdxLoadingLabel.setIcon(null);
 			}
 			@Override public void error(IOException ex) {
-				libgdxLoadingLabel.setIcon(Res.getImage("ic_error.png"));
+				libgdxLoadingLabel.setIcon(Res.getImage("gfx/ic_error.png"));
 				libgdxLoadingLabel.setToolTipText("Error occured while downloading the latest definition.");
 			}
 		};
@@ -163,7 +163,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			libgdxLabel.setToolTipText("Archive successfully found under \"" + zipFile.getPath() + "\"");
 			Style.unregister(libgdxLabel);
 			Style.registerCssClasses(libgdxLabel, ".libraryFoundLabel");
-			Style.apply(libgdxLabel, new Style(Res.class.getResource("style-dynamic.css")));
+			Style.apply(libgdxLabel, new Style(Res.getUrl("css/style-dynamic.css")));
 		}
 
 		AppContext.inst().fireConfigChangedEvent();
@@ -189,6 +189,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         libgdxLabel = new javax.swing.JLabel();
         libgdxLoadingLabel = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
         libgdxInfoBtn = new javax.swing.JButton();
         libgdxBrowseBtn = new javax.swing.JButton();
         libgdxGetStableBtn = new javax.swing.JButton();
@@ -241,7 +242,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup()
                 .addComponent(numberLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE))
         );
         headerPanelLayout.setVerticalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,43 +263,43 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
         libgdxLoadingLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_loading.gif"))); // NOI18N
         libgdxLoadingLabel.setToolTipText("Downloading latest definition");
 
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
         libgdxInfoBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_info.png"))); // NOI18N
         libgdxInfoBtn.setToolTipText("Information");
+        jToolBar1.add(libgdxInfoBtn);
 
         libgdxBrowseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_browse.png"))); // NOI18N
         libgdxBrowseBtn.setToolTipText("Browse to select the archive");
+        jToolBar1.add(libgdxBrowseBtn);
 
         libgdxGetStableBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_download_stable.png"))); // NOI18N
         libgdxGetStableBtn.setToolTipText("Download latest stable version");
+        jToolBar1.add(libgdxGetStableBtn);
 
         libgdxGetNightliesBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_download_nightlies.png"))); // NOI18N
         libgdxGetNightliesBtn.setToolTipText("Download latest nightlies version");
+        jToolBar1.add(libgdxGetNightliesBtn);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(libgdxLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+                .addComponent(libgdxLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(libgdxLoadingLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(libgdxInfoBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(libgdxBrowseBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(libgdxGetStableBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(libgdxGetNightliesBtn))
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(libgdxBrowseBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(libgdxInfoBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(libgdxGetStableBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(libgdxGetNightliesBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(libgdxLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(libgdxLoadingLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         sectionLabel2.setText("Third-party");
@@ -371,7 +372,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
                 .addComponent(sectionLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
                 .addComponent(legendPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -388,6 +389,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel legendLibFoundLabel;
     private javax.swing.JLabel legendLibNotFoundLabel;
     private aurelienribon.ui.components.PaintedPanel legendPanel;

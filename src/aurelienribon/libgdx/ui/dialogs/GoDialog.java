@@ -28,7 +28,7 @@ public class GoDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(fixHtmlQuestion, ".questionLabel");
 		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
 		Style.registerCssClasses(progressArea, ".progressArea");
-		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
 
 		importQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {

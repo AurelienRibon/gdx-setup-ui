@@ -42,13 +42,13 @@ public class GoPanel extends javax.swing.JPanel {
 			errorLabel.setText("<html>Your configuration is valid.");
 			Style.unregister(errorLabel);
 			Style.registerCssClasses(errorLabel, ".libraryFoundLabel");
-			Style.apply(errorLabel, new Style(Res.class.getResource("style-dynamic.css")));
+			Style.apply(errorLabel, new Style(Res.getUrl("css/style-dynamic.css")));
 		} else {
 			goBtn.setEnabled(false);
 			errorLabel.setText("<html>" + cfg.getErrorMessage());
 			Style.unregister(errorLabel);
 			Style.registerCssClasses(errorLabel, ".libraryNotFoundLabel");
-			Style.apply(errorLabel, new Style(Res.class.getResource("style-dynamic.css")));
+			Style.apply(errorLabel, new Style(Res.getUrl("css/style-dynamic.css")));
 		}
 	}
 

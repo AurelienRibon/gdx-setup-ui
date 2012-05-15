@@ -57,7 +57,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(title1, ".titleLabel");
 		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
 		Style.registerCssClasses(paintedPanel2, ".optionGroupPanel");
-		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
     }
 
 	private void update() {

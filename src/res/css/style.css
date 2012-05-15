@@ -13,7 +13,8 @@ javax-swing-JScrollPane {
 	-swing-border: null;
 }
 
-javax-swing-JCheckBox {
+javax-swing-JCheckBox,
+javax-swing-JToolBar {
 	-swing-opaque: false;
 }
 

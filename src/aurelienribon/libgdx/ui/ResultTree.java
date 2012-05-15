@@ -238,7 +238,7 @@ public class ResultTree extends JTree {
 				if (isDir && name.equals("prj-html")) name = cfg.getHtmlPrjName();
 
 				label.setText(FilenameUtils.getName(name));
-				label.setIcon(isDir ? Res.getImage("ic_folder.png") : Res.getImage("ic_file.png"));
+				label.setIcon(isDir ? Res.getImage("gfx/ic_folder.png") : Res.getImage("gfx/ic_file.png"));
 			}
 
 			return label;

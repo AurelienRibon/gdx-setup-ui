@@ -33,7 +33,7 @@ public class DownloadDialog extends javax.swing.JDialog {
 		countLabel.setText("...waiting for response from the server...");
 
 		Style.registerCssClasses(rootPanel, ".rootPanel");
-		Style.apply(getContentPane(), new Style(Res.class.getResource("style.css")));
+		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
 
 		try {
 			new File(out).getCanonicalFile().getParentFile().mkdirs();

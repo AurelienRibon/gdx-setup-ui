@@ -37,7 +37,7 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(resultPanel, ".groupPanel", "#resultPanel");
 		Style.registerCssClasses(goPanel, ".groupPanel", "#goPanel");
 		Style.registerCssClasses(versionlabel, "#versionLabel");
-		Style.apply(this, new Style(Res.class.getResource("style.css")));
+		Style.apply(this, new Style(Res.getUrl("css/style.css")));
 
 		librarySetupPanel.init();
 		goPanel.init();
