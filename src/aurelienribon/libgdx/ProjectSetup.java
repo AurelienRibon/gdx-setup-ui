@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
@@ -73,11 +74,11 @@ public class ProjectSetup {
 		File androidPrjLibsDir = new File(tmpDst, "/prj-android/libs");
 		File htmlPrjLibsDir = new File(tmpDst, "/prj-html/war/WEB-INF/lib");
 
-		for (String libraryName : cfg.getLibraryNames()) {
-			String libraryPath = cfg.getLibraryPath(libraryName);
-			LibraryDef libraryDef = cfg.getLibraryDef(libraryName);
+		for (String library : cfg.libraries) {
+			String path = cfg.libraryPaths.get(library);
+			LibraryDef def = cfg.libraryDefs.get(library);
 
-			InputStream is = new FileInputStream(libraryPath);
+			InputStream is = new FileInputStream(path);
 			ZipInputStream zis = new ZipInputStream(is);
 			ZipEntry entry;
 
@@ -86,13 +87,13 @@ public class ProjectSetup {
 
 				String name = entry.getName();
 
-				for (String libElem : libraryDef.libsCommon)
+				for (String libElem : def.libsCommon)
 					if (name.endsWith(libElem)) copyEntry(zis, libElem, commonPrjLibsDir);
-				for (String libElem : libraryDef.libsDesktop)
+				for (String libElem : def.libsDesktop)
 					if (name.endsWith(libElem)) copyEntry(zis, libElem, desktopPrjLibsDir);
-				for (String libElem : libraryDef.libsAndroid)
+				for (String libElem : def.libsAndroid)
 					if (name.endsWith(libElem)) copyEntry(zis, libElem, androidPrjLibsDir);
-				for (String libElem : libraryDef.libsHtml)
+				for (String libElem : def.libsHtml)
 					if (name.endsWith(libElem)) copyEntry(zis, libElem, htmlPrjLibsDir);
 			}
 
@@ -100,33 +101,119 @@ public class ProjectSetup {
 		}
 	}
 
+	public void configureLibraries() throws IOException {
+		String entriesCommon = "";
+		String entriesDesktop = "";
+		String entriesAndroid = "";
+		String entriesHtml = "";
+
+		for (String library : cfg.libraries) {
+			LibraryDef def = cfg.libraryDefs.get(library);
+
+			for (String file : def.libsCommon) {
+				String name = FilenameUtils.getBaseName(file);
+				if (!file.endsWith(".jar")) continue;
+				if (endsWidth(name, "-source", "-sources", "-src")) continue;
+
+				String source = getSource(def.libsCommon, file);
+
+				entriesCommon += "\t<classpathentry exported=\"true\" kind=\"lib\" path=\"libs/" + file + "\"";
+				if (source != null) entriesCommon += " sourcepath=\"libs/" + source + "\"";
+				entriesCommon += "/>\n";
+
+				entriesAndroid += "\t<classpathentry exported=\"true\" kind=\"lib\" path=\"/@{PRJ_COMMON_NAME}/libs/" + file + "\"";
+				if (source != null) entriesAndroid += " sourcepath=\"/@{PRJ_COMMON_NAME}/libs/" + source + "\"";
+				entriesAndroid += "/>\n";
+
+				entriesHtml += "\t<classpathentry kind=\"lib\" path=\"/@{PRJ_COMMON_NAME}/libs/" + file + "\"";
+				if (source != null) entriesHtml += " sourcepath=\"/@{PRJ_COMMON_NAME}/libs/" + source + "\"";
+				entriesHtml += "/>\n";
+
+				if (source != null) {
+					entriesHtml += "\t<classpathentry kind=\"lib\" path=\"/@{PRJ_COMMON_NAME}/libs/" + source + "\"/>\n";
+				}
+			}
+
+			for (String file : def.libsDesktop) {
+				String name = FilenameUtils.getBaseName(file);
+				if (!file.endsWith(".jar")) continue;
+				if (endsWidth(name, "-source", "-sources", "-src")) continue;
+
+				String source = getSource(def.libsDesktop, file);
+
+				entriesDesktop += "\t<classpathentry kind=\"lib\" path=\"libs/" + file + "\"";
+				if (source != null) entriesDesktop += " sourcepath=\"libs/" + source + "\"";
+				entriesDesktop += "/>\n";
+			}
+
+			for (String file : def.libsAndroid) {
+				String name = FilenameUtils.getBaseName(file);
+				if (!file.endsWith(".jar")) continue;
+				if (endsWidth(name, "-source", "-sources", "-src")) continue;
+
+				String source = getSource(def.libsAndroid, file);
+
+				entriesAndroid += "\t<classpathentry exported=\"true\" kind=\"lib\" path=\"libs/" + file + "\"";
+				if (source != null) entriesAndroid += " sourcepath=\"libs/" + source + "\"";
+				entriesAndroid += "/>\n";
+			}
+
+			for (String file : def.libsHtml) {
+				String name = FilenameUtils.getBaseName(file);
+				if (!file.endsWith(".jar")) continue;
+				if (endsWidth(name, "-source", "-sources", "-src")) continue;
+
+				String source = getSource(def.libsHtml, file);
+
+				entriesHtml += "\t<classpathentry kind=\"lib\" path=\"war/WEB-INF/lib/" + file + "\"";
+				if (source != null) entriesHtml += " sourcepath=\"war/WEB-INF/lib/" + source + "\"";
+				entriesHtml += "/>\n";
+
+				if (source != null) {
+					entriesHtml += "\t<classpathentry kind=\"lib\" path=\"war/WEB-INF/lib/" + source + "\"/>\n";
+				}
+			}
+		}
+
+		templateManager.define("CLASSPATHENTRIES_COMMON", entriesCommon.trim());
+		templateManager.define("CLASSPATHENTRIES_DESKTOP", entriesDesktop.trim());
+		templateManager.define("CLASSPATHENTRIES_ANDROID", entriesAndroid.trim());
+		templateManager.define("CLASSPATHENTRIES_HTML", entriesHtml.trim());
+		templateManager.processOver(new File(tmpDst, "prj-common/.classpath"));
+		templateManager.processOver(new File(tmpDst, "prj-desktop/.classpath"));
+		templateManager.processOver(new File(tmpDst, "prj-android/.classpath"));
+		templateManager.processOver(new File(tmpDst, "prj-html/.classpath"));
+	}
+
 	public void postProcess() throws IOException {
-		File src = new File(tmpDst, "prj-common");
-		File dst = new File(tmpDst, cfg.getCommonPrjName());
-		move(src, "src/MyGame.java", "src/" + cfg.packageName.replace('.', '/') + "/" + cfg.mainClassName + ".java");
-		move(src, "src/MyGame.gwt.xml", "src/" + cfg.mainClassName + ".gwt.xml");
-		templateDir(src);
-		FileUtils.moveDirectory(src, dst);
+		{
+			File src = new File(tmpDst, "prj-common");
+			File dst = new File(tmpDst, cfg.getCommonPrjName());
+			move(src, "src/MyGame.java", "src/" + cfg.packageName.replace('.', '/') + "/" + cfg.mainClassName + ".java");
+			move(src, "src/MyGame.gwt.xml", "src/" + cfg.mainClassName + ".gwt.xml");
+			templateDir(src);
+			FileUtils.moveDirectory(src, dst);
+		}
 
 		if (cfg.isDesktopIncluded) {
-			src = new File(tmpDst, "prj-desktop");
-			dst = new File(tmpDst, cfg.getDesktopPrjName());
+			File src = new File(tmpDst, "prj-desktop");
+			File dst = new File(tmpDst, cfg.getDesktopPrjName());
 			move(src, "src/Main.java", "src/" + cfg.packageName.replace('.', '/') + "/Main.java");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
 		}
 
 		if (cfg.isAndroidIncluded) {
-			src = new File(tmpDst, "prj-android");
-			dst = new File(tmpDst, cfg.getAndroidPrjName());
+			File src = new File(tmpDst, "prj-android");
+			File dst = new File(tmpDst, cfg.getAndroidPrjName());
 			move(src, "src/MainActivity.java", "src/" + cfg.packageName.replace('.', '/') + "/MainActivity.java");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
 		}
 
 		if (cfg.isHtmlIncluded) {
-			src = new File(tmpDst, "prj-html");
-			dst = new File(tmpDst, cfg.getHtmlPrjName());
+			File src = new File(tmpDst, "prj-html");
+			File dst = new File(tmpDst, cfg.getHtmlPrjName());
 			move(src, "src/GwtDefinition.gwt.xml", "src/" + cfg.packageName.replace('.', '/') + "/GwtDefinition.gwt.xml");
 			move(src, "src/client", "src/" + cfg.packageName.replace('.', '/') + "/client");
 			templateDir(src);
@@ -164,17 +251,11 @@ public class ProjectSetup {
 	// -------------------------------------------------------------------------
 
 	private void templateDir(File dir) throws IOException {
-		String[] filteredExts = new String[] {".jar", ".zip", ".png"};
-
 		for (File file : dir.listFiles()) {
 			if (file.isDirectory()) {
 				templateDir(file);
-			} else {
-				boolean isValid = true;
-				for (String filter : filteredExts) {
-					if (file.getName().endsWith(filter)) {isValid = false; break;}
-				}
-				if (isValid) templateManager.processOver(file);
+			} else if (!endsWidth(file.getName(), ".jar", ".zip", ".png")) {
+				templateManager.processOver(file);
 			}
 		}
 	}
@@ -193,5 +274,21 @@ public class ProjectSetup {
 		File file2 = new File(base, FilenameUtils.normalize(path2));
 		if (file1.isDirectory()) FileUtils.moveDirectory(file1, file2);
 		else FileUtils.moveFile(file1, file2);
+	}
+
+	private boolean endsWidth(String str, String... ends) {
+		for (String end : ends) if (str.endsWith(end)) return true;
+		return false;
+	}
+
+	private String getSource(List<String> files, String file) {
+		String path = FilenameUtils.getFullPath(file);
+		String name = FilenameUtils.getBaseName(file);
+		String ext = FilenameUtils.getExtension(file);
+
+		if (files.contains(path + name + "-source." + ext)) return path + name + "-source." + ext;
+		if (files.contains(path + name + "-sources." + ext)) return path + name + "-sources." + ext;
+		if (files.contains(path + name + "-src." + ext)) return path + name + "-src." + ext;
+		return null;
 	}
 }

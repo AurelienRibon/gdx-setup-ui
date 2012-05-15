@@ -58,6 +58,8 @@ public class GoDialog extends javax.swing.JDialog {
 					setup.inflateProjects();
 					report(" done\nDecompressing libraries...");
 					setup.inflateLibraries();
+					report(" done\nConfiguring libraries...");
+					setup.configureLibraries();
 					report(" done\nPost-processing files...");
 					setup.postProcess();
 					report(" done\nCopying projects...");

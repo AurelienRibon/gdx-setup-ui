@@ -23,7 +23,7 @@ public class LibraryInfoDialog extends javax.swing.JDialog {
         super(parent, true);
         initComponents();
 
-		def = AppContext.inst().getConfig().getLibraryDef(libraryName);
+		def = AppContext.inst().getConfig().libraryDefs.get(libraryName);
 		nameLabel.setText(def.name);
 		descriptionLabel.setText("<html>" + def.description);
 		homepageLabel.setText(def.homepage);

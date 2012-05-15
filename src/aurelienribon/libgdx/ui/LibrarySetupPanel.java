@@ -59,7 +59,8 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
 			LibraryDef def = new LibraryDef(rawDef);
 			def.isUsed = true;
-			cfg.registerLibrary("libgdx", def);
+			cfg.libraries.add("libgdx");
+			cfg.libraryDefs.put("libgdx", def);
 		} catch (IOException ex) {
 			assert false;
 		}
@@ -67,14 +68,14 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		initLibraries();
 		downloadLatestDefinition();
 
-		libgdxLabel.setText(cfg.getLibraryDef("libgdx").name);
+		libgdxLabel.setText(cfg.libraryDefs.get("libgdx").name);
 	}
 
 	private void initLibraries() {
 		for (File file : new File(".").listFiles()) {
 			if (!file.isFile()) continue;
-			for (String libraryName : cfg.getLibraryNames()) {
-				LibraryDef def = cfg.getLibraryDef(libraryName);
+			for (String libraryName : cfg.libraries) {
+				LibraryDef def = cfg.libraryDefs.get(libraryName);
 				String stableName = FilenameUtils.getName(def.stableUrl);
 				String latestName = FilenameUtils.getName(def.latestUrl);
 				if (file.getName().equals(latestName)) select(libraryName, file);
@@ -91,7 +92,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			@Override public void updated(int length, int totalLength) {}
 			@Override public void completed() {
 				LibraryDef def = new LibraryDef(output.toString());
-				cfg.registerLibrary("libgdx", def);
+				cfg.libraryDefs.put("libgdx", def);
 				libgdxLoadingLabel.setIcon(null);
 			}
 			@Override public void error(IOException ex) {
@@ -131,13 +132,13 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	}
 
 	private void getStable(String libraryName) {
-		String input = cfg.getLibraryDef(libraryName).stableUrl;
+		String input = cfg.libraryDefs.get(libraryName).stableUrl;
 		String output = FilenameUtils.getName(input);
 		getFile(libraryName, input, output);
 	}
 
 	private void getLatest(String libraryName) {
-		String input = cfg.getLibraryDef(libraryName).latestUrl;
+		String input = cfg.libraryDefs.get(libraryName).latestUrl;
 		String output = FilenameUtils.getName(input);
 		getFile(libraryName, input, output);
 	}
@@ -157,7 +158,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 	private void select(String libraryName, File zipFile) {
 		selectedFiles.put(libraryName, zipFile);
-		cfg.setLibraryPath(libraryName, zipFile.getPath());
+		cfg.libraryPaths.put(libraryName, zipFile.getPath());
 
 		if (libraryName.equals("libgdx")) {
 			libgdxLabel.setToolTipText("Archive successfully found under \"" + zipFile.getPath() + "\"");

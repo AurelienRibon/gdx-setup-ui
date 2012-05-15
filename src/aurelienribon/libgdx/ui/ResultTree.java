@@ -189,8 +189,8 @@ public class ResultTree extends JTree {
 		DefaultMutableTreeNode androidLibsNode = nodes.get("#DIR#prj-android/libs");
 		DefaultMutableTreeNode htmlLibsNode = nodes.get("#DIR#prj-html/war/WEB-INF/lib");
 
-		for (String libraryName : cfg.getLibraryNames()) {
-			LibraryDef def = cfg.getLibraryDef(libraryName);
+		for (String libraryName : cfg.libraries) {
+			LibraryDef def = cfg.libraryDefs.get(libraryName);
 			if (!def.isUsed) continue;
 			for (String path : def.libsCommon) pathToNodes(path, commonLibsNode);
 			for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
