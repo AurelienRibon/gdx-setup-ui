@@ -14,6 +14,7 @@ public class LibraryDef {
 	public final String name;
 	public final String description;
 	public final String homepage;
+	public final String gwtModuleName;
 	public final String stableVersion;
 	public final String stableUrl;
 	public final String latestUrl;
@@ -21,25 +22,28 @@ public class LibraryDef {
 	public final List<String> libsDesktop;
 	public final List<String> libsAndroid;
 	public final List<String> libsHtml;
+
+	public String path = null;
 	public boolean isUsed = false;
 
-	public LibraryDef(String input) {
-		this.name = parseBlock(input, "name");
-		this.description = parseBlock(input, "description").replaceAll("\\s+", " ");
-		this.homepage = parseBlock(input, "homepage");
-		this.stableVersion = parseBlock(input, "stable-version");
-		this.stableUrl = parseBlock(input, "stable-url");
-		this.latestUrl = parseBlock(input, "latest-url");
-		this.libsCommon = parseBlockAsList(input, "libs-common");
-		this.libsDesktop = parseBlockAsList(input, "libs-desktop");
-		this.libsAndroid = parseBlockAsList(input, "libs-android");
-		this.libsHtml = parseBlockAsList(input, "libs-html");
+	public LibraryDef(String content) {
+		this.name = parseBlock(content, "name");
+		this.description = parseBlock(content, "description").replaceAll("\\s+", " ");
+		this.homepage = parseBlock(content, "homepage");
+		this.gwtModuleName = parseBlock(content, "gwt");
+		this.stableVersion = parseBlock(content, "stable-version");
+		this.stableUrl = parseBlock(content, "stable-url");
+		this.latestUrl = parseBlock(content, "latest-url");
+		this.libsCommon = parseBlockAsList(content, "libs-common");
+		this.libsDesktop = parseBlockAsList(content, "libs-desktop");
+		this.libsAndroid = parseBlockAsList(content, "libs-android");
+		this.libsHtml = parseBlockAsList(content, "libs-html");
 	}
 
 	private String parseBlock(String input, String name) {
 		Matcher m = Pattern.compile("\\[" + name + "\\](.*?)(\\[|$)", Pattern.DOTALL).matcher(input);
 		if (m.find()) return m.group(1).trim();
-		throw new RuntimeException("block " + name + " not found");
+		return null;
 	}
 
 	private List<String> parseBlockAsList(String input, String name) {
@@ -54,6 +58,6 @@ public class LibraryDef {
 			}
 			return Collections.unmodifiableList(lines);
 		}
-		throw new RuntimeException("block " + name + " not found");
+		return Collections.unmodifiableList(new ArrayList<String>());
 	}
 }

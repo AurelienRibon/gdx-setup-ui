@@ -144,6 +144,10 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-swing-foreground: #3D5277;
 }
 
+.legendLabel {
+	-swing-border: emptyborder(5, 5, 5, 5);
+}
+
 /*******************************************************************************
  * LibInfo dialog
  ******************************************************************************/

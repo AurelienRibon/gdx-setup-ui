@@ -1,7 +1,7 @@
 package aurelienribon.libgdx.ui.dialogs;
 
 import aurelienribon.libgdx.LibraryDef;
-import aurelienribon.libgdx.ui.AppContext;
+import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.ui.css.Style;
 import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
@@ -23,7 +23,7 @@ public class LibraryInfoDialog extends javax.swing.JDialog {
         super(parent, true);
         initComponents();
 
-		def = AppContext.inst().getConfig().libraryDefs.get(libraryName);
+		def = Ctx.cfg.libraries.get(libraryName);
 		nameLabel.setText(def.name);
 		descriptionLabel.setText("<html>" + def.description);
 		homepageLabel.setText(def.homepage);

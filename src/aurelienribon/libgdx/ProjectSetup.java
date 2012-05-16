@@ -74,9 +74,9 @@ public class ProjectSetup {
 		File androidPrjLibsDir = new File(tmpDst, "/prj-android/libs");
 		File htmlPrjLibsDir = new File(tmpDst, "/prj-html/war/WEB-INF/lib");
 
-		for (String library : cfg.libraries) {
-			String path = cfg.libraryPaths.get(library);
-			LibraryDef def = cfg.libraryDefs.get(library);
+		for (String library : cfg.libraries.keySet()) {
+			String path = cfg.libraries.get(library).path;
+			LibraryDef def = cfg.libraries.get(library);
 
 			InputStream is = new FileInputStream(path);
 			ZipInputStream zis = new ZipInputStream(is);
@@ -106,9 +106,10 @@ public class ProjectSetup {
 		String entriesDesktop = "";
 		String entriesAndroid = "";
 		String entriesHtml = "";
+		String gwtInherits = "";
 
-		for (String library : cfg.libraries) {
-			LibraryDef def = cfg.libraryDefs.get(library);
+		for (String library : cfg.libraries.keySet()) {
+			LibraryDef def = cfg.libraries.get(library);
 
 			for (String file : def.libsCommon) {
 				String name = FilenameUtils.getBaseName(file);
@@ -173,16 +174,22 @@ public class ProjectSetup {
 					entriesHtml += "\t<classpathentry kind=\"lib\" path=\"war/WEB-INF/lib/" + source + "\"/>\n";
 				}
 			}
+
+			if (def.gwtModuleName != null) {
+				gwtInherits += "\t<inherits name='" + def.gwtModuleName + "' />\n";
+			}
 		}
 
 		templateManager.define("CLASSPATHENTRIES_COMMON", entriesCommon.trim());
 		templateManager.define("CLASSPATHENTRIES_DESKTOP", entriesDesktop.trim());
 		templateManager.define("CLASSPATHENTRIES_ANDROID", entriesAndroid.trim());
 		templateManager.define("CLASSPATHENTRIES_HTML", entriesHtml.trim());
+		templateManager.define("GWT_INHERITS", gwtInherits.trim());
 		templateManager.processOver(new File(tmpDst, "prj-common/.classpath"));
 		templateManager.processOver(new File(tmpDst, "prj-desktop/.classpath"));
 		templateManager.processOver(new File(tmpDst, "prj-android/.classpath"));
 		templateManager.processOver(new File(tmpDst, "prj-html/.classpath"));
+		templateManager.processOver(new File(tmpDst, "prj-html/src/GwtDefinition.gwt.xml"));
 	}
 
 	public void postProcess() throws IOException {
@@ -270,8 +277,10 @@ public class ProjectSetup {
 	}
 
 	private void move(File base, String path1, String path2) throws IOException {
+		if (path1.equals(path2)) return;
 		File file1 = new File(base, FilenameUtils.normalize(path1));
 		File file2 = new File(base, FilenameUtils.normalize(path2));
+		FileUtils.deleteQuietly(file2);
 		if (file1.isDirectory()) FileUtils.moveDirectory(file1, file2);
 		else FileUtils.moveFile(file1, file2);
 	}

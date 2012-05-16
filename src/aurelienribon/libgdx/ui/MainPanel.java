@@ -17,7 +17,7 @@ public class MainPanel extends PaintedPanel {
     public MainPanel() {
         initComponents();
 
-		versionlabel.setText("v1.0.1");
+		versionlabel.setText("v2.0.0");
 		versionlabel.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
 				if (Desktop.isDesktopSupported()) {
@@ -88,7 +88,7 @@ public class MainPanel extends PaintedPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(configPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(logoLabel, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(versionlabel, javax.swing.GroupLayout.Alignment.TRAILING)))
@@ -123,7 +123,7 @@ public class MainPanel extends PaintedPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(resultPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+                .addComponent(resultPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(goPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );

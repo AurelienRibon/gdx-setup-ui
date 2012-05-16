@@ -2,7 +2,7 @@ package aurelienribon.libgdx.ui.dialogs;
 
 import aurelienribon.libgdx.ProjectConfiguration;
 import aurelienribon.libgdx.ProjectSetup;
-import aurelienribon.libgdx.ui.AppContext;
+import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.ui.css.Style;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -48,8 +48,7 @@ public class GoDialog extends javax.swing.JDialog {
 			}
 		});
 
-		ProjectConfiguration cfg = AppContext.inst().getConfig();
-		setup = new ProjectSetup(cfg);
+		setup = new ProjectSetup(Ctx.cfg);
 
 		new Thread(new Runnable() {
 			@Override public void run() {

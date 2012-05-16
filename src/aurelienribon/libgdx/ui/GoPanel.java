@@ -1,13 +1,12 @@
 package aurelienribon.libgdx.ui;
 
-import aurelienribon.libgdx.ProjectConfiguration;
 import aurelienribon.libgdx.ui.dialogs.GoDialog;
 import aurelienribon.ui.css.Style;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import res.Res;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -18,7 +17,7 @@ public class GoPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(headerPanel, ".header");
 		Style.registerCssClasses(numberLabel, ".headerNumber");
 
-		AppContext.inst().addListener(new AppContext.Listener() {@Override public void configChanged() {update();}});
+		Ctx.listeners.add(new Ctx.Listener() {@Override public void configChanged() {update();}});
 
 		goBtn.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
@@ -35,20 +34,14 @@ public class GoPanel extends javax.swing.JPanel {
 	}
 
 	private void update() {
-		ProjectConfiguration cfg = AppContext.inst().getConfig();
-
-		if (cfg.isValid()) {
+		if (Ctx.cfg.isValid()) {
 			goBtn.setEnabled(true);
 			errorLabel.setText("<html>Your configuration is valid.");
-			Style.unregister(errorLabel);
-			Style.registerCssClasses(errorLabel, ".libraryFoundLabel");
-			Style.apply(errorLabel, new Style(Res.getUrl("css/style-dynamic.css")));
+			errorLabel.setForeground(new Color(0x008800));
 		} else {
 			goBtn.setEnabled(false);
-			errorLabel.setText("<html>" + cfg.getErrorMessage());
-			Style.unregister(errorLabel);
-			Style.registerCssClasses(errorLabel, ".libraryNotFoundLabel");
-			Style.apply(errorLabel, new Style(Res.getUrl("css/style-dynamic.css")));
+			errorLabel.setText("<html>" + Ctx.cfg.getErrorMessage());
+			errorLabel.setForeground(new Color(0x880000));
 		}
 	}
 
