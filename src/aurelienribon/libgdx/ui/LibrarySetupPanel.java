@@ -43,7 +43,6 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 	private final Map<String, File> libsSelectedFiles = new HashMap<String, File>();
 	private final Map<String, JComponent> libsNamesCmps = new HashMap<String, JComponent>();
-	private int librariesCnt, retrievedLibrariesCnt = 0;
 
     public LibrarySetupPanel() {
         initComponents();
@@ -89,46 +88,41 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	// -------------------------------------------------------------------------
 
 	private void retrieveLibraries() {
-		sectionLabel1.setIcon(Res.getImage("gfx/ic_loading.gif"));
-		sectionLabel2.setIcon(Res.getImage("gfx/ic_loading.gif"));
-
-		librariesCnt = 2;
-
-		downloadLibraryDef("libgdx", "http://libgdx.badlogicgames.com/nightlies/libgdx.txt");
-
 		Map<String, String> urls = new LinkedHashMap<String, String>();
+		urls.put("libgdx", "http://libgdx.badlogicgames.com/nightlies/libgdx.txt");
 		urls.put("tweenengine", "http://www.aurelienribon.com/universal-tween-engine/description.txt");
+
 		for (String libraryName : urls.keySet()) {
 			downloadLibraryDef(libraryName, urls.get(libraryName));
 		}
 	}
 
-	private void updateRetrieveStatus(String libraryName, String error) {
-		retrievedLibrariesCnt += 1;
+	private void downloadLibraryDef(final String libraryName, String url) {
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-		if (libraryName.equals("libgdx")) {
-			if (error != null) {
-				sectionLabel1.setIcon(Res.getImage("gfx/ic_error.png"));
-				sectionLabel1.setToolTipText(error);
-			} else {
-				sectionLabel1.setIcon(Res.getImage("gfx/ic_ok.png"));
-				sectionLabel1.setToolTipText("LibGDX definition succesfully downloaded");
+		HttpUtils.Callback callback = new HttpUtils.Callback() {
+			@Override public void canceled() {}
+			@Override public void updated(int length, int totalLength) {}
+			@Override public void error(IOException ex) {
+				System.err.print("[warning] Cannot download definition for library '" + libraryName + "'");
 			}
-			return;
-		}
-
-		if (error != null) {
-			String txt = sectionLabel2.getToolTipText() != null ? sectionLabel2.getToolTipText() : "";
-			sectionLabel2.setToolTipText(txt + "\n" + error);
-		}
-
-		if (retrievedLibrariesCnt == librariesCnt) {
-			if (Ctx.cfg.libraries.size() == librariesCnt) {
-				sectionLabel2.setIcon(Res.getImage("gfx/ic_ok.png"));
-				sectionLabel2.setToolTipText("All third-party libraries definitions succesfully downloaded");
-			} else {
-				sectionLabel2.setIcon(Res.getImage("gfx/ic_error.png"));
+			@Override public void completed() {
+				System.out.println("Successfully retrieved definition for library '" + libraryName + "'");
+				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
+					LibraryDef def = new LibraryDef(output.toString());
+					Ctx.cfg.libraries.put(libraryName, def);
+					if (libraryName.equals("libgdx")) def.isUsed = true;
+					else addLibraryElem(libraryName);
+					initLibrary(libraryName);
+				}});
 			}
+		};
+
+		try {
+			URL input = new URL(url);
+			HttpUtils.downloadAsync(input, output, callback);
+		} catch (MalformedURLException ex) {
+			System.err.println("[warning] Malformed url for definition of library '" + libraryName + "'");
 		}
 	}
 
@@ -177,44 +171,6 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		libsNamesCmps.put(libraryName, nameChk);
 	}
 
-	// -------------------------------------------------------------------------
-	// Actions
-	// -------------------------------------------------------------------------
-
-	private void downloadLibraryDef(final String libraryName, String url) {
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-		HttpUtils.Callback callback = new HttpUtils.Callback() {
-			@Override public void canceled() {}
-			@Override public void updated(int length, int totalLength) {}
-			@Override public void completed() {
-				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
-					LibraryDef def = new LibraryDef(output.toString());
-					Ctx.cfg.libraries.put(libraryName, def);
-					if (libraryName.equals("libgdx")) {
-						def.isUsed = true;
-					} else {
-						addLibraryElem(libraryName);
-					}
-					updateRetrieveStatus(libraryName, null);
-					initLibrary(libraryName);
-				}});
-			}
-			@Override public void error(IOException ex) {
-				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
-					updateRetrieveStatus(libraryName, "Error occured while downloading the definition for '" + libraryName + "'");
-				}});
-			}
-		};
-
-		try {
-			URL input = new URL(url);
-			HttpUtils.downloadAsync(input, output, callback);
-		} catch (MalformedURLException ex) {
-			updateRetrieveStatus(libraryName, "Cannot get the library definition for '" + libraryName + "': malformed URL.");
-		}
-	}
-
 	private void initLibrary(String libraryName) {
 		LibraryDef def = Ctx.cfg.libraries.get(libraryName);
 		String stableName = FilenameUtils.getName(def.stableUrl);
@@ -226,6 +182,10 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			}
 		}
 	}
+
+	// -------------------------------------------------------------------------
+	// Actions
+	// -------------------------------------------------------------------------
 
 	private void showInfo(String libraryName) {
 		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);

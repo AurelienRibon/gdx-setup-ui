@@ -75,10 +75,10 @@ public class ProjectSetup {
 		File htmlPrjLibsDir = new File(tmpDst, "/prj-html/war/WEB-INF/lib");
 
 		for (String library : cfg.libraries.keySet()) {
-			String path = cfg.libraries.get(library).path;
 			LibraryDef def = cfg.libraries.get(library);
+			if (!def.isUsed) continue;
 
-			InputStream is = new FileInputStream(path);
+			InputStream is = new FileInputStream(def.path);
 			ZipInputStream zis = new ZipInputStream(is);
 			ZipEntry entry;
 
@@ -110,6 +110,7 @@ public class ProjectSetup {
 
 		for (String library : cfg.libraries.keySet()) {
 			LibraryDef def = cfg.libraries.get(library);
+			if (!def.isUsed) continue;
 
 			for (String file : def.libsCommon) {
 				String name = FilenameUtils.getBaseName(file);
@@ -258,10 +259,13 @@ public class ProjectSetup {
 	// -------------------------------------------------------------------------
 
 	private void templateDir(File dir) throws IOException {
+		if (dir.getName().equals("libs")) return;
+
 		for (File file : dir.listFiles()) {
 			if (file.isDirectory()) {
 				templateDir(file);
-			} else if (!endsWidth(file.getName(), ".jar", ".zip", ".png")) {
+			} else {
+				if (endsWidth(file.getName(), ".jar", ".zip", ".png")) continue;
 				templateManager.processOver(file);
 			}
 		}
