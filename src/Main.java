@@ -1,6 +1,6 @@
 
 import aurelienribon.libgdx.ui.MainPanel;
-import aurelienribon.ui.components.AruiStyle;
+import aurelienribon.ui.components.ArStyle;
 import aurelienribon.ui.css.swing.SwingStyle;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -21,9 +21,9 @@ public class Main {
 				} catch (IllegalAccessException ex) {
 				} catch (UnsupportedLookAndFeelException ex) {
 				}
-				
+
 				SwingStyle.init();
-				AruiStyle.init();
+				ArStyle.init();
 
 				JFrame frame = new JFrame("LibGDX Project Setup");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
