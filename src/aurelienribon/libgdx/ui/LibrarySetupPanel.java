@@ -1,24 +1,20 @@
 package aurelienribon.libgdx.ui;
 
 import aurelienribon.libgdx.LibraryDef;
+import aurelienribon.libgdx.LibraryManager;
 import aurelienribon.libgdx.ui.dialogs.DownloadDialog;
 import aurelienribon.libgdx.ui.dialogs.LibraryInfoDialog;
 import aurelienribon.ui.css.Style;
-import aurelienribon.utils.HttpUtils;
-import aurelienribon.utils.ParseUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -43,8 +39,10 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	private static final Color LIB_FOUND_COLOR = new Color(0x008800);
 	private static final Color LIB_NOTFOUND_COLOR = new Color(0x880000);
 
+	private LibraryManager libraryManager;
 	private final Map<String, File> libsSelectedFiles = new HashMap<String, File>();
 	private final Map<String, JComponent> libsNamesCmps = new HashMap<String, JComponent>();
+	private int count = 0;
 
     public LibrarySetupPanel() {
         initComponents();
@@ -62,11 +60,13 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(sectionLabel2, ".sectionLabel");
 		Style.registerCssClasses(legendPanel, ".legendPanel");
 		Style.registerCssClasses(legendLabel, ".legendLabel");
-    }
 
-	// -------------------------------------------------------------------------
-	// On-demand launch
-	// -------------------------------------------------------------------------
+		try {
+			libraryManager = new LibraryManager("http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/config.txt");
+		} catch (MalformedURLException ex) {
+			System.err.println("[warning] Malformed url for the configuration file");
+		}
+    }
 
 	public void init() {
 		libsNamesCmps.put("libgdx", libgdxLabel);
@@ -77,81 +77,70 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			LibraryDef def = new LibraryDef(rawDef);
 			def.isUsed = true;
 			Ctx.cfg.libraries.put("libgdx", def);
-			initLibrary("libgdx");
+			preselectLibraryArchive("libgdx");
 		} catch (IOException ex) {
 			assert false;
 		}
 
-		retrieveLibraries();
+		libraryManager.downloadConfigFile(new LibraryManager.Callback() {
+			@Override public void completed() {
+				System.out.println("Successfully retrieved the configuration file.");
+				for (String name : libraryManager.getLibrariesNames()) {
+					downloadLibraryDef(name, libraryManager.getLibraryUrl(name));
+				}
+			}
+			@Override public void error() {
+				System.err.println("[warning] Cannot download the configuration file.");
+			}
+		});
+
+		if (Ctx.testUrl != null) downloadLibraryDef("__test__", Ctx.testUrl);
 	}
 
 	// -------------------------------------------------------------------------
 	// Initialization of libraries
 	// -------------------------------------------------------------------------
 
-	private void retrieveLibraries() {
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-		HttpUtils.Callback callback = new HttpUtils.Callback() {
-			@Override public void updated(int length, int totalLength) {}
-			@Override public void canceled() {}
-			@Override public void error(IOException ex) {
-				System.err.println("[warning] Cannot download the configuration file.");
-			}
-			@Override public void completed() {
-				System.out.println("Successfully retrieved the configuration file.");
-				String str = output.toString();
-				List<String> libsTuples = ParseUtils.parseBlockAsList(str, "libraries");
-				Map<String, String> libsUrls = new LinkedHashMap<String, String>();
-				for (String line : libsTuples) {
-					String[] parts = line.split("=", 2);
-					if (parts.length != 2) continue;
-					libsUrls.put(parts[0].trim(), parts[1].trim());
-				}
-				for (String name : libsUrls.keySet()) {
-					downloadLibraryDef(name, libsUrls.get(name));
-				}
-			}
-		};
-
-		try {
-			URL input = new URL("http://www.aurelienribon.com/libgdx-setup/config.txt");
-			HttpUtils.downloadAsync(input, output, callback);
-		} catch (MalformedURLException ex) {
-			System.err.println("[warning] Malformed url for the configuration file");
-		}
-	}
-
-	private void downloadLibraryDef(final String libraryName, String url) {
-		final ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-		HttpUtils.Callback callback = new HttpUtils.Callback() {
-			@Override public void canceled() {}
-			@Override public void updated(int length, int totalLength) {}
-			@Override public void error(IOException ex) {
-				System.err.print("[warning] Cannot download definition for library '" + libraryName + "'");
-			}
+	private void downloadLibraryDef(final String libraryName, URL url) {
+		libraryManager.downloadLibraryDef(libraryName, new LibraryManager.Callback() {
 			@Override public void completed() {
 				System.out.println("Successfully retrieved definition for library '" + libraryName + "'");
 				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
-					LibraryDef def = new LibraryDef(output.toString());
-					Ctx.cfg.libraries.put(libraryName, def);
-					if (libraryName.equals("libgdx")) def.isUsed = true;
-					else addLibraryElem(libraryName);
 					initLibrary(libraryName);
 				}});
 			}
-		};
+			@Override public void error() {
+				System.err.print("[warning] Cannot download definition for library '" + libraryName + "'");
+			}
+		});
+	}
 
-		try {
-			URL input = new URL(url);
-			HttpUtils.downloadAsync(input, output, callback);
-		} catch (MalformedURLException ex) {
-			System.err.println("[warning] Malformed url for definition of library '" + libraryName + "'");
+	private void initLibrary(String libraryName) {
+		LibraryDef def = libraryManager.getLibraryDef(libraryName);
+		Ctx.cfg.libraries.put(libraryName, def);
+
+		if (libraryName.equals("libgdx")) def.isUsed = true;
+
+		addLibraryElem();
+	}
+
+	private void addLibraryElem() {
+		count += 1;
+		int total = libraryManager.getLibrariesNames().size();
+
+		if (count < total) {
+			librariesUpdateLabel.setText("Retrieving libraries: " + count + " / " + total);
+		} else {
+			librariesPanel.removeAll();
+			for (String name : libraryManager.getLibrariesNames()) {
+				if (!name.equals("libgdx")) buildLibraryPanel(name);
+				preselectLibraryArchive(name);
+			}
+			Ctx.fireConfigChanged();
 		}
 	}
 
-	private void addLibraryElem(final String libraryName) {
+	private void buildLibraryPanel(final String libraryName) {
 		ActionListener nameChkAL = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
 			Ctx.cfg.libraries.get(libraryName).isUsed = ((JCheckBox) e.getSource()).isSelected();
 			Ctx.fireConfigChanged();
@@ -196,10 +185,11 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		libsNamesCmps.put(libraryName, nameChk);
 	}
 
-	private void initLibrary(String libraryName) {
+	private void preselectLibraryArchive(String libraryName) {
 		LibraryDef def = Ctx.cfg.libraries.get(libraryName);
 		String stableName = FilenameUtils.getName(def.stableUrl);
 		String latestName = FilenameUtils.getName(def.latestUrl);
+
 		for (File file : new File(".").listFiles()) {
 			if (file.isFile()) {
 				if (file.getName().equals(latestName)) select(libraryName, file);
@@ -293,6 +283,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
         legendLabel = new javax.swing.JLabel();
         librariesScrollPane = new javax.swing.JScrollPane();
         librariesPanel = new javax.swing.JPanel();
+        librariesUpdateLabel = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -383,6 +374,10 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
         librariesPanel.setOpaque(false);
         librariesPanel.setLayout(new javax.swing.BoxLayout(librariesPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        librariesUpdateLabel.setText("Retrieving libraries: ...");
+        librariesPanel.add(librariesUpdateLabel);
+
         librariesScrollPane.setViewportView(librariesPanel);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -432,6 +427,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
     private javax.swing.JToolBar libgdxToolBar;
     private javax.swing.JPanel librariesPanel;
     private javax.swing.JScrollPane librariesScrollPane;
+    private javax.swing.JLabel librariesUpdateLabel;
     private javax.swing.JLabel numberLabel;
     private javax.swing.JLabel sectionLabel1;
     private javax.swing.JLabel sectionLabel2;

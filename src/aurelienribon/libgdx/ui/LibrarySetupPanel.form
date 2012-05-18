@@ -225,6 +225,13 @@
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
                 <Property name="axis" type="int" value="1"/>
               </Layout>
+              <SubComponents>
+                <Component class="javax.swing.JLabel" name="librariesUpdateLabel">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Retrieving libraries: ..."/>
+                  </Properties>
+                </Component>
+              </SubComponents>
             </Container>
           </SubComponents>
         </Container>

@@ -1,7 +1,7 @@
 package aurelienribon.libgdx;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -13,7 +13,7 @@ public class ProjectConfiguration {
 	public String packageName = "com.me.mygdxgame";
 	public String destinationPath = "";
 
-	public final Map<String, LibraryDef> libraries = new LinkedHashMap<String, LibraryDef>();
+	public final Map<String, LibraryDef> libraries = new HashMap<String, LibraryDef>();
 
 	public boolean isDesktopIncluded = true;
 	public boolean isAndroidIncluded = true;

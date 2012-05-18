@@ -1,7 +1,12 @@
 
+import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.components.ArStyle;
 import aurelienribon.ui.css.swing.SwingStyle;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -12,6 +17,8 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class Main {
 	public static void main(String[] args) {
+		parseArgs(args);
+
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override public void run() {
 				try {
@@ -33,5 +40,17 @@ public class Main {
 				frame.setVisible(true);
 			}
 		});
+	}
+
+	private static void parseArgs(String[] args) {
+		for (int i=0; i<args.length; i++) {
+			if (args[i].equals("-test") && i<args.length) {
+				try {
+					Ctx.testUrl = new URL(args[i+1]);
+				} catch (MalformedURLException ex) {
+					System.err.println("[warning] Test url is malformed");
+				}
+			}
+		}
 	}
 }

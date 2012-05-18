@@ -47,7 +47,7 @@ public class MainPanel extends PaintedPanel {
 		versionLabel.setText("v" + version + " (...)");
 
 		URL tmpUrl;
-		try {tmpUrl = new URL("http://www.aurelienribon.com/libgdx-setup/versions.txt");}
+		try {tmpUrl = new URL("http://www.aurelienribon.com/libgdx-setup/config.txt");}
 		catch (MalformedURLException ex) {throw new RuntimeException(ex);}
 
 		final URL url = tmpUrl;
@@ -100,7 +100,7 @@ public class MainPanel extends PaintedPanel {
 			Style.registerCssClasses(versionLabel, ".versionLabelNoUpdate");
 			Style.apply(versionLabel, new Style(Res.getUrl("css/style.css")));
 		} else if (versionIdx > 0) {
-			versionLabel.setText("v" + version + " (!!!)");
+			versionLabel.setText("v" + version + " (update!)");
 			versionLabel.addMouseListener(mouseListener);
 			versionLabel.setToolTipText("Update found: v" + versions.get(0));
 			Style.registerCssClasses(versionLabel, ".versionLabelUpdateFound");
