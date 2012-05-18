@@ -1,5 +1,6 @@
 package aurelienribon.libgdx.ui;
 
+import aurelienribon.libgdx.ProjectConfigurationHelper;
 import aurelienribon.libgdx.ui.dialogs.GoDialog;
 import aurelienribon.ui.css.Style;
 import java.awt.Color;
@@ -34,13 +35,13 @@ public class GoPanel extends javax.swing.JPanel {
 	}
 
 	private void update() {
-		if (Ctx.cfg.isValid()) {
+		if (ProjectConfigurationHelper.isValid(Ctx.cfg)) {
 			goBtn.setEnabled(true);
 			errorLabel.setText("<html>Your configuration is valid.");
 			errorLabel.setForeground(new Color(0x008800));
 		} else {
 			goBtn.setEnabled(false);
-			errorLabel.setText("<html>" + Ctx.cfg.getErrorMessage());
+			errorLabel.setText("<html>" + ProjectConfigurationHelper.getErrorMessage(Ctx.cfg));
 			errorLabel.setForeground(new Color(0x880000));
 		}
 	}

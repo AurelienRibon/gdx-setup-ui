@@ -1,7 +1,8 @@
 package aurelienribon.libgdx;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,7 +14,10 @@ public class ProjectConfiguration {
 	public String packageName = "com.me.mygdxgame";
 	public String destinationPath = "";
 
-	public final Map<String, LibraryDef> libraries = new HashMap<String, LibraryDef>();
+	public final Libraries libs = new Libraries();
+	private final Map<String, LibraryDef> librariesDefs = new HashMap<String, LibraryDef>();
+	private final Map<String, Boolean> librariesUsages = new HashMap<String, Boolean>();
+	private final Map<String, String> librariesPaths = new HashMap<String, String>();
 
 	public boolean isDesktopIncluded = true;
 	public boolean isAndroidIncluded = true;
@@ -28,55 +32,19 @@ public class ProjectConfiguration {
 
 	// -------------------------------------------------------------------------
 
-	public String getCommonPrjName() {
-		return projectName + commonSuffix;
-	}
-
-	public String getDesktopPrjName() {
-		return projectName + desktopSuffix;
-	}
-
-	public String getAndroidPrjName() {
-		return projectName + androidSuffix;
-	}
-
-	public String getHtmlPrjName() {
-		return projectName + htmlSuffix;
-	}
-
-	public boolean isValid() {
-		if (projectName.trim().equals("")) return false;
-		if (packageName.trim().equals("")) return false;
-		if (packageName.endsWith(".")) return false;
-		if (mainClassName.trim().equals("")) return false;
-
-		for (String libraryName : libraries.keySet()) {
-			if (!isLibraryValid(libraryName)) return false;
+	public class Libraries {
+		public void add(String name, LibraryDef def) {
+			librariesDefs.put(name, def);
+			if (!librariesUsages.containsKey(name)) librariesUsages.put(name, Boolean.FALSE);
+			if (!librariesPaths.containsKey(name)) librariesPaths.put(name, null);
 		}
 
-		return true;
-	}
+		public void setUsage(String name, boolean used) {librariesUsages.put(name, used);}
+		public void setPath(String name, String path) {librariesPaths.put(name, path);}
 
-	public boolean isLibraryValid(String libraryName) {
-		if (!libraries.get(libraryName).isUsed) return true;
-		String path = libraries.get(libraryName).path;
-		if (path == null) return false;
-		if (!path.endsWith(".zip")) return false;
-		if (!new File(path).isFile()) return false;
-		return true;
-	}
-
-	public String getErrorMessage() {
-		if (projectName.trim().equals("")) return "Project name is not set.";
-		if (packageName.trim().equals("")) return "Package name is not set.";
-		if (packageName.endsWith(".")) return "Package name ends with a dot.";
-		if (mainClassName.trim().equals("")) return "Main class name is not set.";
-
-		for (String libraryName : libraries.keySet()) {
-			if (!isLibraryValid(libraryName))
-				return "At least one selected library has a missing or invalid archive.";
-		}
-
-		return "No error found";
+		public List<String> getNames() {return new ArrayList<String>(librariesDefs.keySet());}
+		public LibraryDef getDef(String name) {return librariesDefs.get(name);}
+		public boolean isUsed(String name) {return librariesUsages.get(name);}
+		public String getPath(String name) {return librariesPaths.get(name);}
 	}
 }

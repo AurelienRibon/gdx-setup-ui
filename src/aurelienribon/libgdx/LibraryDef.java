@@ -22,9 +22,6 @@ public class LibraryDef {
 	public final List<String> libsAndroid;
 	public final List<String> libsHtml;
 
-	public String path = null;
-	public boolean isUsed = false;
-
 	public LibraryDef(String content) {
 		this.name = ParseUtils.parseBlock(content, "name");
 		this.author = ParseUtils.parseBlock(content, "author");

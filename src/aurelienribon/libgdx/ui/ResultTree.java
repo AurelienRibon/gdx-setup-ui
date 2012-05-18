@@ -192,9 +192,9 @@ public class ResultTree extends JTree {
 		androidLibsNode.removeAllChildren();
 		htmlLibsNode.removeAllChildren();
 
-		for (String libraryName : Ctx.cfg.libraries.keySet()) {
-			LibraryDef def = Ctx.cfg.libraries.get(libraryName);
-			if (def.isUsed) {
+		for (String libraryName : Ctx.cfg.libs.getNames()) {
+			if (Ctx.cfg.libs.isUsed(libraryName)) {
+				LibraryDef def = Ctx.cfg.libs.getDef(libraryName);
 				for (String path : def.libsCommon) pathToNodes(path, commonLibsNode);
 				for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
 				for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
@@ -238,10 +238,10 @@ public class ResultTree extends JTree {
 				name = name.replaceFirst("#DIR#", "");
 				name = name.replace("MyGame", Ctx.cfg.mainClassName);
 
-				if (isDir && name.equals("prj-common")) name = Ctx.cfg.getCommonPrjName();
-				if (isDir && name.equals("prj-desktop")) name = Ctx.cfg.getDesktopPrjName();
-				if (isDir && name.equals("prj-android")) name = Ctx.cfg.getAndroidPrjName();
-				if (isDir && name.equals("prj-html")) name = Ctx.cfg.getHtmlPrjName();
+				if (isDir && name.equals("prj-common")) name = Ctx.cfg.projectName + Ctx.cfg.commonSuffix;
+				if (isDir && name.equals("prj-desktop")) name = Ctx.cfg.projectName + Ctx.cfg.desktopSuffix;
+				if (isDir && name.equals("prj-android")) name = Ctx.cfg.projectName + Ctx.cfg.androidSuffix;
+				if (isDir && name.equals("prj-html")) name = Ctx.cfg.projectName + Ctx.cfg.htmlSuffix;
 
 				label.setText(FilenameUtils.getName(name));
 				label.setIcon(isDir ? Res.getImage("gfx/ic_folder.png") : Res.getImage("gfx/ic_file.png"));

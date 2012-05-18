@@ -14,7 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -75,8 +79,8 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		try {
 			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
 			LibraryDef def = new LibraryDef(rawDef);
-			def.isUsed = true;
-			Ctx.cfg.libraries.put("libgdx", def);
+			Ctx.cfg.libs.add("libgdx", def);
+			Ctx.cfg.libs.setUsage("libgdx", true);
 			preselectLibraryArchive("libgdx");
 		} catch (IOException ex) {
 			assert false;
@@ -106,7 +110,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			@Override public void completed() {
 				System.out.println("Successfully retrieved definition for library '" + libraryName + "'");
 				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
-					initLibrary(libraryName);
+					registerLibrary(libraryName);
 				}});
 			}
 			@Override public void error() {
@@ -115,34 +119,45 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		});
 	}
 
-	private void initLibrary(String libraryName) {
-		LibraryDef def = libraryManager.getLibraryDef(libraryName);
-		Ctx.cfg.libraries.put(libraryName, def);
+	private void registerLibrary(String libraryName) {
+		Ctx.cfg.libs.add(libraryName, libraryManager.getLibraryDef(libraryName));
+		Ctx.cfg.libs.setUsage(libraryName, libraryName.equals("libgdx"));
 
-		if (libraryName.equals("libgdx")) def.isUsed = true;
-
-		addLibraryElem();
-	}
-
-	private void addLibraryElem() {
 		count += 1;
 		int total = libraryManager.getLibrariesNames().size();
 
 		if (count < total) {
 			librariesUpdateLabel.setText("Retrieving libraries: " + count + " / " + total);
 		} else {
+			List<String> names = new ArrayList<String>(libraryManager.getLibrariesNames());
+
+			for (int i=names.size()-1; i>=0; i--) {
+				LibraryDef def = libraryManager.getLibraryDef(names.get(i));
+				if (def == null) names.remove(i);
+			}
+
+			Collections.sort(names, new Comparator<String>() {
+				@Override public int compare(String o1, String o2) {
+					LibraryDef def1 = libraryManager.getLibraryDef(o1);
+					LibraryDef def2 = libraryManager.getLibraryDef(o2);
+					return def1.name.compareTo(def2.name);
+				}
+			});
+
 			librariesPanel.removeAll();
-			for (String name : libraryManager.getLibrariesNames()) {
+
+			for (String name : names) {
 				if (!name.equals("libgdx")) buildLibraryPanel(name);
 				preselectLibraryArchive(name);
 			}
+
 			Ctx.fireConfigChanged();
 		}
 	}
 
 	private void buildLibraryPanel(final String libraryName) {
 		ActionListener nameChkAL = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			Ctx.cfg.libraries.get(libraryName).isUsed = ((JCheckBox) e.getSource()).isSelected();
+			Ctx.cfg.libs.setUsage(libraryName, ((JCheckBox) e.getSource()).isSelected());
 			Ctx.fireConfigChanged();
 		}};
 
@@ -151,7 +166,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		Action getStableAction = new AbstractAction() {@Override public void actionPerformed(ActionEvent e) {getStable(libraryName);}};
 		Action getLatestAction = new AbstractAction() {@Override public void actionPerformed(ActionEvent e) {getLatest(libraryName);}};
 
-		LibraryDef def = Ctx.cfg.libraries.get(libraryName);
+		LibraryDef def = Ctx.cfg.libs.getDef(libraryName);
 
 		JCheckBox nameChk = new JCheckBox(def.name);
 		JButton infoBtn = new JButton(infoAction);
@@ -186,7 +201,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	}
 
 	private void preselectLibraryArchive(String libraryName) {
-		LibraryDef def = Ctx.cfg.libraries.get(libraryName);
+		LibraryDef def = Ctx.cfg.libs.getDef(libraryName);
 		String stableName = FilenameUtils.getName(def.stableUrl);
 		String latestName = FilenameUtils.getName(def.latestUrl);
 
@@ -224,13 +239,13 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	}
 
 	private void getStable(String libraryName) {
-		String input = Ctx.cfg.libraries.get(libraryName).stableUrl;
+		String input = Ctx.cfg.libs.getDef(libraryName).stableUrl;
 		String output = FilenameUtils.getName(input);
 		getFile(libraryName, input, output);
 	}
 
 	private void getLatest(String libraryName) {
-		String input = Ctx.cfg.libraries.get(libraryName).latestUrl;
+		String input = Ctx.cfg.libs.getDef(libraryName).latestUrl;
 		String output = FilenameUtils.getName(input);
 		getFile(libraryName, input, output);
 	}
@@ -250,7 +265,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 	private void select(String libraryName, File zipFile) {
 		libsSelectedFiles.put(libraryName, zipFile);
-		Ctx.cfg.libraries.get(libraryName).path = zipFile.getPath();
+		Ctx.cfg.libs.setPath(libraryName, zipFile.getPath());
 
 		libsNamesCmps.get(libraryName).setToolTipText("Using archive: \"" + zipFile.getPath() + "\"");
 		libsNamesCmps.get(libraryName).setForeground(LIB_FOUND_COLOR);

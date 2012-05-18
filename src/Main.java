@@ -5,8 +5,6 @@ import aurelienribon.ui.components.ArStyle;
 import aurelienribon.ui.css.swing.SwingStyle;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

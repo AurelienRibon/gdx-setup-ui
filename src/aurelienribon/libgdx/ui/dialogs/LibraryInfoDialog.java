@@ -27,7 +27,7 @@ public class LibraryInfoDialog extends javax.swing.JDialog {
         super(parent, true);
         initComponents();
 
-		LibraryDef def = Ctx.cfg.libraries.get(libraryName);
+		LibraryDef def = Ctx.cfg.libs.getDef(libraryName);
 		nameLabel.setText(def.name);
 		descriptionLabel.setText("<html>" + def.description);
 		versionLabel.setText(def.stableVersion != null ? def.stableVersion : "<unknown>");
