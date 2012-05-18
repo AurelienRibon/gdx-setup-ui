@@ -1,7 +1,7 @@
 package aurelienribon.libgdx.ui;
 
+import aurelienribon.libgdx.DownloadManager;
 import aurelienribon.libgdx.LibraryDef;
-import aurelienribon.libgdx.LibraryManager;
 import aurelienribon.libgdx.ui.dialogs.DownloadDialog;
 import aurelienribon.libgdx.ui.dialogs.LibraryInfoDialog;
 import aurelienribon.ui.css.Style;
@@ -43,7 +43,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	private static final Color LIB_FOUND_COLOR = new Color(0x008800);
 	private static final Color LIB_NOTFOUND_COLOR = new Color(0x880000);
 
-	private LibraryManager libraryManager;
+	private DownloadManager dlManager;
 	private final Map<String, File> libsSelectedFiles = new HashMap<String, File>();
 	private final Map<String, JComponent> libsNamesCmps = new HashMap<String, JComponent>();
 	private int count = 0;
@@ -66,7 +66,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(legendLabel, ".legendLabel");
 
 		try {
-			libraryManager = new LibraryManager("http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/config.txt");
+			dlManager = new DownloadManager("http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/config.txt");
 		} catch (MalformedURLException ex) {
 			System.err.println("[warning] Malformed url for the configuration file");
 		}
@@ -86,11 +86,11 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			assert false;
 		}
 
-		libraryManager.downloadConfigFile(new LibraryManager.Callback() {
+		dlManager.downloadConfigFile(new DownloadManager.Callback() {
 			@Override public void completed() {
 				System.out.println("Successfully retrieved the configuration file.");
-				for (String name : libraryManager.getLibrariesNames()) {
-					downloadLibraryDef(name, libraryManager.getLibraryUrl(name));
+				for (String name : dlManager.getLibrariesNames()) {
+					downloadLibraryDef(name, dlManager.getLibraryUrl(name));
 				}
 			}
 			@Override public void error() {
@@ -106,7 +106,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	// -------------------------------------------------------------------------
 
 	private void downloadLibraryDef(final String libraryName, URL url) {
-		libraryManager.downloadLibraryDef(libraryName, new LibraryManager.Callback() {
+		dlManager.downloadLibraryDef(libraryName, new DownloadManager.Callback() {
 			@Override public void completed() {
 				System.out.println("Successfully retrieved definition for library '" + libraryName + "'");
 				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
@@ -120,26 +120,26 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	}
 
 	private void registerLibrary(String libraryName) {
-		Ctx.cfg.libs.add(libraryName, libraryManager.getLibraryDef(libraryName));
+		Ctx.cfg.libs.add(libraryName, dlManager.getLibraryDef(libraryName));
 		Ctx.cfg.libs.setUsage(libraryName, libraryName.equals("libgdx"));
 
 		count += 1;
-		int total = libraryManager.getLibrariesNames().size();
+		int total = dlManager.getLibrariesNames().size();
 
 		if (count < total) {
 			librariesUpdateLabel.setText("Retrieving libraries: " + count + " / " + total);
 		} else {
-			List<String> names = new ArrayList<String>(libraryManager.getLibrariesNames());
+			List<String> names = new ArrayList<String>(dlManager.getLibrariesNames());
 
 			for (int i=names.size()-1; i>=0; i--) {
-				LibraryDef def = libraryManager.getLibraryDef(names.get(i));
+				LibraryDef def = dlManager.getLibraryDef(names.get(i));
 				if (def == null) names.remove(i);
 			}
 
 			Collections.sort(names, new Comparator<String>() {
 				@Override public int compare(String o1, String o2) {
-					LibraryDef def1 = libraryManager.getLibraryDef(o1);
-					LibraryDef def2 = libraryManager.getLibraryDef(o2);
+					LibraryDef def1 = dlManager.getLibraryDef(o1);
+					LibraryDef def2 = dlManager.getLibraryDef(o2);
 					return def1.name.compareTo(def2.name);
 				}
 			});

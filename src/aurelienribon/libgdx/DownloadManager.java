@@ -15,13 +15,13 @@ import java.util.Map;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class LibraryManager {
+public class DownloadManager {
 	private final URL configUrl;
 	private final List<String> libraries = new ArrayList<String>();
 	private final Map<String, URL> librariesUrls = new HashMap<String, URL>();
 	private final Map<String, LibraryDef> librariesDefs = new HashMap<String, LibraryDef>();
 
-	public LibraryManager(String configUrl) throws MalformedURLException {
+	public DownloadManager(String configUrl) throws MalformedURLException {
 		this.configUrl = new URL(configUrl);
 	}
 
