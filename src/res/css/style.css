@@ -156,11 +156,11 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-swing-font-size: 14;
 }
 
-.libInfoHomepageLabel {
-	-swing-foreground: #AAA;
+.libInfoUrlLabel {
+	-swing-foreground: #CCF;
 }
 
-.libInfoHomepageLabel:hover {
+.libInfoUrlLabel:hover {
 	-swing-foreground: #FFF;
 }
 

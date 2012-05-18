@@ -5,6 +5,7 @@ import aurelienribon.libgdx.ui.dialogs.DownloadDialog;
 import aurelienribon.libgdx.ui.dialogs.LibraryInfoDialog;
 import aurelienribon.ui.css.Style;
 import aurelienribon.utils.HttpUtils;
+import aurelienribon.utils.ParseUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,6 +18,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -88,12 +90,35 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	// -------------------------------------------------------------------------
 
 	private void retrieveLibraries() {
-		Map<String, String> urls = new LinkedHashMap<String, String>();
-		urls.put("libgdx", "http://libgdx.badlogicgames.com/nightlies/libgdx.txt");
-		urls.put("tweenengine", "http://www.aurelienribon.com/universal-tween-engine/description.txt");
+		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-		for (String libraryName : urls.keySet()) {
-			downloadLibraryDef(libraryName, urls.get(libraryName));
+		HttpUtils.Callback callback = new HttpUtils.Callback() {
+			@Override public void updated(int length, int totalLength) {}
+			@Override public void canceled() {}
+			@Override public void error(IOException ex) {
+				System.err.println("[warning] Cannot download the configuration file.");
+			}
+			@Override public void completed() {
+				System.out.println("Successfully retrieved the configuration file.");
+				String str = output.toString();
+				List<String> libsTuples = ParseUtils.parseBlockAsList(str, "libraries");
+				Map<String, String> libsUrls = new LinkedHashMap<String, String>();
+				for (String line : libsTuples) {
+					String[] parts = line.split("=", 2);
+					if (parts.length != 2) continue;
+					libsUrls.put(parts[0].trim(), parts[1].trim());
+				}
+				for (String name : libsUrls.keySet()) {
+					downloadLibraryDef(name, libsUrls.get(name));
+				}
+			}
+		};
+
+		try {
+			URL input = new URL("http://www.aurelienribon.com/libgdx-setup/config.txt");
+			HttpUtils.downloadAsync(input, output, callback);
+		} catch (MalformedURLException ex) {
+			System.err.println("[warning] Malformed url for the configuration file");
 		}
 	}
 
