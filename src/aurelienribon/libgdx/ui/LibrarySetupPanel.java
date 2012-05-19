@@ -146,9 +146,9 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 			Collections.sort(names, new Comparator<String>() {
 				@Override public int compare(String o1, String o2) {
-					LibraryDef def1 = Ctx.cfg.libs.getDef(o1);
-					LibraryDef def2 = Ctx.cfg.libs.getDef(o2);
-					return def1.name.compareToIgnoreCase(def2.name);
+					String name1 = Ctx.cfg.libs.getDef(o1).name;
+					String name2 = Ctx.cfg.libs.getDef(o2).name;
+					return name1.compareToIgnoreCase(name2);
 				}
 			});
 

@@ -11,10 +11,10 @@ import java.util.regex.Pattern;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class ParseUtils {
-	public static String parseBlock(String input, String name) {
+	public static String parseBlock(String input, String name, String defaultStr) {
 		Matcher m = Pattern.compile("\\[" + name + "\\](.*?)(\\[|$)", Pattern.DOTALL).matcher(input);
 		if (m.find()) return m.group(1).trim();
-		return null;
+		return defaultStr;
 	}
 
 	public static List<String> parseBlockAsList(String input, String name) {

@@ -23,16 +23,16 @@ public class LibraryDef {
 	public final List<String> libsHtml;
 
 	public LibraryDef(String content) {
-		this.name = ParseUtils.parseBlock(content, "name");
-		this.author = ParseUtils.parseBlock(content, "author");
-		this.authorWebsite = ParseUtils.parseBlock(content, "author-website");
-		this.description = ParseUtils.parseBlock(content, "description").replaceAll("\\s+", " ");
-		this.homepage = ParseUtils.parseBlock(content, "homepage");
-		this.logo = ParseUtils.parseBlock(content, "logo");
-		this.gwtModuleName = ParseUtils.parseBlock(content, "gwt");
-		this.stableVersion = ParseUtils.parseBlock(content, "stable-version");
-		this.stableUrl = ParseUtils.parseBlock(content, "stable-url");
-		this.latestUrl = ParseUtils.parseBlock(content, "latest-url");
+		this.name = ParseUtils.parseBlock(content, "name", "<unknown>");
+		this.author = ParseUtils.parseBlock(content, "author", "<unknown>");
+		this.authorWebsite = ParseUtils.parseBlock(content, "author-website", null);
+		this.description = ParseUtils.parseBlock(content, "description", "").replaceAll("\\s+", " ");
+		this.homepage = ParseUtils.parseBlock(content, "homepage", null);
+		this.logo = ParseUtils.parseBlock(content, "logo", null);
+		this.gwtModuleName = ParseUtils.parseBlock(content, "gwt", null);
+		this.stableVersion = ParseUtils.parseBlock(content, "stable-version", "<unknown>");
+		this.stableUrl = ParseUtils.parseBlock(content, "stable-url", null);
+		this.latestUrl = ParseUtils.parseBlock(content, "latest-url", null);
 		this.libsCommon = ParseUtils.parseBlockAsList(content, "libs-common");
 		this.libsDesktop = ParseUtils.parseBlockAsList(content, "libs-desktop");
 		this.libsAndroid = ParseUtils.parseBlockAsList(content, "libs-android");
