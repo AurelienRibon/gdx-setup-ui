@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -37,6 +38,7 @@ public class DownloadManager {
 	public void downloadConfigFile(final Callback callback) {
 		libraries.clear();
 		librariesUrls.clear();
+		librariesDefs.clear();
 
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
@@ -55,6 +57,16 @@ public class DownloadManager {
 			@Override public void completed() {librariesDefs.put(name, new LibraryDef(output.toString())); callback.completed();}
 			@Override public void error(IOException ex) {callback.error();}
 		});
+	}
+
+	public void addTestLibraryUrl(String name, URL url) {
+		libraries.add(name);
+		librariesUrls.put(name, url);
+	}
+
+	public void addTestLibraryDef(String name, LibraryDef def) {
+		libraries.add(name);
+		librariesDefs.put(name, def);
 	}
 
 	public URL getConfigUrl() {

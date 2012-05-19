@@ -13,7 +13,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,8 +27,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FilenameUtils;
@@ -66,6 +67,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(legendLabel, ".legendLabel");
 
 		try {
+			//dlManager = new DownloadManager("http://www.aurelienribon.com/libgdx-setup/config.txt");
 			dlManager = new DownloadManager("http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/config.txt");
 		} catch (MalformedURLException ex) {
 			System.err.println("[warning] Malformed url for the configuration file");
@@ -89,23 +91,29 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		dlManager.downloadConfigFile(new DownloadManager.Callback() {
 			@Override public void completed() {
 				System.out.println("Successfully retrieved the configuration file.");
-				for (String name : dlManager.getLibrariesNames()) {
-					downloadLibraryDef(name, dlManager.getLibraryUrl(name));
+
+				if (Ctx.testLibUrl != null) {
+					dlManager.addTestLibraryUrl("__test_url__", Ctx.testLibUrl);
 				}
+
+				if (Ctx.testLibDef != null) {
+					dlManager.addTestLibraryDef("__test_def__", Ctx.testLibDef);
+					registerLibrary("__test_def__");
+				}
+
+				for (String name : dlManager.getLibrariesNames()) downloadLibraryDef(name);
 			}
 			@Override public void error() {
 				System.err.println("[warning] Cannot download the configuration file.");
 			}
 		});
-
-		if (Ctx.testUrl != null) downloadLibraryDef("__test__", Ctx.testUrl);
 	}
 
 	// -------------------------------------------------------------------------
 	// Initialization of libraries
 	// -------------------------------------------------------------------------
 
-	private void downloadLibraryDef(final String libraryName, URL url) {
+	private void downloadLibraryDef(final String libraryName) {
 		dlManager.downloadLibraryDef(libraryName, new DownloadManager.Callback() {
 			@Override public void completed() {
 				System.out.println("Successfully retrieved definition for library '" + libraryName + "'");
@@ -114,14 +122,19 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 				}});
 			}
 			@Override public void error() {
-				System.err.print("[warning] Cannot download definition for library '" + libraryName + "'");
+				System.err.println("[warning] Cannot download definition for library '" + libraryName + "'");
+				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
+					registerLibrary(null);
+				}});
 			}
 		});
 	}
 
 	private void registerLibrary(String libraryName) {
-		Ctx.cfg.libs.add(libraryName, dlManager.getLibraryDef(libraryName));
-		Ctx.cfg.libs.setUsage(libraryName, libraryName.equals("libgdx"));
+		if (libraryName != null) {
+			Ctx.cfg.libs.add(libraryName, dlManager.getLibraryDef(libraryName));
+			Ctx.cfg.libs.setUsage(libraryName, libraryName.equals("libgdx"));
+		}
 
 		count += 1;
 		int total = dlManager.getLibrariesNames().size();
@@ -129,22 +142,18 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		if (count < total) {
 			librariesUpdateLabel.setText("Retrieving libraries: " + count + " / " + total);
 		} else {
-			List<String> names = new ArrayList<String>(dlManager.getLibrariesNames());
-
-			for (int i=names.size()-1; i>=0; i--) {
-				LibraryDef def = dlManager.getLibraryDef(names.get(i));
-				if (def == null) names.remove(i);
-			}
+			List<String> names = new ArrayList<String>(Ctx.cfg.libs.getNames());
 
 			Collections.sort(names, new Comparator<String>() {
 				@Override public int compare(String o1, String o2) {
-					LibraryDef def1 = dlManager.getLibraryDef(o1);
-					LibraryDef def2 = dlManager.getLibraryDef(o2);
-					return def1.name.compareTo(def2.name);
+					LibraryDef def1 = Ctx.cfg.libs.getDef(o1);
+					LibraryDef def2 = Ctx.cfg.libs.getDef(o2);
+					return def1.name.compareToIgnoreCase(def2.name);
 				}
 			});
 
 			librariesPanel.removeAll();
+			librariesScrollPane.revalidate();
 
 			for (String name : names) {
 				if (!name.equals("libgdx")) buildLibraryPanel(name);
@@ -152,6 +161,16 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			}
 
 			Ctx.fireConfigChanged();
+
+			if (Ctx.cfg.libs.getNames().size() < total) {
+				String msg = "<html>Could not retrieve the definitions for:<br/>";
+				for (String name : dlManager.getLibrariesNames()) {
+					if (!Ctx.cfg.libs.getNames().contains(name)) msg += "'" + name + "', ";
+				}
+				sectionLabel2.setHorizontalTextPosition(SwingConstants.LEFT);
+				sectionLabel2.setToolTipText(msg.substring(0, msg.length()-2));
+				sectionLabel2.setIcon(Res.getImage("gfx/ic_error.png"));
+			}
 		}
 	}
 
@@ -169,6 +188,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		LibraryDef def = Ctx.cfg.libs.getDef(libraryName);
 
 		JCheckBox nameChk = new JCheckBox(def.name);
+		JLabel html5Label = new JLabel(Res.getImage("gfx/ic_html5.png"));
 		JButton infoBtn = new JButton(infoAction);
 		JButton browseBtn = new JButton(browseAction);
 		JButton getStableBtn = new JButton(getStableAction);
@@ -176,6 +196,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 		nameChk.addActionListener(nameChkAL);
 		nameChk.setForeground(LIB_NOTFOUND_COLOR);
+		html5Label.setToolTipText("Compatible with HTML backend");
 		infoBtn.setIcon(Res.getImage("gfx/ic_info.png"));
 		browseBtn.setIcon(Res.getImage("gfx/ic_browse.png"));
 		getStableBtn.setIcon(Res.getImage("gfx/ic_download_stable.png"));
@@ -183,16 +204,22 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
+		toolBar.add(Box.createHorizontalGlue());
 		toolBar.add(infoBtn);
 		toolBar.add(browseBtn);
 		if (def.stableUrl != null) toolBar.add(getStableBtn); else toolBar.add(Box.createHorizontalStrut(libgdxGetStableBtn.getWidth()));
 		if (def.latestUrl != null) toolBar.add(getLatestBtn); else toolBar.add(Box.createHorizontalStrut(libgdxGetNightliesBtn.getWidth()));
 
+		JPanel leftPanel = new JPanel(new BorderLayout());
+		leftPanel.setOpaque(false);
+		leftPanel.add(nameChk, BorderLayout.CENTER);
+		if (def.gwtModuleName != null) leftPanel.add(html5Label, BorderLayout.EAST);
+
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
 		panel.setOpaque(false);
-		panel.add(nameChk, BorderLayout.CENTER);
-		panel.add(toolBar, BorderLayout.EAST);
+		panel.add(leftPanel, BorderLayout.WEST);
+		panel.add(toolBar, BorderLayout.CENTER);
 
 		librariesPanel.add(panel);
 
