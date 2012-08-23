@@ -14,6 +14,7 @@ javax-swing-JScrollPane {
 }
 
 javax-swing-JCheckBox,
+javax-swing-JRadioButton,
 javax-swing-JToolBar {
 	-swing-opaque: false;
 }
@@ -36,7 +37,11 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-ar-border-header-fill: lineargradient(0, 0, 0, 1, 0, #4D6082, 1, #3D5277);
 	-ar-border-margin: 3 6;
 	-ar-border-foreground: #FFF;
-	-ar-border-font: Sans bold 14;
+	-ar-border-font: SquareFont plain 14;
+}
+
+#selectionPanel {
+	-ar-border-title: "Mode";
 }
 
 #configPanel {
@@ -177,27 +182,20 @@ javax-swing-JToolBar > javax-swing-JButton {
  * Misc
  ******************************************************************************/
 
-.versionLabel {
-	-swing-foreground: #FFF;
-	-swing-font-style: bold;
-}
-
 .helpNumber {
 	-swing-font-size: 30;
 }
 
-.versionLabelError {
-	-swing-foreground: #FAA;
+.versionLabel {
+	-swing-background: #FFF;
+	-swing-foreground: #000;
+	-swing-font-size: 10;
+	-swing-opaque: true;
+	-swing-border: emptyborder(1, 5, 1, 5);
 }
+.versionLabel:error {-swing-foreground: #800;}
+.versionLabel:newVersion {-swing-foreground: #080;}
 
-.versionLabelNoUpdate {
-	-swing-foreground: #AFA;
-}
-
-.versionLabelUpdateFound {
-	-swing-foreground: #FFA;
-}
-
-.versionLabelUpdateFound:hover {
-	-swing-foreground: #FFF;
+.selectionButton {
+	-swing-horizontalalignment: center;
 }

@@ -1,15 +1,14 @@
 package aurelienribon.libgdx.ui.dialogs;
 
-import aurelienribon.libgdx.ProjectConfiguration;
 import aurelienribon.libgdx.ProjectSetup;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.Res;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import res.Res;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -68,6 +67,9 @@ public class GoDialog extends javax.swing.JDialog {
 					report(" done\nAll done!");
 				} catch (final IOException ex) {
 					report("\n[error] " + ex.getMessage());
+					report("\nCleaning...");
+					setup.clean();
+					report("done");
 				}
 			}
 		}).start();
@@ -120,7 +122,7 @@ public class GoDialog extends javax.swing.JDialog {
                 .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(importQuestion)
                     .addComponent(fixHtmlQuestion))
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap(136, Short.MAX_VALUE))
         );
         paintedPanel1Layout.setVerticalGroup(
             paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,7 +158,7 @@ public class GoDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(title1)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(title2)
                 .addGap(18, 18, 18)

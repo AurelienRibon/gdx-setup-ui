@@ -4,6 +4,7 @@ import aurelienribon.utils.ParseUtils;
 import java.util.List;
 
 /**
+ * Skeleton for all the parameters related to a library definition.
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class LibraryDef {
@@ -21,7 +22,12 @@ public class LibraryDef {
 	public final List<String> libsDesktop;
 	public final List<String> libsAndroid;
 	public final List<String> libsHtml;
+	public final List<String> data;
 
+	/**
+	 * Creates a library definition by parsing the given text. If a parameter
+	 * block is not found, it is replaced by a standard content.
+	 */
 	public LibraryDef(String content) {
 		this.name = ParseUtils.parseBlock(content, "name", "<unknown>");
 		this.author = ParseUtils.parseBlock(content, "author", "<unknown>");
@@ -37,5 +43,6 @@ public class LibraryDef {
 		this.libsDesktop = ParseUtils.parseBlockAsList(content, "libs-desktop");
 		this.libsAndroid = ParseUtils.parseBlockAsList(content, "libs-android");
 		this.libsHtml = ParseUtils.parseBlockAsList(content, "libs-html");
+		this.data = ParseUtils.parseBlockAsList(content, "data");
 	}
 }

@@ -2,7 +2,6 @@ package aurelienribon.libgdx.ui;
 
 import aurelienribon.libgdx.LibraryDef;
 import aurelienribon.libgdx.ProjectConfiguration;
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -12,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Ctx {
 	public static final ProjectConfiguration cfg = new ProjectConfiguration();
 	public static final List<Listener> listeners = new CopyOnWriteArrayList<Listener>();
-	public static URL testLibUrl = null;
+	public static String testLibUrl = null;
 	public static LibraryDef testLibDef = null;
 
 	public static interface Listener {

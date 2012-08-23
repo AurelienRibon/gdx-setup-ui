@@ -49,7 +49,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="numberLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="2"/>
+            <Property name="text" type="java.lang.String" value="3"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -148,6 +148,7 @@
                       <Image iconType="3" name="/res/gfx/ic_info.png"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value="Information"/>
+                    <Property name="focusable" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="libgdxBrowseBtn">
@@ -156,6 +157,7 @@
                       <Image iconType="3" name="/res/gfx/ic_browse.png"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value="Browse to select the archive"/>
+                    <Property name="focusable" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="libgdxGetStableBtn">
@@ -164,6 +166,7 @@
                       <Image iconType="3" name="/res/gfx/ic_download_stable.png"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value="Download latest stable version"/>
+                    <Property name="focusable" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JButton" name="libgdxGetNightliesBtn">
@@ -172,6 +175,7 @@
                       <Image iconType="3" name="/res/gfx/ic_download_nightlies.png"/>
                     </Property>
                     <Property name="toolTipText" type="java.lang.String" value="Download latest nightlies version"/>
+                    <Property name="focusable" type="boolean" value="false"/>
                   </Properties>
                 </Component>
               </SubComponents>

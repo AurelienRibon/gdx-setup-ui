@@ -1,10 +1,12 @@
-package aurelienribon.libgdx.ui;
+package aurelienribon.libgdx.ui.panels;
 
 import aurelienribon.libgdx.DownloadManager;
 import aurelienribon.libgdx.LibraryDef;
+import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.dialogs.DownloadDialog;
 import aurelienribon.libgdx.ui.dialogs.LibraryInfoDialog;
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.Res;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,7 +36,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import res.Res;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -44,7 +44,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	private static final Color LIB_FOUND_COLOR = new Color(0x008800);
 	private static final Color LIB_NOTFOUND_COLOR = new Color(0x880000);
 
-	private DownloadManager dlManager;
+	private final DownloadManager dlManager;
 	private final Map<String, File> libsSelectedFiles = new HashMap<String, File>();
 	private final Map<String, JComponent> libsNamesCmps = new HashMap<String, JComponent>();
 	private int count = 0;
@@ -66,12 +66,8 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(legendPanel, ".legendPanel");
 		Style.registerCssClasses(legendLabel, ".legendLabel");
 
-		try {
-			//dlManager = new DownloadManager("http://www.aurelienribon.com/libgdx-setup/config.txt");
-			dlManager = new DownloadManager("http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/config.txt");
-		} catch (MalformedURLException ex) {
-			System.err.println("[warning] Malformed url for the configuration file");
-		}
+		//dlManager = new DownloadManager("http://www.aurelienribon.com/libgdx-setup/config.txt");
+		dlManager = new DownloadManager("http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/config.txt");
     }
 
 	public void init() {
@@ -89,21 +85,26 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		}
 
 		dlManager.downloadConfigFile(new DownloadManager.Callback() {
-			@Override public void completed() {
+			@Override
+			public void onComplete() {
 				System.out.println("Successfully retrieved the configuration file.");
 
 				if (Ctx.testLibUrl != null) {
-					dlManager.addTestLibraryUrl("__test_url__", Ctx.testLibUrl);
+					dlManager.addLibraryUrl("__test_url__", Ctx.testLibUrl);
 				}
 
 				if (Ctx.testLibDef != null) {
-					dlManager.addTestLibraryDef("__test_def__", Ctx.testLibDef);
+					dlManager.addLibraryDef("__test_def__", Ctx.testLibDef);
 					registerLibrary("__test_def__");
 				}
 
-				for (String name : dlManager.getLibrariesNames()) downloadLibraryDef(name);
+				for (String name : dlManager.getLibrariesNames()) {
+					downloadLibraryDef(name);
+				}
 			}
-			@Override public void error() {
+
+			@Override
+			public void onError() {
 				System.err.println("[warning] Cannot download the configuration file.");
 				librariesUpdateLabel.setText("Cannot download the configuration file");
 			}
@@ -116,13 +117,16 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 	private void downloadLibraryDef(final String libraryName) {
 		dlManager.downloadLibraryDef(libraryName, new DownloadManager.Callback() {
-			@Override public void completed() {
+			@Override
+			public void onComplete() {
 				System.out.println("Successfully retrieved definition for library '" + libraryName + "'");
 				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
 					registerLibrary(libraryName);
 				}});
 			}
-			@Override public void error() {
+
+			@Override
+			public void onError() {
 				System.err.println("[warning] Cannot download definition for library '" + libraryName + "'");
 				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
 					registerLibrary(null);
@@ -202,6 +206,10 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		browseBtn.setIcon(Res.getImage("gfx/ic_browse.png"));
 		getStableBtn.setIcon(Res.getImage("gfx/ic_download_stable.png"));
 		getLatestBtn.setIcon(Res.getImage("gfx/ic_download_nightlies.png"));
+		infoBtn.setFocusable(false);
+		browseBtn.setFocusable(false);
+		getStableBtn.setFocusable(false);
+		getLatestBtn.setFocusable(false);
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
@@ -333,7 +341,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
         jLabel4.setText("<html> Select the libraries you want to include. Direct downloads are available to stable and nightly releases.");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        numberLabel.setText("2");
+        numberLabel.setText("3");
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
@@ -365,18 +373,22 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
         libgdxInfoBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_info.png"))); // NOI18N
         libgdxInfoBtn.setToolTipText("Information");
+        libgdxInfoBtn.setFocusable(false);
         libgdxToolBar.add(libgdxInfoBtn);
 
         libgdxBrowseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_browse.png"))); // NOI18N
         libgdxBrowseBtn.setToolTipText("Browse to select the archive");
+        libgdxBrowseBtn.setFocusable(false);
         libgdxToolBar.add(libgdxBrowseBtn);
 
         libgdxGetStableBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_download_stable.png"))); // NOI18N
         libgdxGetStableBtn.setToolTipText("Download latest stable version");
+        libgdxGetStableBtn.setFocusable(false);
         libgdxToolBar.add(libgdxGetStableBtn);
 
         libgdxGetNightliesBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_download_nightlies.png"))); // NOI18N
         libgdxGetNightliesBtn.setToolTipText("Download latest nightlies version");
+        libgdxGetNightliesBtn.setFocusable(false);
         libgdxToolBar.add(libgdxGetNightliesBtn);
 
         javax.swing.GroupLayout libgdxPanelLayout = new javax.swing.GroupLayout(libgdxPanel);

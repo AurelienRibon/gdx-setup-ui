@@ -49,7 +49,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="numberLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="1"/>
+            <Property name="text" type="java.lang.String" value="2"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -95,18 +95,18 @@
                               <Component id="mainClassField" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="genHtmlPrjChk" min="-2" max="-2" attributes="0"/>
-                              <Component id="genAndroidPrjChk" min="-2" max="-2" attributes="0"/>
-                              <Component id="genDesktopPrjChk" min="-2" max="-2" attributes="0"/>
-                              <Component id="genCommonPrjChk" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="advancedSettingsLabel" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="genAndroidPrjChk" min="-2" max="-2" attributes="0"/>
+                              <Component id="genCommonPrjChk" min="-2" max="-2" attributes="0"/>
+                              <Component id="genDesktopPrjChk" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="genHtmlPrjChk" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -140,9 +140,9 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="genCommonPrjChk" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="genDesktopPrjChk" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="genAndroidPrjChk" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="genDesktopPrjChk" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="genHtmlPrjChk" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
@@ -197,7 +197,8 @@
         <Component class="javax.swing.JCheckBox" name="genAndroidPrjChk">
           <Properties>
             <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="generate android project"/>
+            <Property name="text" type="java.lang.String" value="generate android project (required)"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="genDesktopPrjChk">

@@ -1,6 +1,7 @@
-package aurelienribon.libgdx.ui;
+package aurelienribon.libgdx.ui.panels;
 
 import aurelienribon.libgdx.ProjectConfigurationHelper;
+import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.dialogs.GoDialog;
 import aurelienribon.ui.css.Style;
 import java.awt.Color;
@@ -98,7 +99,7 @@ public class GoPanel extends javax.swing.JPanel {
         jLabel4.setText("<html> Ready to go?");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        numberLabel.setText("4");
+        numberLabel.setText("5");
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);

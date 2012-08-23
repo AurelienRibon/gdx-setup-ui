@@ -1,13 +1,10 @@
+package aurelienribon.libgdx.ui;
 
 import aurelienribon.libgdx.LibraryDef;
-import aurelienribon.libgdx.ui.Ctx;
-import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.components.ArStyle;
 import aurelienribon.ui.css.swing.SwingStyle;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -34,10 +31,10 @@ public class Main {
 				SwingStyle.init();
 				ArStyle.init();
 
-				JFrame frame = new JFrame("LibGDX Project Setup");
+				JFrame frame = new JFrame("Gdx-Setup-Ui");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setContentPane(new MainPanel());
-				frame.setSize(1000, 550);
+				frame.setSize(1100, 600);
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 			}
@@ -47,11 +44,8 @@ public class Main {
 	private static void parseArgs(String[] args) {
 		for (int i=0; i<args.length; i++) {
 			if (args[i].equals("-testliburl") && i<args.length) {
-				try {
-					Ctx.testLibUrl = new URL(args[i+1]);
-				} catch (MalformedURLException ex) {
-					System.err.println("[warning] Test url is malformed");
-				}
+				Ctx.testLibUrl = args[i+1];
+
 			} else if (args[i].equals("-testlibdef") && i<args.length) {
 				File file = new File(args[i+1]);
 				try {

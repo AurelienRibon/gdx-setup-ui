@@ -3,6 +3,7 @@ package aurelienribon.libgdx.ui.dialogs;
 import aurelienribon.libgdx.LibraryDef;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.Res;
 import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,7 +18,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import res.Res;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/

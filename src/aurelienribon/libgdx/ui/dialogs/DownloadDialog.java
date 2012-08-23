@@ -2,6 +2,7 @@ package aurelienribon.libgdx.ui.dialogs;
 
 import aurelienribon.ui.css.Style;
 import aurelienribon.utils.HttpUtils;
+import aurelienribon.utils.Res;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
@@ -9,12 +10,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.commons.io.FileUtils;
-import res.Res;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -42,18 +40,13 @@ public class DownloadDialog extends javax.swing.JDialog {
 		}
 
 		try {
-			URL inputURL = new URL(in);
 			OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(out + ".tmp"));
-
-			final HttpUtils.DownloadTask task = HttpUtils.downloadAsync(inputURL, outputStream, fullCallback);
+			final HttpUtils.DownloadTask task = HttpUtils.downloadAsync(in, outputStream, fullCallback);
 
 			addWindowListener(new WindowAdapter() {@Override public void windowClosing(WindowEvent e) {
-				task.stop();
+				if (task != null) task.stop();
 				dispose();
 			}});
-
-		} catch (MalformedURLException ex) {
-			JOptionPane.showMessageDialog(getContentPane(), ex.getMessage());
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(getContentPane(), ex.getMessage());
 		}
@@ -65,7 +58,7 @@ public class DownloadDialog extends javax.swing.JDialog {
 
 	private final HttpUtils.Callback fullCallback = new HttpUtils.Callback() {
 		@Override
-		public void completed() {
+		public void onComplete() {
 			try {
 				FileUtils.deleteQuietly(new File(out));
 				FileUtils.moveFile(new File(out + ".tmp"), new File(out));
@@ -79,13 +72,13 @@ public class DownloadDialog extends javax.swing.JDialog {
 		}
 
 		@Override
-		public void canceled() {
+		public void onCancel() {
 			FileUtils.deleteQuietly(new File(out + ".tmp"));
 			dispose();
 		}
 
 		@Override
-		public void error(IOException ex) {
+		public void onError(IOException ex) {
 			FileUtils.deleteQuietly(new File(out + ".tmp"));
 			String msg = "Something went wrong during the download.\n"
 				+ ex.getClass().getSimpleName() + ": " + ex.getMessage();
@@ -94,7 +87,7 @@ public class DownloadDialog extends javax.swing.JDialog {
 		}
 
 		@Override
-		public void updated(int length, int totalLength) {
+		public void onUpdate(int length, int totalLength) {
 			if (totalLength > 0) {
 				progressBar.setIndeterminate(false);
 				progressBar.setValue((int) Math.round((double) length * 100 / totalLength));

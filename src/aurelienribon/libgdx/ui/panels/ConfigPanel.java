@@ -1,5 +1,7 @@
-package aurelienribon.libgdx.ui;
+package aurelienribon.libgdx.ui.panels;
 
+import aurelienribon.libgdx.ui.Ctx;
+import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.dialogs.AdvancedSettingsDialog;
 import aurelienribon.ui.css.Style;
 import java.awt.event.ActionEvent;
@@ -211,7 +213,7 @@ public class ConfigPanel extends javax.swing.JPanel {
         jLabel4.setText("<html> Main parameters defining your project. See the overview panel to know if it suits your needs.");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        numberLabel.setText("1");
+        numberLabel.setText("2");
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
@@ -250,7 +252,8 @@ public class ConfigPanel extends javax.swing.JPanel {
         jLabel3.setText("Destination");
 
         genAndroidPrjChk.setSelected(true);
-        genAndroidPrjChk.setText("generate android project");
+        genAndroidPrjChk.setText("generate android project (required)");
+        genAndroidPrjChk.setEnabled(false);
 
         genDesktopPrjChk.setSelected(true);
         genDesktopPrjChk.setText("generate desktop project");
@@ -289,16 +292,16 @@ public class ConfigPanel extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(browseBtn))
                             .addComponent(mainClassField)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(genHtmlPrjChk)
-                            .addComponent(genAndroidPrjChk)
-                            .addComponent(genDesktopPrjChk)
-                            .addComponent(genCommonPrjChk))
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(advancedSettingsLabel)))
+                        .addComponent(advancedSettingsLabel))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(genAndroidPrjChk)
+                            .addComponent(genCommonPrjChk)
+                            .addComponent(genDesktopPrjChk)
+                            .addComponent(genHtmlPrjChk))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -324,9 +327,9 @@ public class ConfigPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(genCommonPrjChk)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(genDesktopPrjChk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(genAndroidPrjChk)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(genDesktopPrjChk)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(genHtmlPrjChk)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)

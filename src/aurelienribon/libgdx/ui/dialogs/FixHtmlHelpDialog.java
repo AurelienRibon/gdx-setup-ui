@@ -1,8 +1,8 @@
 package aurelienribon.libgdx.ui.dialogs;
 
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.Res;
 import javax.swing.JFrame;
-import res.Res;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
