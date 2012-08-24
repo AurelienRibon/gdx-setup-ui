@@ -7,8 +7,8 @@ import javax.swing.JFrame;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class FixHtmlHelpDialog extends javax.swing.JDialog {
-    public FixHtmlHelpDialog(JFrame parent) {
+public class HelpImportDialog extends javax.swing.JDialog {
+    public HelpImportDialog(JFrame parent) {
         super(parent, true);
         initComponents();
 
@@ -16,6 +16,7 @@ public class FixHtmlHelpDialog extends javax.swing.JDialog {
 		Style.registerCssClasses(num1, ".helpNumber");
 		Style.registerCssClasses(num2, ".helpNumber");
 		Style.registerCssClasses(num3, ".helpNumber");
+		Style.registerCssClasses(num4, ".helpNumber");
 		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
     }
 
@@ -30,19 +31,23 @@ public class FixHtmlHelpDialog extends javax.swing.JDialog {
         rootPanel = new aurelienribon.ui.components.PaintedPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         num1 = new javax.swing.JLabel();
         num2 = new javax.swing.JLabel();
         num3 = new javax.swing.JLabel();
+        num4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Fix error in html project");
+        setTitle("Importing into eclipse");
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/help/fixhtml1.jpg"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/help/import1.jpg"))); // NOI18N
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/help/fixhtml2.jpg"))); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/help/import2.jpg"))); // NOI18N
 
-        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/help/fixhtml3.jpg"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/help/import4.jpg"))); // NOI18N
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/help/import3.jpg"))); // NOI18N
 
         num1.setText("1");
 
@@ -50,25 +55,31 @@ public class FixHtmlHelpDialog extends javax.swing.JDialog {
 
         num3.setText("3");
 
+        num4.setText("4");
+
         javax.swing.GroupLayout rootPanelLayout = new javax.swing.GroupLayout(rootPanel);
         rootPanel.setLayout(rootPanelLayout);
         rootPanelLayout.setHorizontalGroup(
             rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rootPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(rootPanelLayout.createSequentialGroup()
+                        .addComponent(num4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3))
+                    .addGroup(rootPanelLayout.createSequentialGroup()
+                        .addComponent(num1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
                         .addComponent(num2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
                         .addComponent(num3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4))
-                    .addGroup(rootPanelLayout.createSequentialGroup()
-                        .addComponent(num1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)))
+                        .addComponent(jLabel4)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         rootPanelLayout.setVerticalGroup(
@@ -77,13 +88,15 @@ public class FixHtmlHelpDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(num1)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
+                    .addComponent(jLabel1)
                     .addComponent(jLabel4)
                     .addComponent(num2)
                     .addComponent(num3))
+                .addGap(18, 18, 18)
+                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(num4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -94,10 +107,12 @@ public class FixHtmlHelpDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel num1;
     private javax.swing.JLabel num2;
     private javax.swing.JLabel num3;
+    private javax.swing.JLabel num4;
     private aurelienribon.ui.components.PaintedPanel rootPanel;
     // End of variables declaration//GEN-END:variables
 

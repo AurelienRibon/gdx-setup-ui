@@ -2,19 +2,17 @@ package aurelienribon.libgdx.ui.panels;
 
 import aurelienribon.libgdx.ProjectConfigurationHelper;
 import aurelienribon.libgdx.ui.Ctx;
-import aurelienribon.libgdx.ui.dialogs.GoDialog;
+import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class GoPanel extends javax.swing.JPanel {
-    public GoPanel() {
+    public GoPanel(final MainPanel mainPanel) {
         initComponents();
 		Style.registerCssClasses(headerPanel, ".header");
 		Style.registerCssClasses(numberLabel, ".headerNumber");
@@ -23,10 +21,7 @@ public class GoPanel extends javax.swing.JPanel {
 
 		goBtn.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
-				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(GoPanel.this);
-				GoDialog dialog = new GoDialog(frame);
-				dialog.setLocationRelativeTo(frame);
-				dialog.setVisible(true);
+				mainPanel.showGenerationPanel();
 			}
 		});
     }

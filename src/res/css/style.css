@@ -5,7 +5,7 @@
 javax-swing-JButton {
 	-swing-horizontalalignment: left;
 	-swing-verticalalignment: center;
-	-swing-margin: 2 3;
+	-swing-margin: 2 5;
 	-swing-opaque: false;
 }
 
@@ -40,25 +40,14 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-ar-border-font: SquareFont plain 14;
 }
 
-#selectionPanel {
-	-ar-border-title: "Mode";
-}
-
-#configPanel {
-	-ar-border-title: "Configuration";
-}
-
-#librarySetupPanel {
-	-ar-border-title: "Library selection";
-}
-
-#resultPanel {
-	-ar-border-title: "Overview";
-}
-
-#goPanel {
-	-ar-border-title: "Generation";
-}
+#selectionPanel {-ar-border-title: "Mode";}
+#configPanel {-ar-border-title: "Configuration";}
+#librarySetupPanel {-ar-border-title: "Library Selection";}
+#resultPanel {-ar-border-title: "Overview";}
+#goPanel {-ar-border-title: "Generation";}
+#advancedSettingsPanel {-ar-border-title: "Advanced Settings";}
+#libraryInfoPanel {-ar-border-title: "Library information";}
+#generationPanel {-ar-border-title: "Generation";}
 
 /*******************************************************************************
  * Root panels
@@ -97,37 +86,11 @@ javax-swing-JToolBar > javax-swing-JButton {
  ******************************************************************************/
 
 .optionGroupPanel {
-	-ar-fill: #3FFF;
-	-swing-opaque: false;
+	-ar-fill: #BBC8D8;
 }
 
 .optionGroupPanel > javax-swing-JLabel {
-	-swing-foreground: #FFF;
-}
-
-/*******************************************************************************
- * Dialogs
- ******************************************************************************/
-
-.titleLabel {
-	-swing-font: Arial bold 20;
-	-swing-border: matteborder(0, 0, 1, 0, #FFF);
-}
-
-.questionLabel:hover {
-	-swing-foreground: #88F;
-}
-
-/*******************************************************************************
- * Links
- ******************************************************************************/
-
-.linkLabel {
-	-swing-foreground: #008;
-}
-
-.linkLabel:hover {
-	-swing-foreground: #55F;
+	-swing-foreground: #3D5277;
 }
 
 /*******************************************************************************
@@ -154,36 +117,37 @@ javax-swing-JToolBar > javax-swing-JButton {
 }
 
 /*******************************************************************************
- * LibInfo dialog
+ * Task Bar
  ******************************************************************************/
 
-.libInfoDescLabel {
-	-swing-font-size: 14;
-}
-
-.libInfoUrlLabel {
-	-swing-foreground: #CCF;
-}
-
-.libInfoUrlLabel:hover {
-	-swing-foreground: #FFF;
-}
-
-/*******************************************************************************
- * Go dialog
- ******************************************************************************/
-
-.progressArea {
-	-swing-margin: 5 10;
-	-swing-font-size: 11;
+.taskBar {
+	-swing-background: #FFF;
 }
 
 /*******************************************************************************
  * Misc
  ******************************************************************************/
 
-.helpNumber {
-	-swing-font-size: 30;
+.linkLabel {-swing-foreground: #008;}
+.linkLabel:hover {-swing-foreground: #55F;}
+
+.libInfoDescLabel {-swing-font-size: 13;}
+.libInfoTitleLabel {
+	-swing-foreground: #3D5277;
+	-swing-font-size: 20;
+	-swing-font-style: bold;
+	-swing-border: matteborder(0, 0, 1, 0, #3D5277);
+}
+
+.helpNumber {-swing-font-size: 30;}
+
+.progressArea {
+	-swing-margin: 5 10;
+	-swing-font-size: 11;
+}
+
+.frame {
+	-swing-border: lineborder(#3D5277, 1);
 }
 
 .versionLabel {
@@ -195,7 +159,3 @@ javax-swing-JToolBar > javax-swing-JButton {
 }
 .versionLabel:error {-swing-foreground: #800;}
 .versionLabel:newVersion {-swing-foreground: #080;}
-
-.selectionButton {
-	-swing-horizontalalignment: center;
-}

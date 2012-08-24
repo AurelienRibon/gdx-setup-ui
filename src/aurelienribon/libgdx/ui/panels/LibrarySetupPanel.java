@@ -1,19 +1,24 @@
 package aurelienribon.libgdx.ui.panels;
 
-import aurelienribon.libgdx.DownloadManager;
 import aurelienribon.libgdx.LibraryDef;
 import aurelienribon.libgdx.ui.Ctx;
-import aurelienribon.libgdx.ui.dialogs.DownloadDialog;
-import aurelienribon.libgdx.ui.dialogs.LibraryInfoDialog;
+import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.HttpUtils;
+import aurelienribon.utils.HttpUtils.DownloadListener;
+import aurelienribon.utils.HttpUtils.DownloadTask;
 import aurelienribon.utils.Res;
+import aurelienribon.utils.SwingUtils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,11 +34,13 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -44,12 +51,13 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	private static final Color LIB_FOUND_COLOR = new Color(0x008800);
 	private static final Color LIB_NOTFOUND_COLOR = new Color(0x880000);
 
-	private final DownloadManager dlManager;
+	private final MainPanel mainPanel;
 	private final Map<String, File> libsSelectedFiles = new HashMap<String, File>();
 	private final Map<String, JComponent> libsNamesCmps = new HashMap<String, JComponent>();
 	private int count = 0;
 
-    public LibrarySetupPanel() {
+    public LibrarySetupPanel(MainPanel mainPanel) {
+		this.mainPanel = mainPanel;
         initComponents();
 
 		librariesScrollPane.getViewport().setOpaque(false);
@@ -65,9 +73,6 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(sectionLabel2, ".sectionLabel");
 		Style.registerCssClasses(legendPanel, ".legendPanel");
 		Style.registerCssClasses(legendLabel, ".legendLabel");
-
-		//dlManager = new DownloadManager("http://www.aurelienribon.com/libgdx-setup/config.txt");
-		dlManager = new DownloadManager("http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/config.txt");
     }
 
 	public void init() {
@@ -83,66 +88,11 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		} catch (IOException ex) {
 			assert false;
 		}
-
-		dlManager.downloadConfigFile(new DownloadManager.Callback() {
-			@Override
-			public void onComplete() {
-				System.out.println("Successfully retrieved the configuration file.");
-
-				if (Ctx.testLibUrl != null) {
-					dlManager.addLibraryUrl("__test_url__", Ctx.testLibUrl);
-				}
-
-				if (Ctx.testLibDef != null) {
-					dlManager.addLibraryDef("__test_def__", Ctx.testLibDef);
-					registerLibrary("__test_def__");
-				}
-
-				for (String name : dlManager.getLibrariesNames()) {
-					downloadLibraryDef(name);
-				}
-			}
-
-			@Override
-			public void onError() {
-				System.err.println("[warning] Cannot download the configuration file.");
-				librariesUpdateLabel.setText("Cannot download the configuration file");
-			}
-		});
 	}
 
-	// -------------------------------------------------------------------------
-	// Initialization of libraries
-	// -------------------------------------------------------------------------
-
-	private void downloadLibraryDef(final String libraryName) {
-		dlManager.downloadLibraryDef(libraryName, new DownloadManager.Callback() {
-			@Override
-			public void onComplete() {
-				System.out.println("Successfully retrieved definition for library '" + libraryName + "'");
-				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
-					registerLibrary(libraryName);
-				}});
-			}
-
-			@Override
-			public void onError() {
-				System.err.println("[warning] Cannot download definition for library '" + libraryName + "'");
-				SwingUtilities.invokeLater(new Runnable() {@Override public void run() {
-					registerLibrary(null);
-				}});
-			}
-		});
-	}
-
-	private void registerLibrary(String libraryName) {
-		if (libraryName != null) {
-			Ctx.cfg.libs.add(libraryName, dlManager.getLibraryDef(libraryName));
-			Ctx.cfg.libs.setUsage(libraryName, libraryName.equals("libgdx"));
-		}
-
+	public void registerLibrary(String libraryName) {
 		count += 1;
-		int total = dlManager.getLibrariesNames().size();
+		int total = Ctx.dlManager.getLibrariesNames().size();
 
 		if (count < total) {
 			librariesUpdateLabel.setText("Retrieving libraries: " + count + " / " + total);
@@ -169,7 +119,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 			if (Ctx.cfg.libs.getNames().size() < total) {
 				String msg = "<html>Could not retrieve the definitions for:<br/>";
-				for (String name : dlManager.getLibrariesNames()) {
+				for (String name : Ctx.dlManager.getLibrariesNames()) {
 					if (!Ctx.cfg.libs.getNames().contains(name)) msg += "'" + name + "', ";
 				}
 				sectionLabel2.setHorizontalTextPosition(SwingConstants.LEFT);
@@ -178,6 +128,10 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			}
 		}
 	}
+
+	// -------------------------------------------------------------------------
+	// Initialization of libraries
+	// -------------------------------------------------------------------------
 
 	private void buildLibraryPanel(final String libraryName) {
 		ActionListener nameChkAL = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
@@ -216,8 +170,8 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		toolBar.add(Box.createHorizontalGlue());
 		toolBar.add(infoBtn);
 		toolBar.add(browseBtn);
-		if (def.stableUrl != null) toolBar.add(getStableBtn); else toolBar.add(Box.createHorizontalStrut(libgdxGetStableBtn.getWidth()));
-		if (def.latestUrl != null) toolBar.add(getLatestBtn); else toolBar.add(Box.createHorizontalStrut(libgdxGetNightliesBtn.getWidth()));
+		if (def.stableUrl != null) toolBar.add(getStableBtn); else toolBar.add(Box.createHorizontalStrut(libgdxGetStableBtn.getPreferredSize().width));
+		if (def.latestUrl != null) toolBar.add(getLatestBtn); else toolBar.add(Box.createHorizontalStrut(libgdxGetNightliesBtn.getPreferredSize().width));
 
 		JPanel leftPanel = new JPanel(new BorderLayout());
 		leftPanel.setOpaque(false);
@@ -254,10 +208,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	// -------------------------------------------------------------------------
 
 	private void showInfo(String libraryName) {
-		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-		LibraryInfoDialog dialog = new LibraryInfoDialog(frame, libraryName);
-		dialog.setLocationRelativeTo(frame);
-		dialog.setVisible(true);
+		mainPanel.showLibraryInfo(libraryName);
 	}
 
 	private void browse(String libraryName) {
@@ -274,29 +225,40 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 		}
 	}
 
-	private void getStable(String libraryName) {
-		String input = Ctx.cfg.libs.getDef(libraryName).stableUrl;
-		String output = FilenameUtils.getName(input);
-		getFile(libraryName, input, output);
+	private void getStable(final String libraryName) {
+		final String input = Ctx.cfg.libs.getDef(libraryName).stableUrl;
+		final String output = FilenameUtils.getName(input);
+		getFile(input, output, libraryName, "Stable '" + libraryName + "'");
 	}
 
 	private void getLatest(String libraryName) {
-		String input = Ctx.cfg.libs.getDef(libraryName).latestUrl;
-		String output = FilenameUtils.getName(input);
-		getFile(libraryName, input, output);
+		final String input = Ctx.cfg.libs.getDef(libraryName).latestUrl;
+		final String output = FilenameUtils.getName(input);
+		getFile(input, output, libraryName, "Latest '" + libraryName + "'");
 	}
 
-	private void getFile(final String libraryName, String input, String output) {
-		final File zipFile = new File(output);
+	private void getFile(final String input, final String output, final String libraryName, String tag) {
+		OutputStream tempOutput;
+		try {
+			tempOutput = new BufferedOutputStream(new FileOutputStream(output + ".tmp"));
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 
-		DownloadDialog.Callback callback = new DownloadDialog.Callback() {
-			@Override public void completed() {select(libraryName, zipFile);}
-		};
+		DownloadTask task = HttpUtils.downloadAsync(input, tempOutput, tag);
 
-		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-		DownloadDialog dialog = new DownloadDialog(frame, callback, input, output);
-		dialog.setLocationRelativeTo(frame);
-		dialog.setVisible(true);
+		task.addListener(new DownloadListener() {
+			@Override public void onComplete() {
+				try {
+					FileUtils.deleteQuietly(new File(output));
+					FileUtils.moveFile(new File(output + ".tmp"), new File(output));
+				} catch (IOException ex) {
+					String msg = "Could not rename \"" + output + ".tmp" + "\" into \"" + output + "\"";
+					JOptionPane.showMessageDialog(SwingUtils.getJFrame(LibrarySetupPanel.this), msg);
+				}
+				select(libraryName, new File(output));
+			}
+		});
 	}
 
 	private void select(String libraryName, File zipFile) {

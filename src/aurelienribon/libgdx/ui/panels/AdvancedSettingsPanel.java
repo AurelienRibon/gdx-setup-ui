@@ -1,12 +1,103 @@
 package aurelienribon.libgdx.ui.panels;
 
+import aurelienribon.libgdx.ui.Ctx;
+import aurelienribon.ui.css.Style;
+import aurelienribon.utils.SwingUtils;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class AdvancedSettingsPanel extends javax.swing.JPanel {
     public AdvancedSettingsPanel() {
         initComponents();
+
+		commonSuffixField.setText(Ctx.cfg.commonSuffix);
+		desktopSuffixField.setText(Ctx.cfg.desktopSuffix);
+		androidSuffixField.setText(Ctx.cfg.androidSuffix);
+		htmlSuffixField.setText(Ctx.cfg.htmlSuffix);
+		androidMinSdkField.setText(Ctx.cfg.androidMinSdkVersion);
+		androidTargetSdkField.setText(Ctx.cfg.androidTargetSdkVersion);
+		androidMaxSdkField.setText(Ctx.cfg.androidMaxSdkVersion);
+
+		commonSuffixField.addMouseListener(selectOnFocusMouseListener);
+		desktopSuffixField.addMouseListener(selectOnFocusMouseListener);
+		androidSuffixField.addMouseListener(selectOnFocusMouseListener);
+		htmlSuffixField.addMouseListener(selectOnFocusMouseListener);
+		androidMinSdkField.addMouseListener(selectOnFocusMouseListener);
+		androidTargetSdkField.addMouseListener(selectOnFocusMouseListener);
+		androidMaxSdkField.addMouseListener(selectOnFocusMouseListener);
+
+		commonSuffixField.addKeyListener(updateOnTypeKeyListener);
+		desktopSuffixField.addKeyListener(updateOnTypeKeyListener);
+		androidSuffixField.addKeyListener(updateOnTypeKeyListener);
+		htmlSuffixField.addKeyListener(updateOnTypeKeyListener);
+		androidMinSdkField.addKeyListener(updateOnTypeKeyListener);
+		androidTargetSdkField.addKeyListener(updateOnTypeKeyListener);
+		androidMaxSdkField.addKeyListener(updateOnTypeKeyListener);
+
+		androidMinSdkField.addKeyListener(numbersOnlyKeyListener);
+		androidTargetSdkField.addKeyListener(numbersOnlyKeyListener);
+		androidMaxSdkField.addKeyListener(numbersOnlyKeyListener);
+
+		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
+		Style.registerCssClasses(paintedPanel2, ".optionGroupPanel");
     }
+
+	private void update() {
+		Ctx.cfg.commonSuffix = commonSuffixField.getText();
+		Ctx.cfg.desktopSuffix = desktopSuffixField.getText();
+		Ctx.cfg.androidSuffix = androidSuffixField.getText();
+		Ctx.cfg.androidMinSdkVersion = androidMinSdkField.getText();
+		Ctx.cfg.androidMaxSdkVersion = androidMaxSdkField.getText();
+		Ctx.cfg.androidTargetSdkVersion = androidTargetSdkField.getText();
+		Ctx.fireConfigChanged();
+	}
+
+	private final KeyListener updateOnTypeKeyListener = new KeyAdapter() {
+		@Override
+		public void keyReleased(KeyEvent e) {
+			update();
+		}
+	};
+
+	private final MouseListener selectOnFocusMouseListener = new MouseAdapter() {
+		@Override
+		public void mousePressed(MouseEvent e) {
+			JTextField field = (JTextField) e.getSource();
+			if (!field.isFocusOwner()) field.selectAll();
+		}
+	};
+
+
+	private final KeyListener numbersOnlyKeyListener = new KeyAdapter() {
+		private String backup;
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			JTextField field = (JTextField) e.getSource();
+			backup = field.getText();
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			JTextField field = (JTextField) e.getSource();
+			if (!Pattern.compile("[0-9]*").matcher(field.getText()).matches()) {
+				String msg = "Only numbers are allowed.";
+				JOptionPane.showMessageDialog(SwingUtils.getJFrame(AdvancedSettingsPanel.this), msg);
+				field.setText(backup);
+				update();
+			}
+		}
+	};
 
 	// -------------------------------------------------------------------------
 	// Generated stuff
@@ -24,6 +115,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
         androidTargetSdkField = new javax.swing.JTextField();
         androidMinSdkField = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
         paintedPanel2 = new aurelienribon.ui.components.PaintedPanel();
         jLabel1 = new javax.swing.JLabel();
         androidSuffixField = new javax.swing.JTextField();
@@ -50,49 +142,56 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 
         jLabel8.setText("Leave a field blank to unset the value");
 
+        jLabel10.setText("<html>\nThese three values control the SDK parameters of the Android Manifest file. You can change them later by manually editing the AndroidManifest.xml file in your android project.");
+        jLabel10.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
         javax.swing.GroupLayout paintedPanel1Layout = new javax.swing.GroupLayout(paintedPanel1);
         paintedPanel1.setLayout(paintedPanel1Layout);
         paintedPanel1Layout.setHorizontalGroup(
             paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paintedPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(paintedPanel1Layout.createSequentialGroup()
-                        .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7))
-                        .addGap(302, 302, 302))
-                    .addGroup(paintedPanel1Layout.createSequentialGroup()
-                        .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(paintedPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(androidMaxSdkField, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(androidTargetSdkField)
-                                    .addComponent(androidMinSdkField)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paintedPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel8)))
-                        .addContainerGap())))
+                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel6)
+                        .addComponent(jLabel7)
+                        .addGroup(paintedPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(androidMaxSdkField)
+                                .addComponent(androidMinSdkField)
+                                .addComponent(androidTargetSdkField, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)))))
+                .addContainerGap())
         );
+
+        paintedPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel5, jLabel6, jLabel7});
+
+        paintedPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {androidMaxSdkField, androidMinSdkField, androidTargetSdkField});
+
         paintedPanel1Layout.setVerticalGroup(
             paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paintedPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(androidMinSdkField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(androidTargetSdkField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(androidMaxSdkField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel8)
+                .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(paintedPanel1Layout.createSequentialGroup()
+                        .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(androidMinSdkField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(androidTargetSdkField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(androidMaxSdkField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel8))
+                    .addComponent(jLabel10))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -126,29 +225,31 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
                     .addGroup(paintedPanel2Layout.createSequentialGroup()
                         .addGroup(paintedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, paintedPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(desktopSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(desktopSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, paintedPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(commonSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(commonSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(paintedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(paintedPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(htmlSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(paintedPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(androidSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(paintedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(htmlSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(androidSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paintedPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel9)))
                 .addContainerGap())
         );
+
+        paintedPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel1, jLabel2, jLabel3, jLabel4});
+
+        paintedPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {androidSuffixField, commonSuffixField, desktopSuffixField, htmlSuffixField});
+
         paintedPanel2Layout.setVerticalGroup(
             paintedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(paintedPanel2Layout.createSequentialGroup()
@@ -175,10 +276,10 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(paintedPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(paintedPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(paintedPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,7 +288,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
                 .addComponent(paintedPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(92, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -200,6 +301,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JTextField desktopSuffixField;
     private javax.swing.JTextField htmlSuffixField;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

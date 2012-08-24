@@ -7,12 +7,15 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Utility class used to quickly download files on distant servers.
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class HttpUtils {
+	private static final List<Listener> listeners = new CopyOnWriteArrayList<Listener>();
 
 	/**
 	 * Asynchronously downloads the file located at the given url. Content is
@@ -20,24 +23,55 @@ public class HttpUtils {
 	 * null. Else, a {@link DownloadTask} is returned. Use it if you need to
 	 * cancel the download at any time.
 	 * <p/>
-	 * The method takes an optional callback as parameter, used to warn you
+	 * The returned object also lets you add event listeners to warn you
 	 * when the download is complete, if an error happens (such as a connection
-	 * loss). The callback also lets you be notified of the download progress.
+	 * loss). The listeners also let you be notified of the download progress.
 	 */
-	public static DownloadTask downloadAsync(String url, OutputStream output, Callback callback) {
+	public static DownloadTask downloadAsync(String url, OutputStream output) {
+		return downloadAsync(url, output, null);
+	}
+
+	/**
+	 * Asynchronously downloads the file located at the given url. Content is
+	 * written to the given stream. If the url is malformed, the method returns
+	 * null. Else, a {@link DownloadTask} is returned. Use it if you need to
+	 * cancel the download at any time.
+	 * <p/>
+	 * The returned object also lets you add event listeners to warn you
+	 * when the download is complete, if an error happens (such as a connection
+	 * loss). The listeners also let you be notified of the download progress.
+	 * <p/>
+	 * You can also assign a custom tag to the download, to pass information
+	 * to the listeners for instance.
+	 */
+	public static DownloadTask downloadAsync(String url, OutputStream output, String tag) {
 		URL input;
 
 		try {
 			input = new URL(url);
 		} catch (MalformedURLException ex) {
-			callback.onError(ex);
 			return null;
 		}
 
-		final DownloadTask task = new DownloadTask(input, output, callback);
-		Thread th = new Thread(new Runnable() {@Override public void run() {task.download();}});
-		th.start();
+		final DownloadTask task = new DownloadTask(input, output, tag);
+		for (Listener lst : listeners) lst.newDownload(task);
+
+		task.start();
 		return task;
+	}
+
+	/**
+	 * Adds a new listener to catch the start of new downloads.
+	 */
+	public static void addListener(Listener listener) {
+		listeners.add(listener);
+	}
+
+	/**
+	 * Removes the given listener.
+	 */
+	public static void removeListener(Listener listener) {
+		listeners.remove(listener);
 	}
 
 	// -------------------------------------------------------------------------
@@ -45,10 +79,17 @@ public class HttpUtils {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Callback for a {@link DownloadTask}. Used to get notified about all the download
-	 * events: completion, errors and progress.
+	 * Listener for start of new downloads.
 	 */
-	public static class Callback {
+	public static interface Listener {
+		public void newDownload(DownloadTask task);
+	}
+
+	/**
+	 * Listener for a {@link DownloadTask}. Used to get notified about all the
+	 * download events: completion, errors and progress.
+	 */
+	public static class DownloadListener {
 		public void onComplete() {}
 		public void onCancel() {}
 		public void onError(IOException ex) {}
@@ -62,13 +103,21 @@ public class HttpUtils {
 	public static class DownloadTask {
 		private final URL input;
 		private final OutputStream output;
-		private final Callback callback;
+		private final String tag;
+		private final List<DownloadListener> listeners = new CopyOnWriteArrayList<DownloadListener>();
 		private boolean run = true;
 
-		public DownloadTask(URL input, OutputStream output, Callback callback) {
+		public DownloadTask(URL input, OutputStream output, String tag) {
 			this.input = input;
 			this.output = output;
-			this.callback = callback;
+			this.tag = tag;
+		}
+
+		/**
+		 * Adds a new listener to listen for the task events.
+		 */
+		public void addListener(DownloadListener listener) {
+			listeners.add(listener);
 		}
 
 		/**
@@ -77,53 +126,61 @@ public class HttpUtils {
 		 * onComplete() one.
 		 */
 		public void stop() {
+			if (run == false) for (DownloadListener lst : listeners) lst.onCancel();
 			run = false;
 		}
 
 		public URL getInput() {return input;}
 		public OutputStream getOutput() {return output;}
-		public Callback getCallback() {return callback;}
+		public String getTag() {return tag;}
 
-		private void download() {
-			OutputStream os = null;
-			InputStream is = null;
-			IOException ex = null;
+		private void start() {
+			new Thread(new Runnable() {@Override public void run() {
+				OutputStream os = null;
+				InputStream is = null;
+				IOException ex = null;
 
-			try {
-				HttpURLConnection connection = (HttpURLConnection) input.openConnection();
-				connection.setDoInput(true);
-				connection.setDoOutput(false);
-				connection.setUseCaches(true);
-				connection.setConnectTimeout(3000);
-				connection.connect();
+				if (tag.equals("Test"))
+					System.out.println("");
 
-				is = new BufferedInputStream(connection.getInputStream(), 4096);
-				os = output;
+				try {
+					HttpURLConnection connection = (HttpURLConnection) input.openConnection();
+					connection.addRequestProperty("REFERER", "http://gdx-setup-ui.com");
+					connection.setDoInput(true);
+					connection.setDoOutput(false);
+					connection.setUseCaches(true);
+					connection.setConnectTimeout(3000);
+					connection.connect();
 
-				byte[] data = new byte[4096];
-				int length = connection.getContentLength();
-				int total = 0;
+					is = new BufferedInputStream(connection.getInputStream(), 4096);
+					os = output;
 
-				int count;
-				while (run && (count = is.read(data)) != -1) {
-					total += count;
-					os.write(data, 0, count);
-					if (callback != null) callback.onUpdate(total, length);
+					byte[] data = new byte[4096];
+					int length = connection.getContentLength();
+					int total = 0;
+
+					int count;
+					while (run && (count = is.read(data)) != -1) {
+						total += count;
+						os.write(data, 0, count);
+						for (DownloadListener l : listeners) l.onUpdate(total, length);
+					}
+
+				} catch (IOException ex1) {
+					ex = ex1;
+
+				} finally {
+					if (os != null) try {os.flush(); os.close();} catch (IOException ex1) {}
+					if (is != null) try {is.close();} catch (IOException ex1) {}
+
+					if (ex != null) for (DownloadListener l : listeners) l.onError(ex);
+					else if (run == true) for (DownloadListener l : listeners) l.onComplete();
+					else for (DownloadListener l : listeners) l.onCancel();
+
+					run = false;
 				}
 
-			} catch (IOException ex1) {
-				ex = ex1;
-
-			} finally {
-				if (os != null) try {os.flush(); os.close();} catch (IOException ex1) {}
-				if (is != null) try {is.close();} catch (IOException ex1) {}
-
-				if (callback != null) {
-					if (ex != null) callback.onError(ex);
-					else if (run == true) callback.onComplete();
-					else callback.onCancel();
-				}
-			}
+			}}).start();
 		}
 	}
 }

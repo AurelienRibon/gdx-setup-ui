@@ -17,7 +17,7 @@ public class SlidingLayersConfig {
 	private final SlidingLayersPanel panel;
 	private final Map<Component, Tile> tiles = new HashMap<Component, Tile>();
 	private final Map<Direction, List<Tile>> hiddenTiles = new EnumMap<Direction, List<Tile>>(Direction.class);
-	private Grid rootGrid = new Grid(null), currentGrid = rootGrid;
+	private Grid rootGrid = new Grid(), currentGrid = rootGrid;
 	private int hgap = 10, vgap = 10;
 
 	public SlidingLayersConfig(SlidingLayersPanel panel) {
@@ -49,7 +49,8 @@ public class SlidingLayersConfig {
 	}
 
 	public SlidingLayersConfig beginGrid(int row, int col) {
-		Grid grid = new Grid(currentGrid);
+		Grid grid = new Grid();
+		grid.parent = currentGrid;
 		grid.row = row;
 		grid.col = col;
 		currentGrid.tiles.add(grid);
@@ -64,6 +65,7 @@ public class SlidingLayersConfig {
 
 	public SlidingLayersConfig tile(int row, int col, Component cmp) {
 		Tile tile = new Tile();
+		tile.parent = currentGrid;
 		tile.row = row;
 		tile.col = col;
 		currentGrid.tiles.add(tile);
@@ -99,6 +101,20 @@ public class SlidingLayersConfig {
 		return this;
 	}
 
+	public SlidingLayersConfig changeRow(int row, Component cmp) {
+		Tile t = getTile(cmp);
+		t.parent.rows.get(row).h = t.parent.rows.get(t.row).h;
+		t.row = row;
+		return this;
+	}
+
+	public SlidingLayersConfig changeCol(int col, Component cmp) {
+		Tile t = getTile(cmp);
+		t.parent.cols.get(col).w = t.parent.cols.get(t.col).w;
+		t.col = col;
+		return this;
+	}
+
 	@Override
 	public SlidingLayersConfig clone() {
 		SlidingLayersConfig cfg = new SlidingLayersConfig(panel);
@@ -131,7 +147,8 @@ public class SlidingLayersConfig {
 	}
 
 	private Grid clone(Grid g, Grid parent, Map<Tile, Tile> tilesMap) {
-		Grid gg = new Grid(parent);
+		Grid gg = new Grid();
+		gg.parent = parent;
 		gg.row = g.row;
 		gg.col = g.col;
 		gg.x = g.x;
@@ -159,6 +176,7 @@ public class SlidingLayersConfig {
 			if (t instanceof Grid) {
 				gg.tiles.add(clone((Grid) t, gg, tilesMap));
 			} else  {
+				tilesMap.get(t).parent = gg;
 				gg.tiles.add(tilesMap.get(t));
 			}
 		}
@@ -171,11 +189,9 @@ public class SlidingLayersConfig {
 	// -------------------------------------------------------------------------
 
 	private static class Grid extends Tile {
-		public final Grid parent;
 		public final List<Row> rows = new ArrayList<Row>();
 		public final List<Column> cols = new ArrayList<Column>();
 		public final List<Tile> tiles = new ArrayList<Tile>();
-		public Grid(Grid parent) {this.parent = parent;}
 	}
 
 	private static class Row {
@@ -191,6 +207,7 @@ public class SlidingLayersConfig {
 	}
 
 	static class Tile {
+		public Grid parent;
 		public int row, col;
 		public float delay;
 		public int x, y, w, h;
@@ -209,8 +226,14 @@ public class SlidingLayersConfig {
 		rootGrid.y = vgap;
 		rootGrid.w = panel.getWidth()-hgap*2;
 		rootGrid.h = panel.getHeight()-vgap*2;
+
 		placeAndRoute(rootGrid);
+		offsetHiddentTiles();
 	}
+
+	// -------------------------------------------------------------------------
+	// Layout algorithm
+	// -------------------------------------------------------------------------
 
 	private void placeAndRoute(Grid grid) {
 		// Place rows
@@ -260,9 +283,9 @@ public class SlidingLayersConfig {
 			x = grid.x;
 			y += grid.rows.get(iRow).h + vgap;
 		}
+	}
 
-		// Offset hidden tiles
-
+	private void offsetHiddentTiles() {
 		for (Direction dir : Direction.values()) {
 			List<Tile> ts = hiddenTiles.get(dir);
 			if (ts.isEmpty()) continue;

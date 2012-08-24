@@ -1,5 +1,6 @@
 package aurelienribon.libgdx.ui.panels;
 
+import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,11 +9,7 @@ import java.awt.event.ActionListener;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class SelectionPanel extends javax.swing.JPanel {
-	private Runnable createRunnable, updateRunnable;
-	private static enum State {NONE, CREATE, UPDATE}
-	private State state = State.NONE;
-
-    public SelectionPanel() {
+    public SelectionPanel(final MainPanel mainPanel) {
         initComponents();
 
 		Style.registerCssClasses(headerPanel, ".header");
@@ -21,27 +18,13 @@ public class SelectionPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(updateBtn, ".selectionButton");
 
 		createBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			if (state != State.CREATE) {
-				createRunnable.run();
-				state = State.CREATE;
-			}
+			mainPanel.showCreateSetup();
 		}});
 
 		updateBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			if (state != State.UPDATE) {
-				updateRunnable.run();
-				state = State.UPDATE;
-			}
+			mainPanel.showUpdateSetup();
 		}});
     }
-
-	public void setCreateRunnable(Runnable createRunnable) {
-		this.createRunnable = createRunnable;
-	}
-
-	public void setUpdateRunnable(Runnable updateRunnable) {
-		this.updateRunnable = updateRunnable;
-	}
 
 	// -------------------------------------------------------------------------
 	// Generated stuff
@@ -92,7 +75,8 @@ public class SelectionPanel extends javax.swing.JPanel {
         createBtn.setText("Create new project");
         jPanel1.add(createBtn);
 
-        updateBtn.setText("Update existing project");
+        updateBtn.setText("Update (coming soon!)");
+        updateBtn.setEnabled(false);
         jPanel1.add(updateBtn);
 
         add(jPanel1, java.awt.BorderLayout.CENTER);

@@ -1,9 +1,9 @@
 package aurelienribon.libgdx.ui.panels;
 
 import aurelienribon.libgdx.ui.Ctx;
-import aurelienribon.libgdx.ui.Ctx;
-import aurelienribon.libgdx.ui.dialogs.AdvancedSettingsDialog;
+import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -25,7 +25,9 @@ import javax.swing.SwingUtilities;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class ConfigPanel extends javax.swing.JPanel {
-    public ConfigPanel() {
+	private boolean clicToShowSettings = true;
+
+    public ConfigPanel(final MainPanel mainPanel) {
         initComponents();
 
 		nameField.setText(Ctx.cfg.projectName);
@@ -54,13 +56,17 @@ public class ConfigPanel extends javax.swing.JPanel {
 		genAndroidPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
 		genHtmlPrjChk.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {update();}});
 
+		advancedSettingsLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		advancedSettingsLabel.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
-				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigPanel.this);
-				AdvancedSettingsDialog dialog = new AdvancedSettingsDialog(frame);
-				dialog.setLocationRelativeTo(frame);
-				dialog.setResizable(false);
-				dialog.setVisible(true);
+				if (clicToShowSettings) {
+					mainPanel.showAdvancedSettings();
+					advancedSettingsLabel.setText("< Hide advanced settings");
+				} else {
+					mainPanel.hideAdvancedSettings();
+					advancedSettingsLabel.setText("Show advanced settings >");
+				}
+				clicToShowSettings = !clicToShowSettings;
 			}
 		});
 
@@ -222,7 +228,7 @@ public class ConfigPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup()
                 .addComponent(numberLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE))
         );
         headerPanelLayout.setVerticalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,7 +270,7 @@ public class ConfigPanel extends javax.swing.JPanel {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("Game class");
 
-        advancedSettingsLabel.setText("Advanced settings >");
+        advancedSettingsLabel.setText("Show advanced settings >");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -276,7 +282,7 @@ public class ConfigPanel extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE))
+                        .addComponent(nameField, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -288,7 +294,7 @@ public class ConfigPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(destinationField, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
+                                .addComponent(destinationField, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(browseBtn))
                             .addComponent(mainClassField)))
@@ -332,7 +338,7 @@ public class ConfigPanel extends javax.swing.JPanel {
                 .addComponent(genDesktopPrjChk)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(genHtmlPrjChk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addComponent(advancedSettingsLabel)
                 .addContainerGap())
         );

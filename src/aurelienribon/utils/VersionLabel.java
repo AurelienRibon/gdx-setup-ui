@@ -1,5 +1,6 @@
 package aurelienribon.utils;
 
+import aurelienribon.utils.HttpUtils.DownloadListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
@@ -58,7 +59,7 @@ public class VersionLabel extends JLabel {
 
 		final ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-		final HttpUtils.Callback callback = new HttpUtils.Callback() {
+		final DownloadListener listener = new HttpUtils.DownloadListener() {
 			@Override
 			public void onComplete() {
 				String str;
@@ -98,7 +99,7 @@ public class VersionLabel extends JLabel {
 		};
 
 		Timer timer = new Timer(2000, new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			HttpUtils.downloadAsync(checkUrl, stream, callback);
+			HttpUtils.downloadAsync(checkUrl, stream, "Version number").addListener(listener);
 		}});
 		timer.setRepeats(false);
 		timer.start();

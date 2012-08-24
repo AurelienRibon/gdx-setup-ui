@@ -1,38 +1,53 @@
-package aurelienribon.libgdx.ui.dialogs;
+package aurelienribon.libgdx.ui.panels;
 
 import aurelienribon.libgdx.ProjectSetup;
 import aurelienribon.libgdx.ui.Ctx;
+import aurelienribon.libgdx.ui.MainPanel;
+import aurelienribon.libgdx.ui.dialogs.HelpFixHtmlDialog;
+import aurelienribon.libgdx.ui.dialogs.HelpImportDialog;
 import aurelienribon.ui.css.Style;
-import aurelienribon.utils.Res;
+import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class GoDialog extends javax.swing.JDialog {
-	private final ProjectSetup setup;
-
-    public GoDialog(JFrame parent) {
-        super(parent, true);
+public class GenerationPanel extends javax.swing.JPanel {
+    public GenerationPanel(final MainPanel mainPanel) {
         initComponents();
 
-		Style.registerCssClasses(rootPanel, ".rootPanel");
-		Style.registerCssClasses(title1, ".titleLabel");
-		Style.registerCssClasses(title2, ".titleLabel");
-		Style.registerCssClasses(importQuestion, ".questionLabel");
-		Style.registerCssClasses(fixHtmlQuestion, ".questionLabel");
+		Style.registerCssClasses(jScrollPane1, ".frame");
+		Style.registerCssClasses(importQuestion, ".linkLabel");
+		Style.registerCssClasses(fixHtmlQuestion, ".linkLabel");
 		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
 		Style.registerCssClasses(progressArea, ".progressArea");
-		Style.apply(getContentPane(), new Style(Res.getUrl("css/style.css")));
+		Style.registerCssClasses(closeLabel, ".linkLabel");
+
+		importQuestion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		fixHtmlQuestion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		startBtn.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {
+				generate();
+			}
+		});
+
+		closeLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		closeLabel.addMouseListener(new MouseAdapter() {
+			@Override public void mousePressed(MouseEvent e) {
+				mainPanel.hideGenerationPanel();
+			}
+		});
 
 		importQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
-				ImportHelpDialog dialog = new ImportHelpDialog(null);
-				dialog.setLocationRelativeTo(GoDialog.this);
+				HelpImportDialog dialog = new HelpImportDialog(null);
+				dialog.setLocationRelativeTo(GenerationPanel.this);
 				dialog.pack();
 				dialog.setVisible(true);
 			}
@@ -40,14 +55,18 @@ public class GoDialog extends javax.swing.JDialog {
 
 		fixHtmlQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
-				FixHtmlHelpDialog dialog = new FixHtmlHelpDialog(null);
-				dialog.setLocationRelativeTo(GoDialog.this);
+				HelpFixHtmlDialog dialog = new HelpFixHtmlDialog(null);
+				dialog.setLocationRelativeTo(GenerationPanel.this);
 				dialog.pack();
 				dialog.setVisible(true);
 			}
 		});
+    }
 
-		setup = new ProjectSetup(Ctx.cfg);
+	private void generate() {
+		progressArea.setText("");
+
+		final ProjectSetup setup = new ProjectSetup(Ctx.cfg);
 
 		new Thread(new Runnable() {
 			@Override public void run() {
@@ -73,7 +92,7 @@ public class GoDialog extends javax.swing.JDialog {
 				}
 			}
 		}).start();
-    }
+	}
 
 	private void report(final String txt) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -91,21 +110,19 @@ public class GoDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        rootPanel = new aurelienribon.ui.components.PaintedPanel();
-        title1 = new javax.swing.JLabel();
-        title2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        progressArea = new javax.swing.JTextArea();
         paintedPanel1 = new aurelienribon.ui.components.PaintedPanel();
         importQuestion = new javax.swing.JLabel();
         fixHtmlQuestion = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        progressArea = new javax.swing.JTextArea();
+        titleLabel = new javax.swing.JLabel();
+        startBtn = new javax.swing.JButton();
+        closeLabel = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Generation");
-
-        title1.setText("Generation in progress");
-
-        title2.setText("Frequently Asked Questions");
+        progressArea.setEditable(false);
+        progressArea.setColumns(20);
+        progressArea.setRows(5);
+        jScrollPane1.setViewportView(progressArea);
 
         paintedPanel1.setOpaque(false);
 
@@ -122,7 +139,7 @@ public class GoDialog extends javax.swing.JDialog {
                 .addGroup(paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(importQuestion)
                     .addComponent(fixHtmlQuestion))
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
         paintedPanel1Layout.setVerticalGroup(
             paintedPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,51 +151,56 @@ public class GoDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        progressArea.setColumns(20);
-        progressArea.setEditable(false);
-        progressArea.setRows(5);
-        jScrollPane1.setViewportView(progressArea);
+        titleLabel.setText("Frequently Asked Questions");
 
-        javax.swing.GroupLayout rootPanelLayout = new javax.swing.GroupLayout(rootPanel);
-        rootPanel.setLayout(rootPanelLayout);
-        rootPanelLayout.setHorizontalGroup(
-            rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(rootPanelLayout.createSequentialGroup()
+        startBtn.setText("Start the generation");
+
+        closeLabel.setText("Close >");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(title1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(title2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(closeLabel))
                     .addComponent(paintedPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        rootPanelLayout.setVerticalGroup(
-            rootPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(rootPanelLayout.createSequentialGroup()
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(title1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(startBtn)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(title2)
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(titleLabel)
+                    .addComponent(closeLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
-        getContentPane().add(rootPanel, java.awt.BorderLayout.CENTER);
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel closeLabel;
     private javax.swing.JLabel fixHtmlQuestion;
     private javax.swing.JLabel importQuestion;
     private javax.swing.JScrollPane jScrollPane1;
     private aurelienribon.ui.components.PaintedPanel paintedPanel1;
     private javax.swing.JTextArea progressArea;
-    private aurelienribon.ui.components.PaintedPanel rootPanel;
-    private javax.swing.JLabel title1;
-    private javax.swing.JLabel title2;
+    private javax.swing.JButton startBtn;
+    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -1,9 +1,10 @@
 package aurelienribon.libgdx;
 
 import aurelienribon.utils.HttpUtils;
+import aurelienribon.utils.HttpUtils.DownloadListener;
+import aurelienribon.utils.HttpUtils.DownloadTask;
 import aurelienribon.utils.ParseUtils;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,14 +28,6 @@ public class DownloadManager {
 		this.configUrl = configUrl;
 	}
 
-	/**
-	 * A callback interface used for every asynchronous download.
-	 */
-	public static class Callback {
-		public void onComplete() {}
-		public void onError() {}
-	}
-
 	// -------------------------------------------------------------------------
 	// Public API
 	// -------------------------------------------------------------------------
@@ -43,32 +36,36 @@ public class DownloadManager {
 	 * Asynchronously downloads the master config file and parses it to build
 	 * the list of available libraries.
 	 */
-	public void downloadConfigFile(final Callback callback) {
+	public DownloadTask downloadConfigFile() {
 		libraries.clear();
 		librariesUrls.clear();
 		librariesDefs.clear();
 
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		DownloadTask task =  HttpUtils.downloadAsync(configUrl, output, "Master config file");
 
-		HttpUtils.downloadAsync(configUrl, output, new HttpUtils.Callback() {
-			@Override public void onComplete() {parseLibraries(output.toString()); callback.onComplete();}
-			@Override public void onError(IOException ex) {callback.onError();}
+		task.addListener(new DownloadListener() {
+			@Override public void onComplete() {parseLibraries(output.toString());}
 		});
+
+		return task;
 	}
 
 	/**
 	 * Asynchronously downloads the library definition file corresponding
 	 * to the given name.
 	 */
-	public void downloadLibraryDef(final String name, final Callback callback) {
-		if (!librariesUrls.containsKey(name)) return;
+	public DownloadTask downloadLibraryDef(final String name) {
+		if (!librariesUrls.containsKey(name)) return null;
 
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
+		DownloadTask task =  HttpUtils.downloadAsync(librariesUrls.get(name), output, "Def '" + name + "'");
 
-		HttpUtils.downloadAsync(librariesUrls.get(name), output, new HttpUtils.Callback() {
-			@Override public void onComplete() {librariesDefs.put(name, new LibraryDef(output.toString())); callback.onComplete();}
-			@Override public void onError(IOException ex) {callback.onError();}
+		task.addListener(new DownloadListener() {
+			@Override public void onComplete() {librariesDefs.put(name, new LibraryDef(output.toString()));}
 		});
+
+		return task;
 	}
 
 	/**

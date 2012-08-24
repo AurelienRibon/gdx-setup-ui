@@ -1,0 +1,127 @@
+package aurelienribon.utils;
+
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenAccessor;
+import aurelienribon.tweenengine.TweenManager;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
+
+/**
+ * @author Aurelien Ribon | http://www.aurelienribon.com/
+ */
+public class Animator {
+	private static final List<TweenManager> tweenManagers = new ArrayList<TweenManager>();
+	private static boolean running = false;
+
+	static {
+		Tween.registerAccessor(JComponent.class, new JComponentAccessor());
+		Tween.setCombinedAttributesLimit(4);
+	}
+
+	public static void setTweenManagersCount(int count) {
+		for (int i=0; i<count; i++) tweenManagers.add(new TweenManager());
+	}
+
+	public static TweenManager getTweenManager(int id) {
+		return tweenManagers.get(id);
+	}
+
+	public static void start() {
+		running = true;
+
+		Runnable runnable = new Runnable() {@Override public void run() {
+			long lastMillis = System.currentTimeMillis();
+			long deltaLastMillis = System.currentTimeMillis();
+
+			while (running) {
+				long newMillis = System.currentTimeMillis();
+				long sleep = 15 - (newMillis - lastMillis);
+				lastMillis = newMillis;
+
+				if (sleep > 1)
+					try {Thread.sleep(sleep);} catch (InterruptedException ex) {}
+
+				long deltaNewMillis = System.currentTimeMillis();
+				final float delta = (deltaNewMillis - deltaLastMillis) / 1000f;
+
+				try {
+					SwingUtilities.invokeAndWait(new Runnable() {@Override public void run() {
+						for (int i=0, n=tweenManagers.size(); i<n; i++) tweenManagers.get(i).update(delta);
+					}});
+				} catch (InterruptedException ex) {
+				} catch (InvocationTargetException ex) {
+				}
+
+				deltaLastMillis = newMillis;
+			}
+		}};
+
+		new Thread(runnable).start();
+	}
+
+	public static void stop() {
+		running = false;
+	}
+
+	// -------------------------------------------------------------------------
+	// Accessors
+	// -------------------------------------------------------------------------
+
+	public static class JComponentAccessor implements TweenAccessor<JComponent> {
+		public static final int X = 1;
+		public static final int Y = 2;
+		public static final int XY = 3;
+		public static final int XYWH = 4;
+
+		@Override
+		public int getValues(JComponent target, int tweenType, float[] returnValues) {
+			switch (tweenType) {
+				case X:
+					returnValues[0] = target.getX();
+					return 1;
+				case Y:
+					returnValues[0] = target.getY();
+					return 1;
+				case XY:
+					returnValues[0] = target.getX();
+					returnValues[1] = target.getY();
+					return 2;
+				case XYWH:
+					returnValues[0] = target.getX();
+					returnValues[1] = target.getY();
+					returnValues[2] = target.getWidth();
+					returnValues[3] = target.getHeight();
+					return 4;
+
+				default: assert false; return 0;
+			}
+		}
+
+		@Override
+		public void setValues(JComponent target, int tweenType, float[] newValues) {
+			switch (tweenType) {
+				case X:
+					target.setLocation(Math.round(newValues[0]), target.getY());
+					target.revalidate();
+					break;
+				case Y:
+					target.setLocation(target.getX(), Math.round(newValues[0]));
+					target.revalidate();
+					break;
+				case XY:
+					target.setLocation(Math.round(newValues[0]), Math.round(newValues[1]));
+					target.revalidate();
+					break;
+				case XYWH:
+					target.setBounds(Math.round(newValues[0]), Math.round(newValues[1]), Math.round(newValues[2]), Math.round(newValues[3]));
+					target.revalidate();
+					break;
+
+				default: assert false;
+			}
+		}
+	}
+}
