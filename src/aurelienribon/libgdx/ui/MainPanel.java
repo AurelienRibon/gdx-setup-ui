@@ -79,7 +79,7 @@ public class MainPanel extends PaintedPanel {
 			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
 			LibraryDef def = new LibraryDef(rawDef);
 			Ctx.libs.addDef("libgdx", def);
-			Ctx.cfgCreate.libs.setUsage("libgdx", true);
+			Ctx.cfgCreate.libraries.add("libgdx");
 		} catch (IOException ex) {
 			assert false;
 		}

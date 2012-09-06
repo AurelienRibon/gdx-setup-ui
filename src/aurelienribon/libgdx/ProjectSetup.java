@@ -111,10 +111,8 @@ public class ProjectSetup {
 		File htmlPrjLibsDir = new File(tmpDst, "/prj-html/war/WEB-INF/lib");
 		File dataDir = new File(tmpDst, "/prj-android/assets");
 
-		for (String library : libs.getNames()) {
-			if (!cfg.libs.isUsed(library)) continue;
-
-			InputStream is = new FileInputStream(cfg.libs.getPath(library));
+		for (String library : cfg.libraries) {
+			InputStream is = new FileInputStream(cfg.librariesZipPaths.get(library));
 			ZipInputStream zis = new ZipInputStream(is);
 			ZipEntry entry;
 
@@ -151,9 +149,7 @@ public class ProjectSetup {
 		List<String> entriesHtml = new ArrayList<String>();
 		List<String> gwtInherits = new ArrayList<String>();
 
-		for (String library : libs.getNames()) {
-			if (!cfg.libs.isUsed(library)) continue;
-
+		for (String library : cfg.libraries) {
 			LibraryDef def = libs.getDef(library);
 
 			for (String file : def.libsCommon) {

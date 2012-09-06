@@ -20,8 +20,8 @@ public class ProjectConfigurationHelper {
 	}
 
 	public static boolean isLibraryValid(ProjectConfiguration cfg, String libraryName) {
-		if (!cfg.libs.isUsed(libraryName)) return true;
-		String path = cfg.libs.getPath(libraryName);
+		if (!cfg.libraries.contains(libraryName)) return true;
+		String path = cfg.librariesZipPaths.get(libraryName);
 		if (path == null) return false;
 		if (!path.endsWith(".zip")) return false;
 		if (!new File(path).isFile()) return false;

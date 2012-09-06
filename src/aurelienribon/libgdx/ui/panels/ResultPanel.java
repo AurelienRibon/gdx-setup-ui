@@ -215,15 +215,13 @@ public class ResultPanel extends javax.swing.JPanel {
 			htmlLibsNode.removeAllChildren();
 			dataNode.removeAllChildren();
 
-			for (String libraryName : Ctx.libs.getNames()) {
-				if (Ctx.cfgCreate.libs.isUsed(libraryName)) {
-					LibraryDef def = Ctx.libs.getDef(libraryName);
-					for (String path : def.libsCommon) pathToNodes(path, commonLibsNode);
-					for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
-					for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
-					for (String path : def.libsHtml) pathToNodes(path, htmlLibsNode);
-					for (String path : def.data) pathToNodes(path, dataNode);
-				}
+			for (String libraryName : Ctx.cfgCreate.libraries) {
+				LibraryDef def = Ctx.libs.getDef(libraryName);
+				for (String path : def.libsCommon) pathToNodes(path, commonLibsNode);
+				for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
+				for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
+				for (String path : def.libsHtml) pathToNodes(path, htmlLibsNode);
+				for (String path : def.data) pathToNodes(path, dataNode);
 			}
 		}
 

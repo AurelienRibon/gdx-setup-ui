@@ -125,7 +125,14 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 	private void buildLibraryPanel(final String libraryName) {
 		ActionListener nameChkAL = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			Ctx.cfgCreate.libs.setUsage(libraryName, ((JCheckBox) e.getSource()).isSelected());
+			if (((JCheckBox) e.getSource()).isSelected()) {
+				if (!Ctx.cfgCreate.libraries.contains(libraryName)) Ctx.cfgCreate.libraries.add(libraryName);
+				if (!Ctx.cfgUpdate.libraries.contains(libraryName)) Ctx.cfgUpdate.libraries.add(libraryName);
+			} else {
+				Ctx.cfgCreate.libraries.remove(libraryName);
+				Ctx.cfgUpdate.libraries.remove(libraryName);
+			}
+
 			Ctx.fireCfgCreateChanged();
 		}};
 
@@ -253,7 +260,8 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 	private void select(String libraryName, File zipFile) {
 		libsSelectedFiles.put(libraryName, zipFile);
-		Ctx.cfgCreate.libs.setPath(libraryName, zipFile.getPath());
+		Ctx.cfgCreate.librariesZipPaths.put(libraryName, zipFile.getPath());
+		Ctx.cfgUpdate.librariesZipPaths.put(libraryName, zipFile.getPath());
 
 		libsNamesCmps.get(libraryName).setToolTipText("Using archive: \"" + zipFile.getPath() + "\"");
 		libsNamesCmps.get(libraryName).setForeground(LIB_FOUND_COLOR);

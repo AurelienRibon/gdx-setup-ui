@@ -1,6 +1,8 @@
 package aurelienribon.libgdx;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,7 +15,8 @@ public class ProjectConfiguration {
 	public String packageName = "com.me.mygdxgame";
 	public String destinationPath = "";
 
-	public final LibraryManager libs = new LibraryManager();
+	public final List<String> libraries = new ArrayList<String>();
+	public final Map<String, String> librariesZipPaths = new HashMap<String, String>();
 
 	public boolean isDesktopIncluded = true;
 	public boolean isAndroidIncluded = true;
@@ -25,16 +28,4 @@ public class ProjectConfiguration {
 	public String androidMinSdkVersion = "5";
 	public String androidTargetSdkVersion = "15";
 	public String androidMaxSdkVersion = "";
-
-	// -------------------------------------------------------------------------
-
-	public static class LibraryManager {
-		private final Map<String, Boolean> usages = new HashMap<String, Boolean>();
-		private final Map<String, String> paths = new HashMap<String, String>();
-
-		public void setUsage(String name, boolean used) {usages.put(name, used);}
-		public void setPath(String name, String path) {paths.put(name, path);}
-		public boolean isUsed(String name) {return usages.get(name) == null ? false : usages.get(name);}
-		public String getPath(String name) {return paths.get(name);}
-	}
 }
