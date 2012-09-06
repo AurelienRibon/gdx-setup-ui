@@ -5,3 +5,6 @@ tmp/*
 
 manifest.mf
 nbbuild.xml
+
+*.tmp
+*.zip
