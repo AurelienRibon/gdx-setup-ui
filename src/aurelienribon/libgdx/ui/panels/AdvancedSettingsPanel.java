@@ -20,13 +20,13 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     public AdvancedSettingsPanel() {
         initComponents();
 
-		commonSuffixField.setText(Ctx.cfg.commonSuffix);
-		desktopSuffixField.setText(Ctx.cfg.desktopSuffix);
-		androidSuffixField.setText(Ctx.cfg.androidSuffix);
-		htmlSuffixField.setText(Ctx.cfg.htmlSuffix);
-		androidMinSdkField.setText(Ctx.cfg.androidMinSdkVersion);
-		androidTargetSdkField.setText(Ctx.cfg.androidTargetSdkVersion);
-		androidMaxSdkField.setText(Ctx.cfg.androidMaxSdkVersion);
+		commonSuffixField.setText(Ctx.cfgCreate.commonSuffix);
+		desktopSuffixField.setText(Ctx.cfgCreate.desktopSuffix);
+		androidSuffixField.setText(Ctx.cfgCreate.androidSuffix);
+		htmlSuffixField.setText(Ctx.cfgCreate.htmlSuffix);
+		androidMinSdkField.setText(Ctx.cfgCreate.androidMinSdkVersion);
+		androidTargetSdkField.setText(Ctx.cfgCreate.androidTargetSdkVersion);
+		androidMaxSdkField.setText(Ctx.cfgCreate.androidMaxSdkVersion);
 
 		commonSuffixField.addMouseListener(selectOnFocusMouseListener);
 		desktopSuffixField.addMouseListener(selectOnFocusMouseListener);
@@ -53,13 +53,13 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     }
 
 	private void update() {
-		Ctx.cfg.commonSuffix = commonSuffixField.getText();
-		Ctx.cfg.desktopSuffix = desktopSuffixField.getText();
-		Ctx.cfg.androidSuffix = androidSuffixField.getText();
-		Ctx.cfg.androidMinSdkVersion = androidMinSdkField.getText();
-		Ctx.cfg.androidMaxSdkVersion = androidMaxSdkField.getText();
-		Ctx.cfg.androidTargetSdkVersion = androidTargetSdkField.getText();
-		Ctx.fireConfigChanged();
+		Ctx.cfgCreate.commonSuffix = commonSuffixField.getText();
+		Ctx.cfgCreate.desktopSuffix = desktopSuffixField.getText();
+		Ctx.cfgCreate.androidSuffix = androidSuffixField.getText();
+		Ctx.cfgCreate.androidMinSdkVersion = androidMinSdkField.getText();
+		Ctx.cfgCreate.androidMaxSdkVersion = androidMaxSdkField.getText();
+		Ctx.cfgCreate.androidTargetSdkVersion = androidTargetSdkField.getText();
+		Ctx.fireCfgCreateChanged();
 	}
 
 	private final KeyListener updateOnTypeKeyListener = new KeyAdapter() {

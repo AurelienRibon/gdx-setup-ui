@@ -66,7 +66,7 @@ public class GenerationPanel extends javax.swing.JPanel {
 	private void generate() {
 		progressArea.setText("");
 
-		final ProjectSetup setup = new ProjectSetup(Ctx.cfg);
+		final ProjectSetup setup = new ProjectSetup(Ctx.cfgCreate, Ctx.libs);
 
 		new Thread(new Runnable() {
 			@Override public void run() {

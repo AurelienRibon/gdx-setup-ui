@@ -52,7 +52,7 @@ public class ResultPanel extends javax.swing.JPanel {
 			setOpaque(false);
 
 			Ctx.listeners.add(new Ctx.Listener() {
-				@Override public void configChanged() {
+				@Override public void cfgCreateChanged() {
 					update();
 				}
 			});
@@ -102,9 +102,9 @@ public class ResultPanel extends javax.swing.JPanel {
 
 			rootNode.removeAllChildren();
 			rootNode.add(commonPrjNode);
-			if (Ctx.cfg.isDesktopIncluded) rootNode.add(desktopPrjNode);
-			if (Ctx.cfg.isAndroidIncluded) rootNode.add(androidPrjNode);
-			if (Ctx.cfg.isHtmlIncluded) rootNode.add(htmlPrjNode);
+			if (Ctx.cfgCreate.isDesktopIncluded) rootNode.add(desktopPrjNode);
+			if (Ctx.cfgCreate.isAndroidIncluded) rootNode.add(androidPrjNode);
+			if (Ctx.cfgCreate.isHtmlIncluded) rootNode.add(htmlPrjNode);
 
 			updateSrc();
 			updateLibs();
@@ -124,8 +124,8 @@ public class ResultPanel extends javax.swing.JPanel {
 			commonSrcNode.removeAllChildren();
 			previousNode = commonSrcNode;
 
-			if (!Ctx.cfg.packageName.trim().equals("")) {
-				String[] paths = Ctx.cfg.packageName.split("\\.");
+			if (!Ctx.cfgCreate.packageName.trim().equals("")) {
+				String[] paths = Ctx.cfgCreate.packageName.split("\\.");
 				for (String path : paths) {
 					DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-common/src/" + path);
 					previousNode.add(node);
@@ -146,8 +146,8 @@ public class ResultPanel extends javax.swing.JPanel {
 			desktopSrcNode.removeAllChildren();
 			previousNode = desktopSrcNode;
 
-			if (!Ctx.cfg.packageName.trim().equals("")) {
-				String[] paths = Ctx.cfg.packageName.split("\\.");
+			if (!Ctx.cfgCreate.packageName.trim().equals("")) {
+				String[] paths = Ctx.cfgCreate.packageName.split("\\.");
 				for (String path : paths) {
 					DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-desktop/src/" + path);
 					previousNode.add(node);
@@ -166,8 +166,8 @@ public class ResultPanel extends javax.swing.JPanel {
 			androidSrcNode.removeAllChildren();
 			previousNode = androidSrcNode;
 
-			if (!Ctx.cfg.packageName.trim().equals("")) {
-				String[] paths = Ctx.cfg.packageName.split("\\.");
+			if (!Ctx.cfgCreate.packageName.trim().equals("")) {
+				String[] paths = Ctx.cfgCreate.packageName.split("\\.");
 				for (String path : paths) {
 					DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-android/src/" + path);
 					previousNode.add(node);
@@ -187,8 +187,8 @@ public class ResultPanel extends javax.swing.JPanel {
 			htmlSrcNode.removeAllChildren();
 			previousNode = htmlSrcNode;
 
-			if (!Ctx.cfg.packageName.trim().equals("")) {
-				String[] paths = Ctx.cfg.packageName.split("\\.");
+			if (!Ctx.cfgCreate.packageName.trim().equals("")) {
+				String[] paths = Ctx.cfgCreate.packageName.split("\\.");
 				for (String path : paths) {
 					DefaultMutableTreeNode node = new DefaultMutableTreeNode("#DIR#prj-html/src/" + path);
 					previousNode.add(node);
@@ -215,9 +215,9 @@ public class ResultPanel extends javax.swing.JPanel {
 			htmlLibsNode.removeAllChildren();
 			dataNode.removeAllChildren();
 
-			for (String libraryName : Ctx.cfg.libs.getNames()) {
-				if (Ctx.cfg.libs.isUsed(libraryName)) {
-					LibraryDef def = Ctx.cfg.libs.getDef(libraryName);
+			for (String libraryName : Ctx.libs.getNames()) {
+				if (Ctx.cfgCreate.libs.isUsed(libraryName)) {
+					LibraryDef def = Ctx.libs.getDef(libraryName);
 					for (String path : def.libsCommon) pathToNodes(path, commonLibsNode);
 					for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
 					for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
@@ -260,12 +260,12 @@ public class ResultPanel extends javax.swing.JPanel {
 					boolean isDir = name.startsWith("#DIR#");
 
 					name = name.replaceFirst("#DIR#", "");
-					name = name.replace("MyGame", Ctx.cfg.mainClassName);
+					name = name.replace("MyGame", Ctx.cfgCreate.mainClassName);
 
-					if (isDir && name.equals("prj-common")) name = Ctx.cfg.projectName + Ctx.cfg.commonSuffix;
-					if (isDir && name.equals("prj-desktop")) name = Ctx.cfg.projectName + Ctx.cfg.desktopSuffix;
-					if (isDir && name.equals("prj-android")) name = Ctx.cfg.projectName + Ctx.cfg.androidSuffix;
-					if (isDir && name.equals("prj-html")) name = Ctx.cfg.projectName + Ctx.cfg.htmlSuffix;
+					if (isDir && name.equals("prj-common")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.commonSuffix;
+					if (isDir && name.equals("prj-desktop")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.desktopSuffix;
+					if (isDir && name.equals("prj-android")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.androidSuffix;
+					if (isDir && name.equals("prj-html")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.htmlSuffix;
 
 					label.setText(FilenameUtils.getName(name));
 					label.setIcon(isDir ? Res.getImage("gfx/ic_folder.png") : Res.getImage("gfx/ic_file.png"));

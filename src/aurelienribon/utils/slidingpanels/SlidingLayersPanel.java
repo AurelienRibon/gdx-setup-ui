@@ -77,7 +77,6 @@ public class SlidingLayersPanel extends JLayeredPane {
 	public SlidingLayersPanel pushSet(SlidingLayersConfig cfg) {
 		Keyframe kf = new Keyframe();
 		kf.animate = false;
-		kf.animDuration = 0.4f;
 		kf.cfg = cfg;
 		timeline.add(kf);
 		return this;
@@ -86,7 +85,6 @@ public class SlidingLayersPanel extends JLayeredPane {
 	public SlidingLayersPanel pushTo(SlidingLayersConfig cfg) {
 		Keyframe kf = new Keyframe();
 		kf.animate = true;
-		kf.animDuration = 0.4f;
 		kf.cfg = cfg;
 		timeline.add(kf);
 		return this;
@@ -97,18 +95,12 @@ public class SlidingLayersPanel extends JLayeredPane {
 		return this;
 	}
 
-	public SlidingLayersPanel setDuration(float duration) {
-		timeline.get(timeline.size()-1).animDuration = duration;
-		return this;
-	}
-
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
 
 	private static class Keyframe {
 		public boolean animate;
-		public float animDuration;
 		public SlidingLayersConfig cfg;
 		public Callback callback;
 	}
@@ -140,10 +132,37 @@ public class SlidingLayersPanel extends JLayeredPane {
 
 		for (Component c : kf.cfg.getComponents()) {
 			Tile t = kf.cfg.getTile(c);
-			tl.push(Tween.to(c, Animator.JComponentAccessor.XYWH, kf.animDuration)
-				.target(t.x, t.y, t.w, t.h)
-				.delay(useDelays ? t.delay : 0)
-			);
+
+			int x = c.getX();
+			int y = c.getY();
+			int w = c.getWidth();
+			int h = c.getHeight();
+			int dx = x - t.x;
+			int dy = y - t.y;
+			int dw = w - t.w;
+			int dh = h - t.h;
+			boolean animXY = (dx != 0) || (dy != 0);
+			boolean animWH = (dw != 0) || (dh != 0);
+			float dxy = (float) Math.sqrt(dx*dx + dy*dy);
+			float dwh = (float) Math.sqrt(dw*dw + dh*dh);
+			float duration = Math.max(0.4f, Math.max(dxy, dwh) * 0.12f / 100);
+
+			if (animXY && animWH) {
+				tl.push(Tween.to(c, Animator.JComponentAccessor.XYWH, duration)
+					.target(t.x, t.y, t.w, t.h)
+					.delay(useDelays ? t.delay : 0)
+				);
+			} else if (animXY) {
+				tl.push(Tween.to(c, Animator.JComponentAccessor.XY, duration)
+					.target(t.x, t.y)
+					.delay(useDelays ? t.delay : 0)
+				);
+			} else if (animWH) {
+				tl.push(Tween.to(c, Animator.JComponentAccessor.WH, duration)
+					.target(t.w, t.h)
+					.delay(useDelays ? t.delay : 0)
+				);
+			}
 		}
 
 		tl.setCallback(new TweenCallback() {

@@ -74,7 +74,10 @@ public class Animator {
 		public static final int X = 1;
 		public static final int Y = 2;
 		public static final int XY = 3;
-		public static final int XYWH = 4;
+		public static final int W = 4;
+		public static final int H = 5;
+		public static final int WH = 6;
+		public static final int XYWH = 7;
 
 		@Override
 		public int getValues(JComponent target, int tweenType, float[] returnValues) {
@@ -88,6 +91,16 @@ public class Animator {
 				case XY:
 					returnValues[0] = target.getX();
 					returnValues[1] = target.getY();
+					return 2;
+				case W:
+					returnValues[0] = target.getWidth();
+					return 1;
+				case H:
+					returnValues[0] = target.getHeight();
+					return 1;
+				case WH:
+					returnValues[0] = target.getWidth();
+					returnValues[1] = target.getHeight();
 					return 2;
 				case XYWH:
 					returnValues[0] = target.getX();
@@ -105,14 +118,23 @@ public class Animator {
 			switch (tweenType) {
 				case X:
 					target.setLocation(Math.round(newValues[0]), target.getY());
-					target.revalidate();
 					break;
 				case Y:
 					target.setLocation(target.getX(), Math.round(newValues[0]));
-					target.revalidate();
 					break;
 				case XY:
 					target.setLocation(Math.round(newValues[0]), Math.round(newValues[1]));
+					break;
+				case W:
+					target.setSize(Math.round(newValues[0]), target.getHeight());
+					target.revalidate();
+					break;
+				case H:
+					target.setSize(target.getWidth(), Math.round(newValues[0]));
+					target.revalidate();
+					break;
+				case WH:
+					target.setSize(Math.round(newValues[0]), Math.round(newValues[1]));
 					target.revalidate();
 					break;
 				case XYWH:

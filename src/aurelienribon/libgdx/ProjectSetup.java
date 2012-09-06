@@ -41,11 +41,13 @@ import org.apache.commons.io.IOUtils;
  */
 public class ProjectSetup {
 	private final ProjectConfiguration cfg;
+	private final LibraryManager libs;
 	private final File tmpDst = new File("__libgdx_setup_tmp");
 	private final TemplateManager templateManager = new TemplateManager();
 
-	public ProjectSetup(ProjectConfiguration cfg) {
+	public ProjectSetup(ProjectConfiguration cfg, LibraryManager libs) {
 		this.cfg = cfg;
+		this.libs = libs;
 
 		// General definitions
 		templateManager.define("PROJECT_NAME", cfg.projectName);
@@ -109,14 +111,14 @@ public class ProjectSetup {
 		File htmlPrjLibsDir = new File(tmpDst, "/prj-html/war/WEB-INF/lib");
 		File dataDir = new File(tmpDst, "/prj-android/assets");
 
-		for (String library : cfg.libs.getNames()) {
+		for (String library : libs.getNames()) {
 			if (!cfg.libs.isUsed(library)) continue;
 
 			InputStream is = new FileInputStream(cfg.libs.getPath(library));
 			ZipInputStream zis = new ZipInputStream(is);
 			ZipEntry entry;
 
-			LibraryDef def = cfg.libs.getDef(library);
+			LibraryDef def = libs.getDef(library);
 
 			while ((entry = zis.getNextEntry()) != null) {
 				if (entry.isDirectory()) continue;
@@ -149,10 +151,10 @@ public class ProjectSetup {
 		List<String> entriesHtml = new ArrayList<String>();
 		List<String> gwtInherits = new ArrayList<String>();
 
-		for (String library : cfg.libs.getNames()) {
+		for (String library : libs.getNames()) {
 			if (!cfg.libs.isUsed(library)) continue;
 
-			LibraryDef def = cfg.libs.getDef(library);
+			LibraryDef def = libs.getDef(library);
 
 			for (String file : def.libsCommon) {
 				if (!isLibJar(file)) continue;

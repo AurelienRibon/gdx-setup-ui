@@ -1,8 +1,6 @@
 package aurelienribon.libgdx;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,22 +29,12 @@ public class ProjectConfiguration {
 	// -------------------------------------------------------------------------
 
 	public static class LibraryManager {
-		private final Map<String, LibraryDef> defs = new HashMap<String, LibraryDef>();
 		private final Map<String, Boolean> usages = new HashMap<String, Boolean>();
 		private final Map<String, String> paths = new HashMap<String, String>();
 
-		public void add(String name, LibraryDef def) {
-			defs.put(name, def);
-			if (!usages.containsKey(name)) usages.put(name, Boolean.FALSE);
-			if (!paths.containsKey(name)) paths.put(name, null);
-		}
-
 		public void setUsage(String name, boolean used) {usages.put(name, used);}
 		public void setPath(String name, String path) {paths.put(name, path);}
-
-		public List<String> getNames() {return new ArrayList<String>(defs.keySet());}
-		public LibraryDef getDef(String name) {return defs.get(name);}
-		public boolean isUsed(String name) {return usages.get(name);}
+		public boolean isUsed(String name) {return usages.get(name) == null ? false : usages.get(name);}
 		public String getPath(String name) {return paths.get(name);}
 	}
 }

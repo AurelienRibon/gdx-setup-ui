@@ -12,19 +12,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The download manager job is to retrieve the master configuration file,
+ * The library manager job is to retrieve the master configuration file,
  * and to download each library definition file. It maintains a collection of
  * definition files and urls.
  *
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class DownloadManager {
+public class LibraryManager {
 	private final String configUrl;
 	private final List<String> libraries = new ArrayList<String>();
 	private final Map<String, String> librariesUrls = new HashMap<String, String>();
 	private final Map<String, LibraryDef> librariesDefs = new HashMap<String, LibraryDef>();
 
-	public DownloadManager(String configUrl) {
+	public LibraryManager(String configUrl) {
 		this.configUrl = configUrl;
 	}
 
@@ -37,10 +37,6 @@ public class DownloadManager {
 	 * the list of available libraries.
 	 */
 	public DownloadTask downloadConfigFile() {
-		libraries.clear();
-		librariesUrls.clear();
-		librariesDefs.clear();
-
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
 		DownloadTask task =  HttpUtils.downloadAsync(configUrl, output, "Master config file");
 
@@ -55,7 +51,7 @@ public class DownloadManager {
 	 * Asynchronously downloads the library definition file corresponding
 	 * to the given name.
 	 */
-	public DownloadTask downloadLibraryDef(final String name) {
+	public DownloadTask downloadDef(final String name) {
 		if (!librariesUrls.containsKey(name)) return null;
 
 		final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -72,7 +68,7 @@ public class DownloadManager {
 	 * Manually adds a library definition file url. Used mostly for testing
 	 * a library.
 	 */
-	public void addLibraryUrl(String name, String url) {
+	public void addUrl(String name, String url) {
 		libraries.add(name);
 		librariesUrls.put(name, url);
 	}
@@ -81,15 +77,15 @@ public class DownloadManager {
 	 * Manually adds a library definition file. Used mostly for testing a
 	 * library.
 	 */
-	public void addLibraryDef(String name, LibraryDef def) {
+	public void addDef(String name, LibraryDef def) {
 		libraries.add(name);
 		librariesDefs.put(name, def);
 	}
 
 	public String getConfigUrl() {return configUrl;}
-	public List<String> getLibrariesNames() {return Collections.unmodifiableList(libraries);}
-	public String getLibraryUrl(String name) {return librariesUrls.get(name);}
-	public LibraryDef getLibraryDef(String name) {return librariesDefs.get(name);}
+	public List<String> getNames() {return Collections.unmodifiableList(libraries);}
+	public String getUrl(String name) {return librariesUrls.get(name);}
+	public LibraryDef getDef(String name) {return librariesDefs.get(name);}
 
 	// -------------------------------------------------------------------------
 	// Helpers

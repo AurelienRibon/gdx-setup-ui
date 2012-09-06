@@ -17,7 +17,7 @@ public class GoPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(headerPanel, ".header");
 		Style.registerCssClasses(numberLabel, ".headerNumber");
 
-		Ctx.listeners.add(new Ctx.Listener() {@Override public void configChanged() {update();}});
+		Ctx.listeners.add(new Ctx.Listener() {@Override public void cfgCreateChanged() {update();}});
 
 		goBtn.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
@@ -31,13 +31,13 @@ public class GoPanel extends javax.swing.JPanel {
 	}
 
 	private void update() {
-		if (ProjectConfigurationHelper.isValid(Ctx.cfg)) {
+		if (ProjectConfigurationHelper.isValid(Ctx.cfgCreate, Ctx.libs)) {
 			goBtn.setEnabled(true);
 			errorLabel.setText("<html>Your configuration is valid.");
 			errorLabel.setForeground(new Color(0x008800));
 		} else {
 			goBtn.setEnabled(false);
-			errorLabel.setText("<html>" + ProjectConfigurationHelper.getErrorMessage(Ctx.cfg));
+			errorLabel.setText("<html>" + ProjectConfigurationHelper.getErrorMessage(Ctx.cfgCreate, Ctx.libs));
 			errorLabel.setForeground(new Color(0x880000));
 		}
 	}

@@ -1,5 +1,6 @@
 package aurelienribon.libgdx.ui;
 
+import aurelienribon.libgdx.LibraryDef;
 import aurelienribon.libgdx.ui.panels.AdvancedSettingsPanel;
 import aurelienribon.libgdx.ui.panels.ConfigPanel;
 import aurelienribon.libgdx.ui.panels.GenerationPanel;
@@ -26,6 +27,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import org.apache.commons.io.IOUtils;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -73,6 +75,15 @@ public class MainPanel extends PaintedPanel {
 		Style.apply(libraryInfoPanel, style);
 		Style.apply(generationPanel, style);
 
+		try {
+			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
+			LibraryDef def = new LibraryDef(rawDef);
+			Ctx.libs.addDef("libgdx", def);
+			Ctx.cfgCreate.libs.setUsage("libgdx", true);
+		} catch (IOException ex) {
+			assert false;
+		}
+
 		goPanel.init();
 		librarySetupPanel.init();
 
@@ -90,7 +101,7 @@ public class MainPanel extends PaintedPanel {
 
 		SwingUtils.addWindowListener(this, new WindowAdapter() {
 			@Override public void windowOpened(WindowEvent e) {
-				DownloadTask task = Ctx.dlManager.downloadConfigFile();
+				DownloadTask task = Ctx.libs.downloadConfigFile();
 				task.addListener(configFileDownloadListener);
 			}
 		});
@@ -99,18 +110,16 @@ public class MainPanel extends PaintedPanel {
 	private final DownloadListener configFileDownloadListener = new DownloadListener() {
 		@Override
 		public void onComplete() {
-			if (Ctx.testLibUrl != null) Ctx.dlManager.addLibraryUrl("__test_url__", Ctx.testLibUrl);
-			if (Ctx.testLibDef != null) Ctx.dlManager.addLibraryDef("__test_def__", Ctx.testLibDef);
+			if (Ctx.testLibUrl != null) Ctx.libs.addUrl("__test_url__", Ctx.testLibUrl);
+			if (Ctx.testLibDef != null) Ctx.libs.addDef("__test_def__", Ctx.testLibDef);
 			if (Ctx.testLibDef != null) librarySetupPanel.registerLibrary("__test_def__");
 
-			for (String name : Ctx.dlManager.getLibrariesNames()) {
-				DownloadTask task = Ctx.dlManager.downloadLibraryDef(name);
+			for (String name : Ctx.libs.getNames()) {
+				DownloadTask task = Ctx.libs.downloadDef(name);
 				final String libraryName = name;
 
 				task.addListener(new DownloadListener() {
 					@Override public void onComplete() {
-						Ctx.cfg.libs.add(libraryName, Ctx.dlManager.getLibraryDef(libraryName));
-						Ctx.cfg.libs.setUsage(libraryName, libraryName.equals("libgdx"));
 						librarySetupPanel.registerLibrary(libraryName);
 					}
 
@@ -215,11 +224,14 @@ public class MainPanel extends PaintedPanel {
 	public void showCreateSetup() {
 		if (isFirstPanelShown) {
 			panel.timeline()
-				.pushTo(createCfg.clone()
+				.pushTo(new SlidingLayersConfig(panel)
+					.column(false, 1).column(false, 1).column(false, 1)
+					.row(true, selectionPanel.getPreferredSize().height)
+					.tile(0, 0, selectionPanel))
+				.pushSet(createCfg.clone()
 					.hide(Direction.LEFT, configPanel, versionLabel)
 					.hide(Direction.UP, librarySetupPanel)
 					.hide(Direction.RIGHT, resultPanel, goPanel))
-				.setDuration(0.8f)
 				.pushTo(createCfg.clone()
 					.delayIncr(0.05f, configPanel, librarySetupPanel, resultPanel, goPanel, versionLabel))
 				.play();

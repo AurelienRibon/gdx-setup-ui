@@ -5,7 +5,12 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 import aurelienribon.tweenengine.equations.Quad;
+import aurelienribon.ui.css.DeclarationSet;
+import aurelienribon.ui.css.DeclarationSetProcessor;
+import aurelienribon.ui.css.Property;
+import aurelienribon.ui.css.Selector;
 import aurelienribon.ui.css.Style;
+import aurelienribon.ui.css.swing.SwingProperties;
 import aurelienribon.utils.Animator;
 import aurelienribon.utils.HttpUtils;
 import aurelienribon.utils.HttpUtils.DownloadListener;
@@ -29,6 +34,11 @@ public class TaskPanel extends JPanel {
 	private final List<Tile> tiles = new ArrayList<Tile>();
 	private TweenManager tweenManager;
 
+	static {
+		Style.registerProcessor(TaskPanel.class, new StyleProcessor());
+		Style.registerProcessor(DownloadTile.class, new DownloadTileStyleProcessor());
+	}
+
 	public TaskPanel() {
 		setLayout(null);
 		setPreferredSize(new Dimension(50, 30));
@@ -46,11 +56,42 @@ public class TaskPanel extends JPanel {
 	}
 
 	// -------------------------------------------------------------------------
+	// Style
+	// -------------------------------------------------------------------------
+
+	private Style style;
+	private List<Selector.Atom> styleStack;
+
+	private static class StyleProcessor implements DeclarationSetProcessor<TaskPanel> {
+		@Override
+		public void process(TaskPanel t, DeclarationSet ds) {
+			t.style = ds.getStyle();
+			t.styleStack = Style.getLastStack();
+		}
+	}
+
+	private static class DownloadTileStyleProcessor implements DeclarationSetProcessor<DownloadTile>, SwingProperties {
+		@Override
+		public void process(DownloadTile t, DeclarationSet ds) {
+			Property p;
+
+			t.titleLabel.setForeground(t.getForeground());
+			t.stateLabel.setForeground(t.getForeground());
+			t.titleLabel.setFont(t.getFont());
+			t.stateLabel.setFont(t.getFont());
+		}
+
+	}
+
+	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
 
 	private void addDownloadTile(DownloadTask task) {
 		final DownloadTile tile = new DownloadTile(task);
+		Style.registerCssClasses(tile, ".tile");
+		if (style != null) Style.apply(tile, style, styleStack);
+
 		tile.setLocation(getNextTileX() + getWidth(), 2);
 
 		Tween.to(tile, Animator.JComponentAccessor.X, 2)
@@ -157,11 +198,12 @@ public class TaskPanel extends JPanel {
 		}
 
 		public void setToError(String msg) {
-			setBackground(Color.red);
+			firePropertyChange("error", false, true);
 			setToolTipText(msg);
 		}
 
 		public void setToComplete() {
+			firePropertyChange("complete", false, true);
 			cancelLabel.setIcon(null);
 		}
 	}

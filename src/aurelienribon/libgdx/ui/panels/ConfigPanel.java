@@ -30,12 +30,12 @@ public class ConfigPanel extends javax.swing.JPanel {
     public ConfigPanel(final MainPanel mainPanel) {
         initComponents();
 
-		nameField.setText(Ctx.cfg.projectName);
-		packageField.setText(Ctx.cfg.packageName);
-		mainClassField.setText(Ctx.cfg.mainClassName);
+		nameField.setText(Ctx.cfgCreate.projectName);
+		packageField.setText(Ctx.cfgCreate.packageName);
+		mainClassField.setText(Ctx.cfgCreate.mainClassName);
 
 		try {
-			File destDir = new File(Ctx.cfg.destinationPath);
+			File destDir = new File(Ctx.cfgCreate.destinationPath);
 			destinationField.setText(destDir.getCanonicalPath());
 		} catch (IOException ex) {
 			assert false;
@@ -81,7 +81,7 @@ public class ConfigPanel extends javax.swing.JPanel {
     }
 
 	private void browse() {
-		String path = Ctx.cfg.destinationPath;
+		String path = Ctx.cfgCreate.destinationPath;
 		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
 		JFileChooser chooser = new JFileChooser(new File(path));
@@ -95,14 +95,14 @@ public class ConfigPanel extends javax.swing.JPanel {
 	}
 
 	private void update() {
-		Ctx.cfg.projectName = nameField.getText();
-		Ctx.cfg.packageName = packageField.getText();
-		Ctx.cfg.mainClassName = mainClassField.getText();
-		Ctx.cfg.destinationPath = destinationField.getText();
-		Ctx.cfg.isDesktopIncluded = genDesktopPrjChk.isSelected();
-		Ctx.cfg.isAndroidIncluded = genAndroidPrjChk.isSelected();
-		Ctx.cfg.isHtmlIncluded = genHtmlPrjChk.isSelected();
-		Ctx.fireConfigChanged();
+		Ctx.cfgCreate.projectName = nameField.getText();
+		Ctx.cfgCreate.packageName = packageField.getText();
+		Ctx.cfgCreate.mainClassName = mainClassField.getText();
+		Ctx.cfgCreate.destinationPath = destinationField.getText();
+		Ctx.cfgCreate.isDesktopIncluded = genDesktopPrjChk.isSelected();
+		Ctx.cfgCreate.isAndroidIncluded = genAndroidPrjChk.isSelected();
+		Ctx.cfgCreate.isHtmlIncluded = genHtmlPrjChk.isSelected();
+		Ctx.fireCfgCreateChanged();
 	}
 
 	private final KeyListener updateOnTypeKeyListener = new KeyAdapter() {

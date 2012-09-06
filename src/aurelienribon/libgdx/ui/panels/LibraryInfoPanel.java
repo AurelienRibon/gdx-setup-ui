@@ -40,7 +40,7 @@ public class LibraryInfoPanel extends javax.swing.JPanel {
     }
 
 	public void setup(String libraryName) {
-		LibraryDef def = Ctx.cfg.libs.getDef(libraryName);
+		LibraryDef def = Ctx.libs.getDef(libraryName);
 		nameLabel.setText(def.name);
 		descriptionLabel.setText("<html>" + def.description);
 		versionLabel.setText(def.stableVersion);

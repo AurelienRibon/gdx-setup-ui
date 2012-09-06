@@ -124,6 +124,24 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-swing-background: #FFF;
 }
 
+.taskBar .tile {
+	-swing-background: #BBC8D8;
+	-swing-foreground: #3D5277;
+	-swing-font-size: 10;
+}
+
+.taskBar .tile:error {
+	-swing-background: #F55;
+	-swing-foreground: #500;
+}
+
+/*
+.taskBar .tile:complete {
+	-swing-background: #5F5;
+	-swing-foreground: #050;
+}
+*/
+
 /*******************************************************************************
  * Misc
  ******************************************************************************/
