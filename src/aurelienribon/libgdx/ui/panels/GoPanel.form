@@ -84,19 +84,19 @@
               <Group type="102" alignment="1" attributes="0">
                   <Component id="numberLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabel4" pref="163" max="32767" attributes="0"/>
+                  <Component id="headerLabel" pref="163" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jLabel4" alignment="0" pref="0" max="32767" attributes="0"/>
+              <Component id="headerLabel" alignment="0" pref="0" max="32767" attributes="0"/>
               <Component id="numberLabel" alignment="0" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel4">
+        <Component class="javax.swing.JLabel" name="headerLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="&lt;html&gt; Ready to go?"/>
             <Property name="verticalAlignment" type="int" value="1"/>

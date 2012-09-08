@@ -56,10 +56,10 @@ public class ProjectSetup {
 		templateManager.define("PACKAGE_NAME_AS_PATH", cfg.packageName.replace('.', '/'));
 
 		// Project specific definitions
-		templateManager.define("PRJ_COMMON_NAME", cfg.projectName + cfg.commonSuffix);
-		if (cfg.isDesktopIncluded) templateManager.define("PRJ_DESKTOP_NAME", cfg.projectName + cfg.desktopSuffix);
-		if (cfg.isAndroidIncluded) templateManager.define("PRJ_ANDROID_NAME", cfg.projectName + cfg.androidSuffix);
-		if (cfg.isHtmlIncluded) templateManager.define("PRJ_HTML_NAME", cfg.projectName + cfg.htmlSuffix);
+		templateManager.define("PRJ_COMMON_NAME", cfg.projectName + cfg.suffixCommon);
+		if (cfg.isDesktopIncluded) templateManager.define("PRJ_DESKTOP_NAME", cfg.projectName + cfg.suffixDesktop);
+		if (cfg.isAndroidIncluded) templateManager.define("PRJ_ANDROID_NAME", cfg.projectName + cfg.suffixAndroid);
+		if (cfg.isHtmlIncluded) templateManager.define("PRJ_HTML_NAME", cfg.projectName + cfg.suffixHtml);
 
 		// Android manifest definitions
 		if (!cfg.androidMinSdkVersion.equals("")) templateManager.define("ANDROID_MIN_SDK", cfg.androidMinSdkVersion);
@@ -204,7 +204,7 @@ public class ProjectSetup {
 	public void postProcess() throws IOException {
 		{
 			File src = new File(tmpDst, "prj-common");
-			File dst = new File(tmpDst, cfg.projectName + cfg.commonSuffix);
+			File dst = new File(tmpDst, cfg.projectName + cfg.suffixCommon);
 			move(src, "src/MyGame.java", "src/" + cfg.packageName.replace('.', '/') + "/" + cfg.mainClassName + ".java");
 			move(src, "src/MyGame.gwt.xml", "src/" + cfg.mainClassName + ".gwt.xml");
 			templateDir(src);
@@ -213,7 +213,7 @@ public class ProjectSetup {
 
 		if (cfg.isDesktopIncluded) {
 			File src = new File(tmpDst, "prj-desktop");
-			File dst = new File(tmpDst, cfg.projectName + cfg.desktopSuffix);
+			File dst = new File(tmpDst, cfg.projectName + cfg.suffixDesktop);
 			move(src, "src/Main.java", "src/" + cfg.packageName.replace('.', '/') + "/Main.java");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
@@ -221,7 +221,7 @@ public class ProjectSetup {
 
 		if (cfg.isAndroidIncluded) {
 			File src = new File(tmpDst, "prj-android");
-			File dst = new File(tmpDst, cfg.projectName + cfg.androidSuffix);
+			File dst = new File(tmpDst, cfg.projectName + cfg.suffixAndroid);
 			move(src, "src/MainActivity.java", "src/" + cfg.packageName.replace('.', '/') + "/MainActivity.java");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
@@ -229,7 +229,7 @@ public class ProjectSetup {
 
 		if (cfg.isHtmlIncluded) {
 			File src = new File(tmpDst, "prj-html");
-			File dst = new File(tmpDst, cfg.projectName + cfg.htmlSuffix);
+			File dst = new File(tmpDst, cfg.projectName + cfg.suffixHtml);
 			move(src, "src/GwtDefinition.gwt.xml", "src/" + cfg.packageName.replace('.', '/') + "/GwtDefinition.gwt.xml");
 			move(src, "src/client", "src/" + cfg.packageName.replace('.', '/') + "/client");
 			templateDir(src);
@@ -242,22 +242,22 @@ public class ProjectSetup {
 	 * @throws IOException
 	 */
 	public void copy() throws IOException {
-		File src = new File(tmpDst, cfg.projectName + cfg.commonSuffix);
+		File src = new File(tmpDst, cfg.projectName + cfg.suffixCommon);
 		File dst = new File(cfg.destinationPath);
 		FileUtils.copyDirectoryToDirectory(src, dst);
 
 		if (cfg.isDesktopIncluded) {
-			src = new File(tmpDst, cfg.projectName + cfg.desktopSuffix);
+			src = new File(tmpDst, cfg.projectName + cfg.suffixDesktop);
 			FileUtils.copyDirectoryToDirectory(src, dst);
 		}
 
 		if (cfg.isAndroidIncluded) {
-			src = new File(tmpDst, cfg.projectName + cfg.androidSuffix);
+			src = new File(tmpDst, cfg.projectName + cfg.suffixAndroid);
 			FileUtils.copyDirectoryToDirectory(src, dst);
 		}
 
 		if (cfg.isHtmlIncluded) {
-			src = new File(tmpDst, cfg.projectName + cfg.htmlSuffix);
+			src = new File(tmpDst, cfg.projectName + cfg.suffixHtml);
 			FileUtils.copyDirectoryToDirectory(src, dst);
 		}
 	}

@@ -24,10 +24,10 @@ import javax.swing.SwingUtilities;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class ConfigPanel extends javax.swing.JPanel {
+public class ConfigCreatePanel extends javax.swing.JPanel {
 	private boolean clicToShowSettings = true;
 
-    public ConfigPanel(final MainPanel mainPanel) {
+    public ConfigCreatePanel(final MainPanel mainPanel) {
         initComponents();
 
 		nameField.setText(Ctx.cfgCreate.projectName);
@@ -134,7 +134,7 @@ public class ConfigPanel extends javax.swing.JPanel {
 			JTextField field = (JTextField) e.getSource();
 			if (!Pattern.compile("[a-zA-Z0-9_-]*").matcher(field.getText()).matches()) {
 				String msg = "Only alphanumeric, '-' and '_' characters are allowed for project name.";
-				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigPanel.this);
+				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigCreatePanel.this);
 				JOptionPane.showMessageDialog(frame, msg);
 				field.setText(backup);
 				update();
@@ -156,7 +156,7 @@ public class ConfigPanel extends javax.swing.JPanel {
 			JTextField field = (JTextField) e.getSource();
 			if (!Pattern.compile("[a-zA-Z0-9_\\.]*").matcher(field.getText()).matches()) {
 				String msg = "Only alphanumeric, '_' and '.' characters are allowed for package name.";
-				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigPanel.this);
+				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigCreatePanel.this);
 				JOptionPane.showMessageDialog(frame, msg);
 				field.setText(backup);
 				update();
@@ -178,7 +178,7 @@ public class ConfigPanel extends javax.swing.JPanel {
 			JTextField field = (JTextField) e.getSource();
 			if (!Pattern.compile("[a-zA-Z0-9_]*").matcher(field.getText()).matches()) {
 				String msg = "Only alphanumeric and '_' characters are allowed for class name.\n";
-				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigPanel.this);
+				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigCreatePanel.this);
 
 				JOptionPane.showMessageDialog(frame, msg);
 				field.setText(backup);

@@ -89,8 +89,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="updateBtn">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Update (coming soon!)"/>
-            <Property name="enabled" type="boolean" value="false"/>
+            <Property name="text" type="java.lang.String" value="Update existing project"/>
           </Properties>
         </Component>
       </SubComponents>

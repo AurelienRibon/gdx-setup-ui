@@ -2,7 +2,9 @@ package aurelienribon.libgdx.ui;
 
 import aurelienribon.libgdx.LibraryDef;
 import aurelienribon.libgdx.ui.panels.AdvancedSettingsPanel;
-import aurelienribon.libgdx.ui.panels.ConfigPanel;
+import aurelienribon.libgdx.ui.panels.ClasspathsPanel;
+import aurelienribon.libgdx.ui.panels.ConfigCreatePanel;
+import aurelienribon.libgdx.ui.panels.ConfigUpdatePanel;
 import aurelienribon.libgdx.ui.panels.GenerationPanel;
 import aurelienribon.libgdx.ui.panels.GoPanel;
 import aurelienribon.libgdx.ui.panels.LibraryInfoPanel;
@@ -34,7 +36,8 @@ import org.apache.commons.io.IOUtils;
  */
 public class MainPanel extends PaintedPanel {
 	private final SelectionPanel selectionPanel = new SelectionPanel(this);
-	private final ConfigPanel configPanel = new ConfigPanel(this);
+	private final ConfigCreatePanel configCreatePanel = new ConfigCreatePanel(this);
+	private final ConfigUpdatePanel configUpdatePanel = new ConfigUpdatePanel(this);
 	private final VersionLabel versionLabel = new VersionLabel();
 	private final LibrarySetupPanel librarySetupPanel = new LibrarySetupPanel(this);
 	private final ResultPanel resultPanel = new ResultPanel();
@@ -42,6 +45,7 @@ public class MainPanel extends PaintedPanel {
 	private final TaskPanel taskPanel = new TaskPanel();
 	private final AdvancedSettingsPanel advancedSettingsPanel = new AdvancedSettingsPanel();
 	private final LibraryInfoPanel libraryInfoPanel = new LibraryInfoPanel(this);
+	private final ClasspathsPanel classpathsPanel = new ClasspathsPanel(this);
 	private final GenerationPanel generationPanel = new GenerationPanel(this);
 
 	private final SlidingLayersPanel panel = new SlidingLayersPanel();
@@ -53,19 +57,22 @@ public class MainPanel extends PaintedPanel {
 
 		Style.registerCssClasses(this, ".rootPanel");
 		Style.registerCssClasses(selectionPanel, ".groupPanel", "#selectionPanel");
-		Style.registerCssClasses(configPanel, ".groupPanel", "#configPanel");
+		Style.registerCssClasses(configCreatePanel, ".groupPanel", "#configCreatePanel");
+		Style.registerCssClasses(configUpdatePanel, ".groupPanel", "#configUpdatePanel");
 		Style.registerCssClasses(versionLabel, ".versionLabel");
 		Style.registerCssClasses(librarySetupPanel, ".groupPanel", "#librarySetupPanel");
 		Style.registerCssClasses(resultPanel, ".groupPanel", "#resultPanel");
 		Style.registerCssClasses(goPanel, ".groupPanel", "#goPanel");
 		Style.registerCssClasses(advancedSettingsPanel, ".groupPanel", "#advancedSettingsPanel");
 		Style.registerCssClasses(libraryInfoPanel, ".groupPanel", "#libraryInfoPanel");
+		Style.registerCssClasses(classpathsPanel, ".groupPanel", "#classpathsPanel");
 		Style.registerCssClasses(generationPanel, ".groupPanel", "#generationPanel");
 
 		Style style = new Style(Res.getUrl("css/style.css"));
 		Style.apply(this, style);
 		Style.apply(selectionPanel, style);
-		Style.apply(configPanel, style);
+		Style.apply(configCreatePanel, style);
+		Style.apply(configUpdatePanel, style);
 		Style.apply(versionLabel, style);
 		Style.apply(librarySetupPanel, style);
 		Style.apply(resultPanel, style);
@@ -73,6 +80,7 @@ public class MainPanel extends PaintedPanel {
 		Style.apply(taskPanel, style);
 		Style.apply(advancedSettingsPanel, style);
 		Style.apply(libraryInfoPanel, style);
+		Style.apply(classpathsPanel, style);
 		Style.apply(generationPanel, style);
 
 		try {
@@ -137,9 +145,10 @@ public class MainPanel extends PaintedPanel {
 	// -------------------------------------------------------------------------
 
 	private SlidingLayersConfig initCfg, createCfg, updateCfg;
-	private SlidingLayersConfig advSettingsCfg;
-	private SlidingLayersConfig libraryInfoCfg;
-	private SlidingLayersConfig generationCfg;
+	private SlidingLayersConfig createAdvSettingsCfg;
+	private SlidingLayersConfig createLibraryInfoCfg;
+	private SlidingLayersConfig createGenerationCfg;
+	private SlidingLayersConfig updateClasspathsCfg;
 
 	private boolean isFirstPanelShown = true;
 	private boolean isCreateSetupUsed = true;
@@ -154,10 +163,11 @@ public class MainPanel extends PaintedPanel {
 		initCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).row(true, 30).column(false, 1)
 			.beginGrid(0, 0)
-				.row(false, 1).row(false, 1).row(false, 1)
+				.row(false, 10).row(false, 15).row(true, versionLabel.getPreferredSize().height).row(false, 10)
 				.column(false, 1).column(false, 2).column(false, 1)
 				.tile(0, 0, logo)
 				.tile(1, 1, selectionPanel)
+				.tile(2, 1, versionLabel)
 			.end()
 			.tile(1, 0, taskPanel);
 
@@ -167,11 +177,11 @@ public class MainPanel extends PaintedPanel {
 				.row(false, 1).column(false, 1).column(false, 1).column(false, 1)
 				.beginGrid(0, 0)
 					.row(true, selectionPanel.getPreferredSize().height)
-					.row(true, configPanel.getPreferredSize().height)
+					.row(true, configCreatePanel.getPreferredSize().height)
 					.row(true, versionLabel.getPreferredSize().height)
 					.column(false, 1)
 					.tile(0, 0, selectionPanel)
-					.tile(1, 0, configPanel)
+					.tile(1, 0, configCreatePanel)
 					.tile(2, 0, versionLabel)
 				.end()
 				.beginGrid(0, 1)
@@ -189,18 +199,46 @@ public class MainPanel extends PaintedPanel {
 			.end()
 			.tile(1, 0, taskPanel);
 
-		advSettingsCfg = new SlidingLayersConfig(panel)
+		updateCfg = new SlidingLayersConfig(panel)
+			.row(false, 1).row(true, 30).column(false, 1)
+			.beginGrid(0, 0)
+				.row(false, 1).column(false, 1).column(false, 1).column(false, 1)
+				.beginGrid(0, 0)
+					.row(true, selectionPanel.getPreferredSize().height)
+					.row(true, configUpdatePanel.getPreferredSize().height)
+					.row(true, versionLabel.getPreferredSize().height)
+					.column(false, 1)
+					.tile(0, 0, selectionPanel)
+					.tile(1, 0, configUpdatePanel)
+					.tile(2, 0, versionLabel)
+				.end()
+				.beginGrid(0, 1)
+					.row(false, 1)
+					.column(false, 1)
+					.tile(0, 0, librarySetupPanel)
+				.end()
+				.beginGrid(0, 2)
+					.row(false, 1)
+					.row(true, goPanel.getPreferredSize().height)
+					.column(false, 1)
+					.tile(0, 0, resultPanel)
+					.tile(1, 0, goPanel)
+				.end()
+			.end()
+			.tile(1, 0, taskPanel);
+
+		createAdvSettingsCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 1).column(false, 2)
 			.beginGrid(0, 0)
-				.row(true, configPanel.getPreferredSize().height)
+				.row(true, configCreatePanel.getPreferredSize().height)
 				.row(true, versionLabel.getPreferredSize().height)
 				.column(false, 1)
-				.tile(0, 0, configPanel)
+				.tile(0, 0, configCreatePanel)
 				.tile(1, 0, versionLabel)
 			.end()
 			.tile(0, 1, advancedSettingsPanel);
 
-		libraryInfoCfg = new SlidingLayersConfig(panel)
+		createLibraryInfoCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).row(true, 30).column(false, 1)
 			.beginGrid(0, 0)
 				.row(false, 1).column(false, 1).column(false, 2)
@@ -209,7 +247,7 @@ public class MainPanel extends PaintedPanel {
 			.end()
 			.tile(1, 0, taskPanel);
 
-		generationCfg = new SlidingLayersConfig(panel)
+		createGenerationCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 2).column(false, 1)
 			.beginGrid(0, 1)
 				.row(false, 1)
@@ -219,25 +257,52 @@ public class MainPanel extends PaintedPanel {
 				.tile(1, 0, goPanel)
 			.end()
 			.tile(0, 0, generationPanel);
+
+		updateClasspathsCfg = new SlidingLayersConfig(panel)
+			.row(false, 1).column(false, 2).column(false, 1)
+			.beginGrid(0, 1)
+				.row(false, 1)
+				.row(true, goPanel.getPreferredSize().height)
+				.column(false, 1)
+				.tile(0, 0, resultPanel)
+				.tile(1, 0, goPanel)
+			.end()
+			.tile(0, 0, classpathsPanel);
 	}
 
 	public void showCreateSetup() {
 		if (isFirstPanelShown) {
+			Ctx.mode = Ctx.Mode.CREATE;
+			Ctx.fireModeChangedChanged();
+
 			panel.timeline()
 				.pushTo(new SlidingLayersConfig(panel)
 					.column(false, 1).column(false, 1).column(false, 1)
 					.row(true, selectionPanel.getPreferredSize().height)
-					.tile(0, 0, selectionPanel))
+					.row(true, configCreatePanel.getPreferredSize().height)
+					.row(true, versionLabel.getPreferredSize().height)
+					.tile(0, 0, selectionPanel)
+					.tile(2, 0, versionLabel)
+					.delay(0.15f, versionLabel))
 				.pushSet(createCfg.clone()
-					.hide(Direction.LEFT, configPanel, versionLabel)
+					.hide(Direction.LEFT, configCreatePanel)
 					.hide(Direction.UP, librarySetupPanel)
 					.hide(Direction.RIGHT, resultPanel, goPanel))
 				.pushTo(createCfg.clone()
-					.delayIncr(0.05f, configPanel, librarySetupPanel, resultPanel, goPanel, versionLabel))
+					.delayIncr(0.05f, configCreatePanel, librarySetupPanel, resultPanel, goPanel))
 				.play();
 
 		} else if (!isCreateSetupUsed) {
+			Ctx.mode = Ctx.Mode.CREATE;
+			Ctx.fireModeChangedChanged();
 
+			panel.timeline()
+				.pushTo(updateCfg.clone()
+					.hide(Direction.LEFT, configUpdatePanel))
+				.pushTo(createCfg.clone()
+					.hide(Direction.LEFT, configCreatePanel))
+				.pushTo(createCfg)
+				.play();
 		}
 
 		isCreateSetupUsed = true;
@@ -246,7 +311,37 @@ public class MainPanel extends PaintedPanel {
 
 	public void showUpdateSetup() {
 		if (isFirstPanelShown) {
+			Ctx.mode = Ctx.Mode.UPDATE;
+			Ctx.fireModeChangedChanged();
+
+			panel.timeline()
+				.pushTo(new SlidingLayersConfig(panel)
+					.column(false, 1).column(false, 1).column(false, 1)
+					.row(true, selectionPanel.getPreferredSize().height)
+					.row(true, configUpdatePanel.getPreferredSize().height)
+					.row(true, versionLabel.getPreferredSize().height)
+					.tile(0, 0, selectionPanel)
+					.tile(2, 0, versionLabel)
+					.delay(0.15f, versionLabel))
+				.pushSet(updateCfg.clone()
+					.hide(Direction.LEFT, configUpdatePanel)
+					.hide(Direction.UP, librarySetupPanel)
+					.hide(Direction.RIGHT, resultPanel, goPanel))
+				.pushTo(updateCfg.clone()
+					.delayIncr(0.05f, configUpdatePanel, librarySetupPanel, resultPanel, goPanel))
+				.play();
+
 		} else if (isCreateSetupUsed) {
+			Ctx.mode = Ctx.Mode.UPDATE;
+			Ctx.fireModeChangedChanged();
+
+			panel.timeline()
+				.pushTo(createCfg.clone()
+					.hide(Direction.LEFT, configCreatePanel))
+				.pushTo(updateCfg.clone()
+					.hide(Direction.LEFT, configUpdatePanel))
+				.pushTo(updateCfg)
+				.play();
 		}
 
 		isCreateSetupUsed = false;
@@ -254,33 +349,41 @@ public class MainPanel extends PaintedPanel {
 	}
 
 	public void showAdvancedSettings() {
-		panel.timeline()
-			.pushTo(createCfg.clone()
-				.hide(Direction.DOWN, taskPanel)
-				.hide(Direction.UP, selectionPanel, librarySetupPanel)
-				.hide(Direction.RIGHT, resultPanel, goPanel)
-				.changeRow(0, configPanel)
-				.changeRow(1, versionLabel)
-				.delayIncr(0.05f, librarySetupPanel, configPanel, versionLabel, resultPanel, goPanel, taskPanel))
-			.pushSet(advSettingsCfg.clone()
-				.hide(Direction.RIGHT, advancedSettingsPanel))
-			.pushTo(advSettingsCfg)
-			.play();
+		if (isCreateSetupUsed) {
+			panel.timeline()
+				.pushTo(createCfg.clone()
+					.hide(Direction.DOWN, taskPanel)
+					.hide(Direction.UP, selectionPanel, librarySetupPanel)
+					.hide(Direction.RIGHT, resultPanel, goPanel)
+					.changeRow(0, configCreatePanel)
+					.changeRow(1, versionLabel)
+					.delayIncr(0.05f, librarySetupPanel, configCreatePanel, versionLabel, resultPanel, goPanel, taskPanel))
+				.pushSet(createAdvSettingsCfg.clone()
+					.hide(Direction.RIGHT, advancedSettingsPanel))
+				.pushTo(createAdvSettingsCfg)
+				.play();
+		} else {
+
+		}
 	}
 
 	public void hideAdvancedSettings() {
-		panel.timeline()
-			.pushTo(advSettingsCfg.clone()
-				.hide(Direction.RIGHT, advancedSettingsPanel))
-			.pushSet(createCfg.clone()
-				.hide(Direction.DOWN, taskPanel)
-				.hide(Direction.UP, selectionPanel, librarySetupPanel)
-				.hide(Direction.RIGHT, resultPanel, goPanel)
-				.changeRow(0, configPanel)
-				.changeRow(1, versionLabel))
-			.pushTo(createCfg.clone()
-				.delayIncr(0.05f, versionLabel, configPanel, selectionPanel, librarySetupPanel, resultPanel, goPanel, taskPanel))
-			.play();
+		if (isCreateSetupUsed) {
+			panel.timeline()
+				.pushTo(createAdvSettingsCfg.clone()
+					.hide(Direction.RIGHT, advancedSettingsPanel))
+				.pushSet(createCfg.clone()
+					.hide(Direction.DOWN, taskPanel)
+					.hide(Direction.UP, selectionPanel, librarySetupPanel)
+					.hide(Direction.RIGHT, resultPanel, goPanel)
+					.changeRow(0, configCreatePanel)
+					.changeRow(1, versionLabel))
+				.pushTo(createCfg.clone()
+					.delayIncr(0.05f, versionLabel, configCreatePanel, selectionPanel, librarySetupPanel, resultPanel, goPanel, taskPanel))
+				.play();
+		} else {
+
+		}
 	}
 
 	public void showLibraryInfo(String libraryName) {
@@ -294,32 +397,40 @@ public class MainPanel extends PaintedPanel {
 			return;
 		}
 
-		currentLibraryInfo = libraryName;
-		libraryInfoPanel.setup(libraryName);
+		if (isCreateSetupUsed) {
+			currentLibraryInfo = libraryName;
+			libraryInfoPanel.setup(libraryName);
 
-		panel.timeline()
-			.pushTo(createCfg.clone()
-				.hide(Direction.LEFT, selectionPanel, configPanel, versionLabel)
-				.hide(Direction.RIGHT, resultPanel, goPanel)
-				.delayIncr(0.02f, librarySetupPanel, configPanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
-			.pushTo(libraryInfoCfg.clone()
-				.hide(Direction.RIGHT, libraryInfoPanel))
-			.pushTo(libraryInfoCfg)
-			.play();
+			panel.timeline()
+				.pushTo(createCfg.clone()
+					.hide(Direction.LEFT, selectionPanel, configCreatePanel, versionLabel)
+					.hide(Direction.RIGHT, resultPanel, goPanel)
+					.delayIncr(0.02f, librarySetupPanel, configCreatePanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
+				.pushTo(createLibraryInfoCfg.clone()
+					.hide(Direction.RIGHT, libraryInfoPanel))
+				.pushTo(createLibraryInfoCfg)
+				.play();
+		} else {
+
+		}
 	}
 
 	public void hideLibraryInfo() {
 		currentLibraryInfo = null;
 
-		panel.timeline()
-			.pushTo(libraryInfoCfg.clone()
-				.hide(Direction.RIGHT, libraryInfoPanel))
-			.pushTo(createCfg.clone()
-				.hide(Direction.LEFT, selectionPanel, configPanel, versionLabel)
-				.hide(Direction.RIGHT, resultPanel, goPanel))
-			.pushTo(createCfg.clone()
-				.delayIncr(0.02f, librarySetupPanel, configPanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
-			.play();
+		if (isCreateSetupUsed) {
+			panel.timeline()
+				.pushTo(createLibraryInfoCfg.clone()
+					.hide(Direction.RIGHT, libraryInfoPanel))
+				.pushTo(createCfg.clone()
+					.hide(Direction.LEFT, selectionPanel, configCreatePanel, versionLabel)
+					.hide(Direction.RIGHT, resultPanel, goPanel))
+				.pushTo(createCfg.clone()
+					.delayIncr(0.02f, librarySetupPanel, configCreatePanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
+				.play();
+		} else {
+
+		}
 	}
 
 	public void showGenerationPanel() {
@@ -332,11 +443,11 @@ public class MainPanel extends PaintedPanel {
 
 		panel.timeline()
 			.pushTo(createCfg.clone()
-				.hide(Direction.DOWN, taskPanel, selectionPanel, configPanel, versionLabel, librarySetupPanel)
-				.delayIncr(0.05f, librarySetupPanel, versionLabel, configPanel, selectionPanel))
-			.pushTo(generationCfg.clone()
+				.hide(Direction.DOWN, taskPanel, selectionPanel, configCreatePanel, versionLabel, librarySetupPanel)
+				.delayIncr(0.05f, librarySetupPanel, versionLabel, configCreatePanel, selectionPanel))
+			.pushTo(createGenerationCfg.clone()
 				.hide(Direction.UP, generationPanel))
-			.pushTo(generationCfg)
+			.pushTo(createGenerationCfg)
 			.play();
 	}
 
@@ -344,13 +455,28 @@ public class MainPanel extends PaintedPanel {
 		isGenerationPanelOpen = false;
 
 		panel.timeline()
-			.pushTo(generationCfg.clone()
+			.pushTo(createGenerationCfg.clone()
 				.hide(Direction.DOWN, generationPanel))
 			.pushTo(createCfg.clone()
-				.hide(Direction.UP, selectionPanel, configPanel, versionLabel, librarySetupPanel)
+				.hide(Direction.UP, selectionPanel, configCreatePanel, versionLabel, librarySetupPanel)
 				.hide(Direction.DOWN, taskPanel))
 			.pushTo(createCfg.clone()
-				.delayIncr(0.05f, versionLabel, configPanel, selectionPanel, librarySetupPanel, taskPanel))
+				.delayIncr(0.05f, versionLabel, configCreatePanel, selectionPanel, librarySetupPanel, taskPanel))
 			.play();
+	}
+
+	public void showClasspathsPanel() {
+		panel.timeline()
+			.pushTo(createCfg.clone()
+				.hide(Direction.DOWN, taskPanel, selectionPanel, configCreatePanel, versionLabel, librarySetupPanel)
+				.delayIncr(0.05f, librarySetupPanel, versionLabel, configCreatePanel, selectionPanel))
+			.pushTo(updateClasspathsCfg.clone()
+				.hide(Direction.UP, classpathsPanel))
+			.pushTo(updateClasspathsCfg)
+			.play();
+	}
+
+	public void hideClasspathsPanel() {
+
 	}
 }

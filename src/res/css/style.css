@@ -41,13 +41,15 @@ javax-swing-JToolBar > javax-swing-JButton {
 }
 
 #selectionPanel {-ar-border-title: "Mode";}
-#configPanel {-ar-border-title: "Configuration";}
+#configCreatePanel {-ar-border-title: "Configuration";}
+#configUpdatePanel {-ar-border-title: "Project Selection";}
 #librarySetupPanel {-ar-border-title: "Library Selection";}
 #resultPanel {-ar-border-title: "Overview";}
 #goPanel {-ar-border-title: "Generation";}
 #advancedSettingsPanel {-ar-border-title: "Advanced Settings";}
 #libraryInfoPanel {-ar-border-title: "Library information";}
-#generationPanel {-ar-border-title: "Generation";}
+#classpathsPanel {-ar-border-title: "Classpaths Review";}
+#generationPanel {-ar-border-title: "Launch";}
 
 /*******************************************************************************
  * Root panels
@@ -163,6 +165,11 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-swing-margin: 5 10;
 	-swing-font-size: 11;
 }
+
+.statusLabel:error {-swing-foreground: #800;}
+.statusLabel:valid {-swing-foreground: #080;}
+.statusLabel:notfound {-swing-foreground: #800; -swing-text: "Not found";}
+.statusLabel:found {-swing-foreground: #080; -swing-text: "Found";}
 
 .frame {
 	-swing-border: lineborder(#3D5277, 1);

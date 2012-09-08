@@ -101,7 +101,7 @@ public class TaskPanel extends JPanel {
 
 		task.addListener(new DownloadListener() {
 			@Override public void onUpdate(int length, int totalLength) {tile.setCurrentSize(length, totalLength);}
-			@Override public void onComplete() {tile.setToComplete(); removeTile(tile, true);}
+			@Override public void onComplete() {tile.setToComplete(); tile.disappear(3.5f);}
 			@Override public void onError(IOException ex) {tile.setToError("IOException: " + ex.getMessage());}
 		});
 
@@ -118,17 +118,7 @@ public class TaskPanel extends JPanel {
 		return 2 + 202*idx;
 	}
 
-	private void removeTile(Tile tile, boolean useDelay) {
-		Tween.to(tile, Animator.JComponentAccessor.Y, 0.3f)
-			.targetRelative(50)
-			.ease(Quad.IN)
-			.delay(useDelay ? 3.5f : 0)
-			.setCallback(removeTileCallback)
-			.setUserData(tile)
-			.start(tweenManager);
-	}
-
-	private final TweenCallback removeTileCallback = new TweenCallback() {
+	private final TweenCallback tileRemovedCallback = new TweenCallback() {
 		@Override
 		public void onEvent(int type, BaseTween<?> source) {
 			tiles.remove((Tile) source.getUserData());
@@ -181,7 +171,7 @@ public class TaskPanel extends JPanel {
 			cancelLabel.addMouseListener(new MouseAdapter() {
 				@Override public void mousePressed(MouseEvent e) {
 					cancelLabel.setIcon(null);
-					removeTile(DownloadTile.this, false);
+					disappear(0);
 					task.stop();
 				}
 			});
@@ -205,6 +195,16 @@ public class TaskPanel extends JPanel {
 		public void setToComplete() {
 			firePropertyChange("complete", false, true);
 			cancelLabel.setIcon(null);
+		}
+
+		public void disappear(float delay) {
+			Tween.to(this, Animator.JComponentAccessor.Y, 0.3f)
+				.targetRelative(50)
+				.ease(Quad.IN)
+				.delay(delay)
+				.setCallback(tileRemovedCallback)
+				.setUserData(this)
+				.start(tweenManager);
 		}
 	}
 }

@@ -20,10 +20,10 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     public AdvancedSettingsPanel() {
         initComponents();
 
-		commonSuffixField.setText(Ctx.cfgCreate.commonSuffix);
-		desktopSuffixField.setText(Ctx.cfgCreate.desktopSuffix);
-		androidSuffixField.setText(Ctx.cfgCreate.androidSuffix);
-		htmlSuffixField.setText(Ctx.cfgCreate.htmlSuffix);
+		commonSuffixField.setText(Ctx.cfgCreate.suffixCommon);
+		desktopSuffixField.setText(Ctx.cfgCreate.suffixDesktop);
+		androidSuffixField.setText(Ctx.cfgCreate.suffixAndroid);
+		htmlSuffixField.setText(Ctx.cfgCreate.suffixHtml);
 		androidMinSdkField.setText(Ctx.cfgCreate.androidMinSdkVersion);
 		androidTargetSdkField.setText(Ctx.cfgCreate.androidTargetSdkVersion);
 		androidMaxSdkField.setText(Ctx.cfgCreate.androidMaxSdkVersion);
@@ -53,9 +53,9 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     }
 
 	private void update() {
-		Ctx.cfgCreate.commonSuffix = commonSuffixField.getText();
-		Ctx.cfgCreate.desktopSuffix = desktopSuffixField.getText();
-		Ctx.cfgCreate.androidSuffix = androidSuffixField.getText();
+		Ctx.cfgCreate.suffixCommon = commonSuffixField.getText();
+		Ctx.cfgCreate.suffixDesktop = desktopSuffixField.getText();
+		Ctx.cfgCreate.suffixAndroid = androidSuffixField.getText();
 		Ctx.cfgCreate.androidMinSdkVersion = androidMinSdkField.getText();
 		Ctx.cfgCreate.androidMaxSdkVersion = androidMaxSdkField.getText();
 		Ctx.cfgCreate.androidTargetSdkVersion = androidTargetSdkField.getText();

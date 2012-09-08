@@ -75,8 +75,7 @@ public class SelectionPanel extends javax.swing.JPanel {
         createBtn.setText("Create new project");
         jPanel1.add(createBtn);
 
-        updateBtn.setText("Update (coming soon!)");
-        updateBtn.setEnabled(false);
+        updateBtn.setText("Update existing project");
         jPanel1.add(updateBtn);
 
         add(jPanel1, java.awt.BorderLayout.CENTER);

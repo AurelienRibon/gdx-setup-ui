@@ -1,12 +1,14 @@
 package aurelienribon.libgdx.ui.panels;
 
+import aurelienribon.libgdx.LibraryManager;
+import aurelienribon.libgdx.ProjectConfiguration;
 import aurelienribon.libgdx.ProjectConfigurationHelper;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -16,12 +18,20 @@ public class GoPanel extends javax.swing.JPanel {
         initComponents();
 		Style.registerCssClasses(headerPanel, ".header");
 		Style.registerCssClasses(numberLabel, ".headerNumber");
+		Style.registerCssClasses(errorLabel, ".statusLabel");
 
-		Ctx.listeners.add(new Ctx.Listener() {@Override public void cfgCreateChanged() {update();}});
+		Ctx.listeners.add(new Ctx.Listener() {
+			@Override public void modeChanged() {update();}
+			@Override public void cfgCreateChanged() {update();}
+			@Override public void cfgUpdateChanged() {update();}
+		});
 
 		goBtn.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
-				mainPanel.showGenerationPanel();
+				switch (Ctx.mode) {
+					case CREATE: mainPanel.showGenerationPanel(); break;
+					case UPDATE: mainPanel.showClasspathsPanel(); break;
+				}
 			}
 		});
     }
@@ -31,15 +41,100 @@ public class GoPanel extends javax.swing.JPanel {
 	}
 
 	private void update() {
-		if (ProjectConfigurationHelper.isValid(Ctx.cfgCreate, Ctx.libs)) {
-			goBtn.setEnabled(true);
-			errorLabel.setText("<html>Your configuration is valid.");
-			errorLabel.setForeground(new Color(0x008800));
-		} else {
-			goBtn.setEnabled(false);
-			errorLabel.setText("<html>" + ProjectConfigurationHelper.getErrorMessage(Ctx.cfgCreate, Ctx.libs));
-			errorLabel.setForeground(new Color(0x880000));
+		errorLabel.firePropertyChange("valid", true, false);
+		errorLabel.firePropertyChange("error", true, false);
+
+		switch (Ctx.mode) {
+			case CREATE:
+				if (isProjectCreationValid(Ctx.cfgCreate, Ctx.libs)) {
+					goBtn.setEnabled(true);
+					errorLabel.setText("<html>Your configuration is valid.");
+					errorLabel.firePropertyChange("valid", false, true);
+				} else {
+					goBtn.setEnabled(false);
+					errorLabel.setText("<html>" + getCreationErrorMessage(Ctx.cfgCreate));
+					errorLabel.firePropertyChange("error", false, true);
+				}
+
+				goBtn.setText("Generate the projects");
+				break;
+
+			case UPDATE:
+				if (isProjectUpdateValid(Ctx.cfgUpdate)) {
+					goBtn.setEnabled(true);
+					errorLabel.setText("<html>Your configuration is valid.");
+					errorLabel.firePropertyChange("valid", false, true);
+				} else {
+					goBtn.setEnabled(false);
+					errorLabel.setText("<html>" + getUpdateErrorMessage(Ctx.cfgUpdate, Ctx.libs));
+					errorLabel.firePropertyChange("error", false, true);
+				}
+
+				goBtn.setText("Update the projects");
+				break;
 		}
+	}
+
+	private boolean isProjectCreationValid(ProjectConfiguration cfg, LibraryManager libs) {
+		if (cfg.projectName.trim().equals("")) return false;
+		if (cfg.packageName.trim().equals("")) return false;
+		if (cfg.packageName.endsWith(".")) return false;
+		if (cfg.mainClassName.trim().equals("")) return false;
+
+		for (String libraryName : libs.getNames()) {
+			if (!isLibraryValid(cfg, libraryName)) return false;
+		}
+
+		return true;
+	}
+
+	private boolean isProjectUpdateValid(ProjectConfiguration cfg) {
+		File coreDir = new File(ProjectConfigurationHelper.getCommonPrjPath(cfg));
+
+		if (!coreDir.isDirectory()) return false;
+		if (!new File(coreDir, ".classpath").isFile()) return false;
+
+		for (String libraryName : cfg.libraries) {
+			if (!isLibraryValid(cfg, libraryName)) return false;
+		}
+
+		return true;
+	}
+
+	private boolean isLibraryValid(ProjectConfiguration cfg, String libraryName) {
+		String path = cfg.librariesZipPaths.get(libraryName);
+		if (path == null) return false;
+		if (!path.endsWith(".zip")) return false;
+		if (!new File(path).isFile()) return false;
+		return true;
+	}
+
+	private String getCreationErrorMessage(ProjectConfiguration cfg) {
+		if (cfg.projectName.trim().equals("")) return "Project name is not set.";
+		if (cfg.packageName.trim().equals("")) return "Package name is not set.";
+		if (cfg.packageName.endsWith(".")) return "Package name ends with a dot.";
+		if (cfg.mainClassName.trim().equals("")) return "Main class name is not set.";
+
+		for (String libraryName : cfg.libraries) {
+			if (!isLibraryValid(cfg, libraryName))
+				return "At least one selected library has a missing or invalid archive.";
+		}
+
+		return "No error found";
+	}
+
+	private String getUpdateErrorMessage(ProjectConfiguration cfg, LibraryManager libs) {
+		File coreDir = new File(ProjectConfigurationHelper.getCommonPrjPath(cfg));
+
+		if (!coreDir.isDirectory()) return "No core project was selected.";
+		if (!new File(coreDir, ".classpath").isFile()) return "No .classpath file was found in the selected directory.";
+
+		for (String libraryName : libs.getNames()) {
+			if (!isLibraryValid(cfg, libraryName))
+				return "At least one selected library has a missing or invalid archive.";
+		}
+
+		return "No error found";
 	}
 
 	// -------------------------------------------------------------------------
@@ -54,7 +149,7 @@ public class GoPanel extends javax.swing.JPanel {
         goBtn = new javax.swing.JButton();
         errorLabel = new javax.swing.JLabel();
         headerPanel = new javax.swing.JPanel();
-        jLabel4 = new javax.swing.JLabel();
+        headerLabel = new javax.swing.JLabel();
         numberLabel = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
@@ -91,8 +186,8 @@ public class GoPanel extends javax.swing.JPanel {
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        jLabel4.setText("<html> Ready to go?");
-        jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        headerLabel.setText("<html> Ready to go?");
+        headerLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         numberLabel.setText("5");
 
@@ -103,11 +198,11 @@ public class GoPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup()
                 .addComponent(numberLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE))
+                .addComponent(headerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE))
         );
         headerPanelLayout.setVerticalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(headerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(numberLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -117,8 +212,8 @@ public class GoPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel errorLabel;
     private javax.swing.JButton goBtn;
+    private javax.swing.JLabel headerLabel;
     private javax.swing.JPanel headerPanel;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel numberLabel;
     // End of variables declaration//GEN-END:variables

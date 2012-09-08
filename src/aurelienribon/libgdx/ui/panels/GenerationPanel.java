@@ -115,7 +115,6 @@ public class GenerationPanel extends javax.swing.JPanel {
         paintedPanel1 = new aurelienribon.ui.components.PaintedPanel();
         importQuestion = new javax.swing.JLabel();
         fixHtmlQuestion = new javax.swing.JLabel();
-        titleLabel = new javax.swing.JLabel();
         startBtn = new javax.swing.JButton();
         closeLabel = new javax.swing.JLabel();
 
@@ -151,8 +150,6 @@ public class GenerationPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        titleLabel.setText("Frequently Asked Questions");
-
         startBtn.setText("Start the generation");
 
         closeLabel.setText("Close >");
@@ -164,29 +161,24 @@ public class GenerationPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(closeLabel))
                     .addComponent(paintedPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(closeLabel)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(startBtn)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(titleLabel)
+                    .addComponent(startBtn)
                     .addComponent(closeLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -200,7 +192,6 @@ public class GenerationPanel extends javax.swing.JPanel {
     private aurelienribon.ui.components.PaintedPanel paintedPanel1;
     private javax.swing.JTextArea progressArea;
     private javax.swing.JButton startBtn;
-    private javax.swing.JLabel titleLabel;
     // End of variables declaration//GEN-END:variables
 
 }

@@ -260,10 +260,10 @@ public class ResultPanel extends javax.swing.JPanel {
 					name = name.replaceFirst("#DIR#", "");
 					name = name.replace("MyGame", Ctx.cfgCreate.mainClassName);
 
-					if (isDir && name.equals("prj-common")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.commonSuffix;
-					if (isDir && name.equals("prj-desktop")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.desktopSuffix;
-					if (isDir && name.equals("prj-android")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.androidSuffix;
-					if (isDir && name.equals("prj-html")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.htmlSuffix;
+					if (isDir && name.equals("prj-common")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.suffixCommon;
+					if (isDir && name.equals("prj-desktop")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.suffixDesktop;
+					if (isDir && name.equals("prj-android")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.suffixAndroid;
+					if (isDir && name.equals("prj-html")) name = Ctx.cfgCreate.projectName + Ctx.cfgCreate.suffixHtml;
 
 					label.setText(FilenameUtils.getName(name));
 					label.setIcon(isDir ? Res.getImage("gfx/ic_folder.png") : Res.getImage("gfx/ic_file.png"));

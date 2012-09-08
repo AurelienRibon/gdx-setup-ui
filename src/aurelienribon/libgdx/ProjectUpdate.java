@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -22,9 +21,11 @@ import org.apache.commons.io.IOUtils;
  */
 public class ProjectUpdate {
 	private final ProjectConfiguration cfg;
+	private final LibraryManager libs;
 
-	public ProjectUpdate(ProjectConfiguration cfg) {
+	public ProjectUpdate(ProjectConfiguration cfg, LibraryManager libs) {
 		this.cfg = cfg;
+		this.libs = libs;
 	}
 
 	// -------------------------------------------------------------------------
@@ -37,20 +38,18 @@ public class ProjectUpdate {
 	 * @throws IOException
 	 */
 	public void inflateLibraries() throws IOException {
-		File commonPrjLibsDir = new File(cfg.destinationPath, cfg.projectName + "/libs");
-		File desktopPrjLibsDir = new File(cfg.destinationPath, cfg.projectName + cfg.desktopSuffix + "/libs");
-		File androidPrjLibsDir = new File(cfg.destinationPath, cfg.projectName + cfg.androidSuffix + "/libs");
-		File htmlPrjLibsDir = new File(cfg.destinationPath, cfg.projectName + cfg.htmlSuffix + "/war/WEB-INF/lib");
-		File dataDir = new File(cfg.destinationPath, cfg.projectName + cfg.androidSuffix + "/assets");
+		File commonPrjLibsDir = new File(getCommonPrjPath() + "/libs");
+		File desktopPrjLibsDir = new File(getDesktopPrjPath() + "/libs");
+		File androidPrjLibsDir = new File(getAndroidPrjPath() + "/libs");
+		File htmlPrjLibsDir = new File(getHtmlPrjPath() + "/war/WEB-INF/lib");
+		File dataDir = new File(getAndroidPrjPath() + "/assets");
 
-		for (String library : cfg.libs.getNames()) {
-			if (!cfg.libs.isUsed(library)) continue;
-
-			InputStream is = new FileInputStream(cfg.libs.getPath(library));
+		for (String library : cfg.libraries) {
+			InputStream is = new FileInputStream(cfg.librariesZipPaths.get(library));
 			ZipInputStream zis = new ZipInputStream(is);
 			ZipEntry entry;
 
-			LibraryDef def = cfg.libs.getDef(library);
+			LibraryDef def = libs.getDef(library);
 
 			while ((entry = zis.getNextEntry()) != null) {
 				if (entry.isDirectory()) continue;
@@ -58,14 +57,23 @@ public class ProjectUpdate {
 
 				for (String elemName : def.libsCommon)
 					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, commonPrjLibsDir);
-				for (String elemName : def.libsDesktop)
-					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, desktopPrjLibsDir);
-				for (String elemName : def.libsAndroid)
-					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, androidPrjLibsDir);
-				for (String elemName : def.libsHtml)
-					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, htmlPrjLibsDir);
-				for (String elemName : def.data)
-					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, dataDir);
+
+				if (cfg.isDesktopIncluded) {
+					for (String elemName : def.libsDesktop)
+						if (entryName.endsWith(elemName)) copyEntry(zis, elemName, desktopPrjLibsDir);
+				}
+
+				if (cfg.isAndroidIncluded) {
+					for (String elemName : def.libsAndroid)
+						if (entryName.endsWith(elemName)) copyEntry(zis, elemName, androidPrjLibsDir);
+					for (String elemName : def.data)
+						if (entryName.endsWith(elemName)) copyEntry(zis, elemName, dataDir);
+				}
+
+				if (cfg.isHtmlIncluded) {
+					for (String elemName : def.libsHtml)
+						if (entryName.endsWith(elemName)) copyEntry(zis, elemName, htmlPrjLibsDir);
+				}
 			}
 
 			zis.close();
@@ -83,10 +91,8 @@ public class ProjectUpdate {
 		List<String> entriesHtml = new ArrayList<String>();
 		List<String> gwtInherits = new ArrayList<String>();
 
-		for (String library : cfg.libs.getNames()) {
-			if (!cfg.libs.isUsed(library)) continue;
-
-			LibraryDef def = cfg.libs.getDef(library);
+		for (String library : cfg.libraries) {
+			LibraryDef def = libs.getDef(library);
 
 			for (String file : def.libsCommon) {
 				if (!isLibJar(file)) continue;
@@ -121,21 +127,26 @@ public class ProjectUpdate {
 			}
 		}
 
-//		templateManager.define("CLASSPATHENTRIES_COMMON", flatten(entriesCommon, "\t", "\n").trim());
-//		templateManager.define("CLASSPATHENTRIES_DESKTOP", flatten(entriesDesktop, "\t", "\n").trim());
-//		templateManager.define("CLASSPATHENTRIES_ANDROID", flatten(entriesAndroid, "\t", "\n").trim());
-//		templateManager.define("CLASSPATHENTRIES_HTML", flatten(entriesHtml, "\t", "\n").trim());
-//		templateManager.define("GWT_INHERITS", flatten(gwtInherits, "\t", "\n").trim());
-//		templateManager.processOver(new File(tmpDst, "prj-common/.classpath"));
-//		templateManager.processOver(new File(tmpDst, "prj-desktop/.classpath"));
-//		templateManager.processOver(new File(tmpDst, "prj-android/.classpath"));
-//		templateManager.processOver(new File(tmpDst, "prj-html/.classpath"));
-//		templateManager.processOver(new File(tmpDst, "prj-html/src/GwtDefinition.gwt.xml"));
+		templateManager.define("CLASSPATHENTRIES_COMMON", flatten(entriesCommon, "\t", "\n").trim());
+		templateManager.define("CLASSPATHENTRIES_DESKTOP", flatten(entriesDesktop, "\t", "\n").trim());
+		templateManager.define("CLASSPATHENTRIES_ANDROID", flatten(entriesAndroid, "\t", "\n").trim());
+		templateManager.define("CLASSPATHENTRIES_HTML", flatten(entriesHtml, "\t", "\n").trim());
+		templateManager.define("GWT_INHERITS", flatten(gwtInherits, "\t", "\n").trim());
+		templateManager.processOver(new File(tmpDst, "prj-common/.classpath"));
+		templateManager.processOver(new File(tmpDst, "prj-desktop/.classpath"));
+		templateManager.processOver(new File(tmpDst, "prj-android/.classpath"));
+		templateManager.processOver(new File(tmpDst, "prj-html/.classpath"));
+		templateManager.processOver(new File(tmpDst, "prj-html/src/GwtDefinition.gwt.xml"));
 	}
 
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
+
+	private String getCommonPrjPath() {return cfg.destinationPath + "/" + cfg.projectName + cfg.suffixCommon;}
+	private String getDesktopPrjPath() {return cfg.destinationPath + "/" + cfg.projectName + cfg.suffixDesktop;}
+	private String getAndroidPrjPath() {return cfg.destinationPath + "/" + cfg.projectName + cfg.suffixAndroid;}
+	private String getHtmlPrjPath() {return cfg.destinationPath + "/" + cfg.projectName + cfg.suffixHtml;}
 
 	private void copyEntry(ZipInputStream zis, String name, File dst) throws IOException {
 		File file = new File(dst, name);
@@ -144,43 +155,5 @@ public class ProjectUpdate {
 		OutputStream os = new FileOutputStream(file);
 		IOUtils.copy(zis, os);
 		os.close();
-	}
-
-	private boolean endsWith(String str, String... ends) {
-		for (String end : ends) if (str.endsWith(end)) return true;
-		return false;
-	}
-
-	private boolean isLibJar(String file) {
-		if (!file.endsWith(".jar")) return false;
-		String name = FilenameUtils.getBaseName(file);
-		if (endsWith(name, "-source", "-sources", "-src")) return false;
-		return true;
-	}
-
-	private String getSource(List<String> files, String file) {
-		String path = FilenameUtils.getFullPath(file);
-		String name = FilenameUtils.getBaseName(file);
-		String ext = FilenameUtils.getExtension(file);
-
-		if (files.contains(path + name + "-source." + ext)) return path + name + "-source." + ext;
-		if (files.contains(path + name + "-sources." + ext)) return path + name + "-sources." + ext;
-		if (files.contains(path + name + "-src." + ext)) return path + name + "-src." + ext;
-		return null;
-	}
-
-	private String buildClasspathEntry(String file, String sourceFile, String path, boolean exported) {
-		String str = "<classpathentry kind=\"lib\" ";
-		if (exported) str += "exported=\"true\" ";
-		str += "path=\"" + path + file + "\"";
-		if (sourceFile != null) str += " sourcepath=\"" + path + sourceFile + "\"";
-		str += "/>";
-		return str;
-	}
-
-	private String flatten(List<String> strs, String begin, String end) {
-		String ret = "";
-		for (String str : strs) ret += begin + str + end;
-		return ret;
 	}
 }

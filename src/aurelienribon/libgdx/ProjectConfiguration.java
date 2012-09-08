@@ -13,7 +13,7 @@ public class ProjectConfiguration {
 	public String projectName = "my-gdx-game";
 	public String mainClassName = "MyGdxGame";
 	public String packageName = "com.me.mygdxgame";
-	public String destinationPath = "";
+	public String destinationPath = ".";
 
 	public final List<String> libraries = new ArrayList<String>();
 	public final Map<String, String> librariesZipPaths = new HashMap<String, String>();
@@ -21,11 +21,11 @@ public class ProjectConfiguration {
 	public boolean isDesktopIncluded = true;
 	public boolean isAndroidIncluded = true;
 	public boolean isHtmlIncluded = true;
-	public String commonSuffix = "";
-	public String desktopSuffix = "-desktop";
-	public String androidSuffix = "-android";
-	public String htmlSuffix = "-html";
+	public String suffixCommon = "";
+	public String suffixDesktop = "-desktop";
+	public String suffixAndroid = "-android";
+	public String suffixHtml = "-html";
 	public String androidMinSdkVersion = "5";
-	public String androidTargetSdkVersion = "15";
+	public String androidTargetSdkVersion = "17";
 	public String androidMaxSdkVersion = "";
 }
