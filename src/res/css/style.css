@@ -44,7 +44,7 @@ javax-swing-JToolBar > javax-swing-JButton {
 #configCreatePanel {-ar-border-title: "Configuration";}
 #configUpdatePanel {-ar-border-title: "Project Selection";}
 #librarySetupPanel {-ar-border-title: "Library Selection";}
-#resultPanel {-ar-border-title: "Overview";}
+#previewPanel {-ar-border-title: "Overview";}
 #goPanel {-ar-border-title: "Generation";}
 #advancedSettingsPanel {-ar-border-title: "Advanced Settings";}
 #libraryInfoPanel {-ar-border-title: "Library information";}

@@ -23,8 +23,8 @@ import org.apache.commons.io.FilenameUtils;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class ResultPanel extends javax.swing.JPanel {
-    public ResultPanel() {
+public class PreviewPanel extends javax.swing.JPanel {
+    public PreviewPanel() {
         initComponents();
 		Style.registerCssClasses(headerPanel, ".header");
 		Style.registerCssClasses(numberLabel, ".headerNumber");

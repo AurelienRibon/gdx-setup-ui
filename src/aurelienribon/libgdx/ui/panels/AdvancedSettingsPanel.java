@@ -6,9 +6,6 @@ import aurelienribon.utils.SwingUtils;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -20,7 +17,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     public AdvancedSettingsPanel() {
         initComponents();
 
-		commonSuffixField.setText(Ctx.cfgSetup.suffixCommon);
+		coreSuffixField.setText(Ctx.cfgSetup.suffixCommon);
 		desktopSuffixField.setText(Ctx.cfgSetup.suffixDesktop);
 		androidSuffixField.setText(Ctx.cfgSetup.suffixAndroid);
 		htmlSuffixField.setText(Ctx.cfgSetup.suffixHtml);
@@ -28,15 +25,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		androidTargetSdkField.setText(Ctx.cfgSetup.androidTargetSdkVersion);
 		androidMaxSdkField.setText(Ctx.cfgSetup.androidMaxSdkVersion);
 
-		commonSuffixField.addMouseListener(selectOnFocusMouseListener);
-		desktopSuffixField.addMouseListener(selectOnFocusMouseListener);
-		androidSuffixField.addMouseListener(selectOnFocusMouseListener);
-		htmlSuffixField.addMouseListener(selectOnFocusMouseListener);
-		androidMinSdkField.addMouseListener(selectOnFocusMouseListener);
-		androidTargetSdkField.addMouseListener(selectOnFocusMouseListener);
-		androidMaxSdkField.addMouseListener(selectOnFocusMouseListener);
-
-		commonSuffixField.addKeyListener(updateOnTypeKeyListener);
+		coreSuffixField.addKeyListener(updateOnTypeKeyListener);
 		desktopSuffixField.addKeyListener(updateOnTypeKeyListener);
 		androidSuffixField.addKeyListener(updateOnTypeKeyListener);
 		htmlSuffixField.addKeyListener(updateOnTypeKeyListener);
@@ -53,12 +42,16 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     }
 
 	private void update() {
-		Ctx.cfgSetup.suffixCommon = commonSuffixField.getText();
+		Ctx.cfgSetup.suffixCommon = coreSuffixField.getText();
 		Ctx.cfgSetup.suffixDesktop = desktopSuffixField.getText();
 		Ctx.cfgSetup.suffixAndroid = androidSuffixField.getText();
 		Ctx.cfgSetup.androidMinSdkVersion = androidMinSdkField.getText();
 		Ctx.cfgSetup.androidMaxSdkVersion = androidMaxSdkField.getText();
 		Ctx.cfgSetup.androidTargetSdkVersion = androidTargetSdkField.getText();
+		Ctx.fireCfgSetupChanged();
+		Ctx.cfgUpdate.suffixCommon = coreSuffixField.getText();
+		Ctx.cfgUpdate.suffixDesktop = desktopSuffixField.getText();
+		Ctx.cfgUpdate.suffixAndroid = androidSuffixField.getText();
 		Ctx.fireCfgSetupChanged();
 	}
 
@@ -68,15 +61,6 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 			update();
 		}
 	};
-
-	private final MouseListener selectOnFocusMouseListener = new MouseAdapter() {
-		@Override
-		public void mousePressed(MouseEvent e) {
-			JTextField field = (JTextField) e.getSource();
-			if (!field.isFocusOwner()) field.selectAll();
-		}
-	};
-
 
 	private final KeyListener numbersOnlyKeyListener = new KeyAdapter() {
 		private String backup;
@@ -120,7 +104,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         androidSuffixField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        commonSuffixField = new javax.swing.JTextField();
+        coreSuffixField = new javax.swing.JTextField();
         desktopSuffixField = new javax.swing.JTextField();
         htmlSuffixField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -231,7 +215,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, paintedPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(commonSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(coreSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(paintedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -248,7 +232,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 
         paintedPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel1, jLabel2, jLabel3, jLabel4});
 
-        paintedPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {androidSuffixField, commonSuffixField, desktopSuffixField, htmlSuffixField});
+        paintedPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {androidSuffixField, coreSuffixField, desktopSuffixField, htmlSuffixField});
 
         paintedPanel2Layout.setVerticalGroup(
             paintedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -256,7 +240,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(paintedPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(commonSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(coreSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(androidSuffixField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -297,7 +281,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     private javax.swing.JTextField androidMinSdkField;
     private javax.swing.JTextField androidSuffixField;
     private javax.swing.JTextField androidTargetSdkField;
-    private javax.swing.JTextField commonSuffixField;
+    private javax.swing.JTextField coreSuffixField;
     private javax.swing.JTextField desktopSuffixField;
     private javax.swing.JTextField htmlSuffixField;
     private javax.swing.JLabel jLabel1;

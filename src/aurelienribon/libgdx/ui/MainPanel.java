@@ -5,12 +5,12 @@ import aurelienribon.libgdx.ui.panels.AdvancedSettingsPanel;
 import aurelienribon.libgdx.ui.panels.ClasspathsPanel;
 import aurelienribon.libgdx.ui.panels.ConfigSetupPanel;
 import aurelienribon.libgdx.ui.panels.ConfigUpdatePanel;
-import aurelienribon.libgdx.ui.panels.ProcessSetupPanel;
-import aurelienribon.libgdx.ui.panels.ProcessUpdatePanel;
 import aurelienribon.libgdx.ui.panels.GoPanel;
 import aurelienribon.libgdx.ui.panels.LibraryInfoPanel;
 import aurelienribon.libgdx.ui.panels.LibrarySelectionPanel;
-import aurelienribon.libgdx.ui.panels.ResultPanel;
+import aurelienribon.libgdx.ui.panels.PreviewPanel;
+import aurelienribon.libgdx.ui.panels.ProcessSetupPanel;
+import aurelienribon.libgdx.ui.panels.ProcessUpdatePanel;
 import aurelienribon.libgdx.ui.panels.SelectionPanel;
 import aurelienribon.libgdx.ui.panels.TaskPanel;
 import aurelienribon.ui.components.PaintedPanel;
@@ -41,7 +41,7 @@ public class MainPanel extends PaintedPanel {
 	private final ConfigUpdatePanel configUpdatePanel = new ConfigUpdatePanel(this);
 	private final VersionLabel versionLabel = new VersionLabel();
 	private final LibrarySelectionPanel librarySelectionPanel = new LibrarySelectionPanel(this);
-	private final ResultPanel resultPanel = new ResultPanel();
+	private final PreviewPanel previewPanel = new PreviewPanel();
 	private final GoPanel goPanel = new GoPanel(this);
 	private final TaskPanel taskPanel = new TaskPanel();
 	private final AdvancedSettingsPanel advancedSettingsPanel = new AdvancedSettingsPanel();
@@ -63,7 +63,7 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(configUpdatePanel, ".groupPanel", "#configUpdatePanel");
 		Style.registerCssClasses(versionLabel, ".versionLabel");
 		Style.registerCssClasses(librarySelectionPanel, ".groupPanel", "#librarySetupPanel");
-		Style.registerCssClasses(resultPanel, ".groupPanel", "#resultPanel");
+		Style.registerCssClasses(previewPanel, ".groupPanel", "#previewPanel");
 		Style.registerCssClasses(goPanel, ".groupPanel", "#goPanel");
 		Style.registerCssClasses(advancedSettingsPanel, ".groupPanel", "#advancedSettingsPanel");
 		Style.registerCssClasses(libraryInfoPanel, ".groupPanel", "#libraryInfoPanel");
@@ -78,7 +78,7 @@ public class MainPanel extends PaintedPanel {
 		Style.apply(configUpdatePanel, style);
 		Style.apply(versionLabel, style);
 		Style.apply(librarySelectionPanel, style);
-		Style.apply(resultPanel, style);
+		Style.apply(previewPanel, style);
 		Style.apply(goPanel, style);
 		Style.apply(taskPanel, style);
 		Style.apply(advancedSettingsPanel, style);
@@ -154,9 +154,10 @@ public class MainPanel extends PaintedPanel {
 	// -------------------------------------------------------------------------
 
 	private SlidingLayersConfig initCfg, setupCfg, updateCfg;
+	private SlidingLayersConfig libraryInfoCfg;
 	private SlidingLayersConfig setupAdvSettingsCfg;
-	private SlidingLayersConfig setupLibraryInfoCfg;
 	private SlidingLayersConfig setupGenerationCfg;
+	private SlidingLayersConfig updateAdvSettingsCfg;
 	private SlidingLayersConfig updateGenerationCfg;
 
 	private boolean isProcessSetupPanelOpen = false;
@@ -200,7 +201,7 @@ public class MainPanel extends PaintedPanel {
 					.row(false, 1)
 					.row(true, goPanel.getPreferredSize().height)
 					.column(false, 1)
-					.tile(0, 0, resultPanel)
+					.tile(0, 0, previewPanel)
 					.tile(1, 0, goPanel)
 				.end()
 			.end()
@@ -232,6 +233,15 @@ public class MainPanel extends PaintedPanel {
 			.end()
 			.tile(1, 0, taskPanel);
 
+		libraryInfoCfg = new SlidingLayersConfig(panel)
+			.row(false, 1).row(true, 30).column(false, 1)
+			.beginGrid(0, 0)
+				.row(false, 1).column(false, 1).column(false, 2)
+				.tile(0, 0, librarySelectionPanel)
+				.tile(0, 1, libraryInfoPanel)
+			.end()
+			.tile(1, 0, taskPanel);
+
 		setupAdvSettingsCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 1).column(false, 2)
 			.beginGrid(0, 0)
@@ -243,25 +253,27 @@ public class MainPanel extends PaintedPanel {
 			.end()
 			.tile(0, 1, advancedSettingsPanel);
 
-		setupLibraryInfoCfg = new SlidingLayersConfig(panel)
-			.row(false, 1).row(true, 30).column(false, 1)
-			.beginGrid(0, 0)
-				.row(false, 1).column(false, 1).column(false, 2)
-				.tile(0, 0, librarySelectionPanel)
-				.tile(0, 1, libraryInfoPanel)
-			.end()
-			.tile(1, 0, taskPanel);
-
 		setupGenerationCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 2).column(false, 1)
 			.beginGrid(0, 1)
 				.row(false, 1)
 				.row(true, goPanel.getPreferredSize().height)
 				.column(false, 1)
-				.tile(0, 0, resultPanel)
+				.tile(0, 0, previewPanel)
 				.tile(1, 0, goPanel)
 			.end()
 			.tile(0, 0, processSetupPanel);
+
+		updateAdvSettingsCfg = new SlidingLayersConfig(panel)
+			.row(false, 1).column(false, 1).column(false, 2)
+			.beginGrid(0, 0)
+				.row(true, configUpdatePanel.getPreferredSize().height)
+				.row(true, versionLabel.getPreferredSize().height)
+				.column(false, 1)
+				.tile(0, 0, configUpdatePanel)
+				.tile(1, 0, versionLabel)
+			.end()
+			.tile(0, 1, advancedSettingsPanel);
 
 		updateGenerationCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 2).column(false, 1)
@@ -287,9 +299,9 @@ public class MainPanel extends PaintedPanel {
 					.pushSet(setupCfg.clone()
 						.hide(Direction.LEFT, configSetupPanel)
 						.hide(Direction.UP, librarySelectionPanel)
-						.hide(Direction.RIGHT, resultPanel, goPanel))
+						.hide(Direction.RIGHT, previewPanel, goPanel))
 					.pushTo(setupCfg.clone()
-						.delayIncr(0.05f, configSetupPanel, librarySelectionPanel, resultPanel, goPanel))
+						.delayIncr(0.05f, configSetupPanel, librarySelectionPanel, previewPanel, goPanel))
 					.play();
 				break;
 
@@ -301,7 +313,7 @@ public class MainPanel extends PaintedPanel {
 					.pushTo(updateCfg.clone()
 						.hide(Direction.LEFT, configUpdatePanel))
 					.pushTo(setupCfg.clone()
-						.hide(Direction.RIGHT, resultPanel)
+						.hide(Direction.RIGHT, previewPanel)
 						.hide(Direction.LEFT, configSetupPanel))
 					.pushTo(setupCfg)
 					.play();
@@ -336,10 +348,10 @@ public class MainPanel extends PaintedPanel {
 			case SETUP:
 				Ctx.mode = Ctx.Mode.UPDATE;
 				Ctx.fireModeChangedChanged();
-				
+
 				panel.timeline()
 					.pushTo(setupCfg.clone()
-						.hide(Direction.RIGHT, resultPanel)
+						.hide(Direction.RIGHT, previewPanel)
 						.hide(Direction.LEFT, configSetupPanel))
 					.pushTo(updateCfg.clone()
 						.hide(Direction.LEFT, configUpdatePanel))
@@ -356,10 +368,10 @@ public class MainPanel extends PaintedPanel {
 					.pushTo(setupCfg.clone()
 						.hide(Direction.DOWN, taskPanel)
 						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
-						.hide(Direction.RIGHT, resultPanel, goPanel)
+						.hide(Direction.RIGHT, previewPanel, goPanel)
 						.changeRow(0, configSetupPanel)
 						.changeRow(1, versionLabel)
-						.delayIncr(0.05f, librarySelectionPanel, configSetupPanel, versionLabel, resultPanel, goPanel, taskPanel))
+						.delayIncr(0.05f, librarySelectionPanel, configSetupPanel, versionLabel, previewPanel, goPanel, taskPanel))
 					.pushSet(setupAdvSettingsCfg.clone()
 						.hide(Direction.RIGHT, advancedSettingsPanel))
 					.pushTo(setupAdvSettingsCfg)
@@ -367,6 +379,18 @@ public class MainPanel extends PaintedPanel {
 				break;
 
 			case UPDATE:
+				panel.timeline()
+					.pushTo(updateCfg.clone()
+						.hide(Direction.DOWN, taskPanel)
+						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
+						.hide(Direction.RIGHT, goPanel)
+						.changeRow(0, configUpdatePanel)
+						.changeRow(1, versionLabel)
+						.delayIncr(0.05f, librarySelectionPanel, configUpdatePanel, versionLabel, goPanel, taskPanel))
+					.pushSet(updateAdvSettingsCfg.clone()
+						.hide(Direction.RIGHT, advancedSettingsPanel))
+					.pushTo(updateAdvSettingsCfg)
+					.play();
 				break;
 		}
 	}
@@ -380,15 +404,27 @@ public class MainPanel extends PaintedPanel {
 					.pushSet(setupCfg.clone()
 						.hide(Direction.DOWN, taskPanel)
 						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
-						.hide(Direction.RIGHT, resultPanel, goPanel)
+						.hide(Direction.RIGHT, previewPanel, goPanel)
 						.changeRow(0, configSetupPanel)
 						.changeRow(1, versionLabel))
 					.pushTo(setupCfg.clone()
-						.delayIncr(0.05f, versionLabel, configSetupPanel, selectionPanel, librarySelectionPanel, resultPanel, goPanel, taskPanel))
+						.delayIncr(0.05f, versionLabel, configSetupPanel, selectionPanel, librarySelectionPanel, previewPanel, goPanel, taskPanel))
 					.play();
 				break;
 
 			case UPDATE:
+				panel.timeline()
+					.pushTo(updateAdvSettingsCfg.clone()
+						.hide(Direction.RIGHT, advancedSettingsPanel))
+					.pushSet(updateCfg.clone()
+						.hide(Direction.DOWN, taskPanel)
+						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
+						.hide(Direction.RIGHT, goPanel)
+						.changeRow(0, configUpdatePanel)
+						.changeRow(1, versionLabel))
+					.pushTo(updateCfg.clone()
+						.delayIncr(0.05f, versionLabel, configUpdatePanel, selectionPanel, librarySelectionPanel, goPanel, taskPanel))
+					.play();
 				break;
 		}
 	}
@@ -404,23 +440,32 @@ public class MainPanel extends PaintedPanel {
 			return;
 		}
 
+		currentLibraryInfo = libraryName;
+		libraryInfoPanel.setup(libraryName);
+
 		switch (Ctx.mode) {
 			case SETUP:
-				currentLibraryInfo = libraryName;
-				libraryInfoPanel.setup(libraryName);
-
 				panel.timeline()
 					.pushTo(setupCfg.clone()
 						.hide(Direction.LEFT, selectionPanel, configSetupPanel, versionLabel)
-						.hide(Direction.RIGHT, resultPanel, goPanel)
-						.delayIncr(0.02f, librarySelectionPanel, configSetupPanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
-					.pushTo(setupLibraryInfoCfg.clone()
+						.hide(Direction.RIGHT, previewPanel, goPanel)
+						.delayIncr(0.02f, librarySelectionPanel, configSetupPanel, versionLabel, previewPanel, goPanel, versionLabel, taskPanel))
+					.pushTo(libraryInfoCfg.clone()
 						.hide(Direction.RIGHT, libraryInfoPanel))
-					.pushTo(setupLibraryInfoCfg)
+					.pushTo(libraryInfoCfg)
 					.play();
 				break;
 
 			case UPDATE:
+				panel.timeline()
+					.pushTo(updateCfg.clone()
+						.hide(Direction.LEFT, selectionPanel, configUpdatePanel, versionLabel)
+						.hide(Direction.RIGHT, goPanel)
+						.delayIncr(0.02f, librarySelectionPanel, configUpdatePanel, versionLabel, goPanel, versionLabel, taskPanel))
+					.pushTo(libraryInfoCfg.clone()
+						.hide(Direction.RIGHT, libraryInfoPanel))
+					.pushTo(libraryInfoCfg)
+					.play();
 				break;
 		}
 	}
@@ -431,17 +476,26 @@ public class MainPanel extends PaintedPanel {
 		switch (Ctx.mode) {
 			case SETUP:
 				panel.timeline()
-					.pushTo(setupLibraryInfoCfg.clone()
+					.pushTo(libraryInfoCfg.clone()
 						.hide(Direction.RIGHT, libraryInfoPanel))
 					.pushTo(setupCfg.clone()
 						.hide(Direction.LEFT, selectionPanel, configSetupPanel, versionLabel)
-						.hide(Direction.RIGHT, resultPanel, goPanel))
+						.hide(Direction.RIGHT, previewPanel, goPanel))
 					.pushTo(setupCfg.clone()
-						.delayIncr(0.02f, librarySelectionPanel, configSetupPanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
+						.delayIncr(0.02f, librarySelectionPanel, configSetupPanel, versionLabel, previewPanel, goPanel, versionLabel, taskPanel))
 					.play();
 				break;
 
 			case UPDATE:
+				panel.timeline()
+					.pushTo(libraryInfoCfg.clone()
+						.hide(Direction.RIGHT, libraryInfoPanel))
+					.pushTo(updateCfg.clone()
+						.hide(Direction.LEFT, selectionPanel, configUpdatePanel, versionLabel)
+						.hide(Direction.RIGHT, goPanel))
+					.pushTo(updateCfg.clone()
+						.delayIncr(0.02f, librarySelectionPanel, configUpdatePanel, versionLabel, goPanel, versionLabel, taskPanel))
+					.play();
 				break;
 		}
 	}

@@ -160,7 +160,7 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel1" linkSize="2" min="-2" pref="106" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="commonSuffixField" linkSize="4" min="-2" pref="142" max="-2" attributes="0"/>
+                                  <Component id="coreSuffixField" linkSize="4" min="-2" pref="142" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -189,7 +189,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="commonSuffixField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="coreSuffixField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="androidSuffixField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -225,7 +225,7 @@
             <Property name="text" type="java.lang.String" value="Html project suffix"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="commonSuffixField">
+        <Component class="javax.swing.JTextField" name="coreSuffixField">
         </Component>
         <Component class="javax.swing.JTextField" name="desktopSuffixField">
           <Properties>

@@ -4,7 +4,6 @@ import aurelienribon.libgdx.ProjectUpdate;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
-import java.io.IOException;
 import javax.swing.SwingUtilities;
 
 /**
