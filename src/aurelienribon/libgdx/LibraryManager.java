@@ -5,11 +5,13 @@ import aurelienribon.utils.HttpUtils.DownloadListener;
 import aurelienribon.utils.HttpUtils.DownloadTask;
 import aurelienribon.utils.ParseUtils;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.io.FileUtils;
 
 /**
  * The library manager job is to retrieve the master configuration file,
@@ -80,6 +82,17 @@ public class LibraryManager {
 	public void addDef(String name, LibraryDef def) {
 		libraries.add(name);
 		librariesDefs.put(name, def);
+	}
+
+	/**
+	 * Deletes every incomplete downloaded file (all the ".zip.tmp").
+	 */
+	public void cleanUpDownloads() {
+		for (File file : new File(".").listFiles()) {
+			if (file.isFile() && file.getName().endsWith(".zip.tmp")) {
+				FileUtils.deleteQuietly(file);
+			}
+		}
 	}
 
 	public String getConfigUrl() {return configUrl;}

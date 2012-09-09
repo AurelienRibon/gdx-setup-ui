@@ -104,9 +104,15 @@ public class MainPanel extends PaintedPanel {
 		panel.timeline().pushSet(initCfg).play();
 
 		SwingUtils.addWindowListener(this, new WindowAdapter() {
-			@Override public void windowOpened(WindowEvent e) {
+			@Override
+			public void windowOpened(WindowEvent e) {
 				DownloadTask task = Ctx.libs.downloadConfigFile();
 				task.addListener(configFileDownloadListener);
+			}
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				Ctx.libs.cleanUpDownloads();
 			}
 		});
 	}

@@ -6,3 +6,6 @@ Choose a title for your game, a package name and a directory, and you'll be set 
 
 The application also lets you choose between additionnal **third-party libraries**. These libraries can be downloaded from the application, and their configuration in your projects are managed automatically (file decompression and classpath registration).
 
+## Screenshots
+
+![](http://www.aurelienribon.com/blog/wp-content/uploads/2012/05/gdx-setup-ui-third-party-01.jpg)
