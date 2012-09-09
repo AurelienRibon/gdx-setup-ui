@@ -4,8 +4,8 @@
 	<!-- Definitions -->
 	<!-- ****************************************************************** -->
 
-	<property name="version" value="3.0.0-alpha" />
-	<property name="name" value="libgdx-setup" />
+	<property name="version" value="3.0.0-beta" />
+	<property name="name" value="gdx-setup-ui" />
 	<property name="mainClass" value="aurelienribon.libgdx.ui.Main" />
 
 	<!-- ****************************************************************** -->
