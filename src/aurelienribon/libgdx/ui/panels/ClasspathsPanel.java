@@ -1,7 +1,8 @@
 package aurelienribon.libgdx.ui.panels;
 
 import aurelienribon.libgdx.Helper;
-import aurelienribon.libgdx.LibraryDef;
+import aurelienribon.libgdx.Helper.ClasspathEntry;
+import aurelienribon.libgdx.Helper.GwtModule;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
@@ -12,37 +13,24 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-import org.apache.commons.io.FilenameUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.apache.commons.io.FileUtils;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class ClasspathsPanel extends javax.swing.JPanel {
-	private final ObservableList<EntryPath> coreClasspath = new ObservableList<EntryPath>();
-	private final ObservableList<EntryPath> androidClasspath = new ObservableList<EntryPath>();
-	private final ObservableList<EntryPath> desktopClasspath = new ObservableList<EntryPath>();
-	private final ObservableList<EntryPath> htmlClasspath = new ObservableList<EntryPath>();
+	private final ObservableList<ClasspathEntry> coreClasspath = new ObservableList<ClasspathEntry>();
+	private final ObservableList<ClasspathEntry> androidClasspath = new ObservableList<ClasspathEntry>();
+	private final ObservableList<ClasspathEntry> desktopClasspath = new ObservableList<ClasspathEntry>();
+	private final ObservableList<ClasspathEntry> htmlClasspath = new ObservableList<ClasspathEntry>();
+	private final ObservableList<GwtModule> gwtModules = new ObservableList<GwtModule>();
 
     public ClasspathsPanel(final MainPanel mainPanel) {
         initComponents();
@@ -54,181 +42,134 @@ public class ClasspathsPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(jScrollPane7, ".frame");
 		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
 
-		coreList.setModel(new AutoListModel<EntryPath>(coreClasspath));
-		androidList.setModel(new AutoListModel<EntryPath>(androidClasspath));
-		desktopList.setModel(new AutoListModel<EntryPath>(desktopClasspath));
-		htmlList.setModel(new AutoListModel<EntryPath>(htmlClasspath));
+		coreList.setModel(new AutoListModel<ClasspathEntry>(coreClasspath));
+		androidList.setModel(new AutoListModel<ClasspathEntry>(androidClasspath));
+		desktopList.setModel(new AutoListModel<ClasspathEntry>(desktopClasspath));
+		htmlList.setModel(new AutoListModel<ClasspathEntry>(htmlClasspath));
+		gwtList.setModel(new AutoListModel<GwtModule>(gwtModules));
 
-		coreList.setCellRenderer(listCellRenderer);
-		androidList.setCellRenderer(listCellRenderer);
-		desktopList.setCellRenderer(listCellRenderer);
-		htmlList.setCellRenderer(listCellRenderer);
+		coreList.setCellRenderer(classpathListCellRenderer);
+		androidList.setCellRenderer(classpathListCellRenderer);
+		desktopList.setCellRenderer(classpathListCellRenderer);
+		htmlList.setCellRenderer(classpathListCellRenderer);
+		gwtList.setCellRenderer(modulesListCellRenderer);
 
 		Ctx.listeners.add(new Ctx.Listener() {
 			@Override public void cfgUpdateChanged() {update();}
 		});
 
-		backBtn.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) {mainPanel.hideGenerationUpdatePanel();}
-		});
-    }
+		backBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {mainPanel.hideGenerationUpdatePanel();}});
+ 		deleteBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {delete();}});
+   }
 
 	private void update() {
 		coreClasspath.clear();
 		androidClasspath.clear();
 		desktopClasspath.clear();
 		htmlClasspath.clear();
+		gwtModules.clear();
 
-		Map<String, List<EntryPath>> paths = new HashMap<String, List<EntryPath>>();
-		paths.put(Helper.getCorePrjPath(Ctx.cfgUpdate), coreClasspath);
-		paths.put(Helper.getAndroidPrjPath(Ctx.cfgUpdate), androidClasspath);
-		paths.put(Helper.getDesktopPrjPath(Ctx.cfgUpdate), desktopClasspath);
-		paths.put(Helper.getHtmlPrjPath(Ctx.cfgUpdate), htmlClasspath);
-
-		for (String path : paths.keySet()) {
-			File dir = new File(path);
-			if (dir.isDirectory()) {
-				File classpathFile = new File(dir, ".classpath");
-				if (classpathFile.isFile()) populateClasspath(classpathFile, paths.get(path));
+		File coreDir = new File(Helper.getCorePrjPath(Ctx.cfgUpdate));
+		if (coreDir.isDirectory()) {
+			File classpathFile = new File(coreDir, ".classpath");
+			if (classpathFile.isFile()) {
+				coreClasspath.addAll(Helper.getClasspathEntries(classpathFile));
+				List<ClasspathEntry> newClasspath = Helper.getCoreClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+				for (ClasspathEntry e : coreClasspath) e.testOverwritten(newClasspath);
+				for (ClasspathEntry e : newClasspath) if (e.testAdded(coreClasspath)) coreClasspath.add(e);
+				Collections.sort(coreClasspath);
 			}
 		}
 
-		List<EntryPath> newCoreClasspath = new ArrayList<EntryPath>();
-		List<EntryPath> newDesktopClasspath = new ArrayList<EntryPath>();
-		List<EntryPath> newAndroidClasspath = new ArrayList<EntryPath>();
-		List<EntryPath> newHtmlClasspath = new ArrayList<EntryPath>();
-		List<String> newGwtModules = new ArrayList<String>();
-
-		String corePrjName = Helper.getCorePrjName(Ctx.cfgUpdate);
-
-		for (String library : Ctx.cfgUpdate.libraries) {
-			LibraryDef def = Ctx.libs.getDef(library);
-
-			for (String file : def.libsCommon) {
-				if (!isLibJar(file)) continue;
-				String source = getSource(def.libsCommon, file);
-				newCoreClasspath.add(new EntryPath("libs/", file, source, true));
-				newAndroidClasspath.add(new EntryPath("/" + corePrjName + "/libs/", file, source, true));
-				newHtmlClasspath.add(new EntryPath("/" + corePrjName + "/libs/", file, source, false));
-				if (source != null) newHtmlClasspath.add(new EntryPath("/" + corePrjName + "/libs/", source, null, false));
-			}
-
-			for (String file : def.libsDesktop) {
-				if (!isLibJar(file)) continue;
-				String source = getSource(def.libsDesktop, file);
-				newDesktopClasspath.add(new EntryPath("libs/", file, source, false));
-			}
-
-			for (String file : def.libsAndroid) {
-				if (!isLibJar(file)) continue;
-				String source = getSource(def.libsAndroid, file);
-				newAndroidClasspath.add(new EntryPath("libs/", file, source, true));
-			}
-
-			for (String file : def.libsHtml) {
-				if (!isLibJar(file)) continue;
-				String source = getSource(def.libsHtml, file);
-				newHtmlClasspath.add(new EntryPath("war/WEB-INF/lib/", file, source, false));
-				if (source != null) newHtmlClasspath.add(new EntryPath("war/WEB-INF/lib/", source, null, false));
-			}
-
-			if (def.gwtModuleName != null) {
-				newGwtModules.add(def.gwtModuleName);
+		File androidDir = new File(Helper.getAndroidPrjPath(Ctx.cfgUpdate));
+		if (androidDir.isDirectory()) {
+			File classpathFile = new File(androidDir, ".classpath");
+			if (classpathFile.isFile()) {
+				androidClasspath.addAll(Helper.getClasspathEntries(classpathFile));
+				List<ClasspathEntry> newClasspath = Helper.getAndroidClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+				for (ClasspathEntry e : androidClasspath) e.testOverwritten(newClasspath);
+				for (ClasspathEntry e : newClasspath) if (e.testAdded(androidClasspath)) androidClasspath.add(e);
+				Collections.sort(androidClasspath);
 			}
 		}
 
-		for (EntryPath e : coreClasspath) e.testOverwritten(newCoreClasspath);
-		for (EntryPath e : androidClasspath) e.testOverwritten(newAndroidClasspath);
-		for (EntryPath e : desktopClasspath) e.testOverwritten(newDesktopClasspath);
-		for (EntryPath e : htmlClasspath) e.testOverwritten(newHtmlClasspath);
+		File desktopDir = new File(Helper.getDesktopPrjPath(Ctx.cfgUpdate));
+		if (desktopDir.isDirectory()) {
+			File classpathFile = new File(desktopDir, ".classpath");
+			if (classpathFile.isFile()) {
+				desktopClasspath.addAll(Helper.getClasspathEntries(classpathFile));
+				List<ClasspathEntry> newClasspath = Helper.getDesktopClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+				for (ClasspathEntry e : desktopClasspath) e.testOverwritten(newClasspath);
+				for (ClasspathEntry e : newClasspath) if (e.testAdded(desktopClasspath)) desktopClasspath.add(e);
+				Collections.sort(desktopClasspath);
+			}
+		}
 
-		for (EntryPath e : newCoreClasspath) if (e.testAdded(coreClasspath)) coreClasspath.add(e);
-		for (EntryPath e : newAndroidClasspath) if (e.testAdded(androidClasspath)) androidClasspath.add(e);
-		for (EntryPath e : newDesktopClasspath) if (e.testAdded(desktopClasspath)) desktopClasspath.add(e);
-		for (EntryPath e : newHtmlClasspath) if (e.testAdded(htmlClasspath)) htmlClasspath.add(e);
+		File htmlDir = new File(Helper.getHtmlPrjPath(Ctx.cfgUpdate));
+		if (htmlDir.isDirectory()) {
+			File classpathFile = new File(htmlDir, ".classpath");
+			if (classpathFile.isFile()) {
+				htmlClasspath.addAll(Helper.getClasspathEntries(classpathFile));
+				List<ClasspathEntry> newClasspath = Helper.getHtmlClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+				for (ClasspathEntry e : htmlClasspath) e.testOverwritten(newClasspath);
+				for (ClasspathEntry e : newClasspath) if (e.testAdded(htmlClasspath)) htmlClasspath.add(e);
+				Collections.sort(htmlClasspath);
 
-		for (List<EntryPath> classpath : paths.values()) {
-			Collections.sort(classpath, new Comparator<EntryPath>() {
-				@Override
-				public int compare(EntryPath o1, EntryPath o2) {
-					if (o1.path.startsWith("/") && !o2.path.startsWith("/")) return 1;
-					if (!o1.path.startsWith("/") && o2.path.startsWith("/")) return -1;
-					return o1.path.compareTo(o2.path);
+				for (File file : FileUtils.listFiles(htmlDir, new String[] {"gwt.xml"}, true)) {
+					if (file.getName().equals("GwtDefinition.gwt.xml"))
+						gwtModules.addAll(Helper.getGwtModules(file));
 				}
-			});
-		}
-	}
 
-	private void populateClasspath(File classpathFile, List<EntryPath> classpath) {
-		try {
-			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-			domFactory.setNamespaceAware(true);
-			Document doc = domFactory.newDocumentBuilder().parse(classpathFile);
-			XPath xpath = XPathFactory.newInstance().newXPath();
-
-			NodeList nodes = (NodeList) xpath
-				.compile("classpath/classpathentry[@kind='lib']")
-				.evaluate(doc, XPathConstants.NODESET);
-
-			for (int i=0; i<nodes.getLength(); i++) {
-				if (nodes.item(i).getAttributes().getNamedItem("path") == null) continue;
-				String path = nodes.item(i).getAttributes().getNamedItem("path").getNodeValue();
-				String sourcepath = nodes.item(i).getAttributes().getNamedItem("sourcepath") != null
-					? nodes.item(i).getAttributes().getNamedItem("sourcepath").getNodeValue() : null;
-				boolean exported = nodes.item(i).getAttributes().getNamedItem("exported") != null
-					? nodes.item(i).getAttributes().getNamedItem("exported").getNodeValue().equalsIgnoreCase("true") : false;
-
-				classpath.add(new EntryPath(path, sourcepath, exported));
+				List<GwtModule> newGwtModules = Helper.getGwtModules(Ctx.cfgUpdate, Ctx.libs);
+				for (GwtModule m : gwtModules) m.testOverwritten(newGwtModules);
+				for (GwtModule m : newGwtModules) if (m.testAdded(gwtModules)) gwtModules.add(m);
+				Collections.sort(gwtModules);
 			}
-
-		} catch (ParserConfigurationException ex) {
-		} catch (SAXException ex) {
-		} catch (IOException ex) {
-		} catch (XPathExpressionException ex) {
 		}
 	}
 
-	private boolean isLibJar(String file) {
-		if (!file.endsWith(".jar")) return false;
-		String name = FilenameUtils.getBaseName(file);
-		if (endsWith(name, "-source", "-sources", "-src")) return false;
-		return true;
-	}
+	private void delete() {
+		for (Object o : coreList.getSelectedValues()) {
+			ClasspathEntry e = (ClasspathEntry) o;
+			if (!e.added && !e.overwritten) coreClasspath.remove(e);
+		}
 
-	private boolean endsWith(String str, String... ends) {
-		for (String end : ends) if (str.endsWith(end)) return true;
-		return false;
-	}
+		for (Object o : androidList.getSelectedValues()) {
+			ClasspathEntry e = (ClasspathEntry) o;
+			if (!e.added && !e.overwritten) androidClasspath.remove(e);
+		}
 
-	private String getSource(List<String> files, String file) {
-		String path = FilenameUtils.getFullPath(file);
-		String name = FilenameUtils.getBaseName(file);
-		String ext = FilenameUtils.getExtension(file);
+		for (Object o : desktopList.getSelectedValues()) {
+			ClasspathEntry e = (ClasspathEntry) o;
+			if (!e.added && !e.overwritten) desktopClasspath.remove(e);
+		}
 
-		if (files.contains(path + name + "-source." + ext)) return path + name + "-source." + ext;
-		if (files.contains(path + name + "-sources." + ext)) return path + name + "-sources." + ext;
-		if (files.contains(path + name + "-src." + ext)) return path + name + "-src." + ext;
-		return null;
-	}
+		for (Object o : htmlList.getSelectedValues()) {
+			ClasspathEntry e = (ClasspathEntry) o;
+			if (!e.added && !e.overwritten) htmlClasspath.remove(e);
+		}
 
-	private String buildClasspathEntry(String file, String sourceFile, String path, boolean exported) {
-		String str = "<classpathentry kind=\"lib\" ";
-		if (exported) str += "exported=\"true\" ";
-		str += "path=\"" + path + file + "\"";
-		if (sourceFile != null) str += " sourcepath=\"" + path + sourceFile + "\"";
-		str += "/>";
-		return str;
+		for (Object o : gwtList.getSelectedValues()) {
+			GwtModule m = (GwtModule) o;
+			if (!m.added && !m.overwritten) gwtModules.remove(m);
+		}
+
+		coreList.clearSelection();
+		androidList.clearSelection();
+		desktopList.clearSelection();
+		htmlList.clearSelection();
+		gwtList.clearSelection();
 	}
 
 	// -------------------------------------------------------------------------
 	// List renderer
 	// -------------------------------------------------------------------------
 
-	private final ListCellRenderer listCellRenderer = new DefaultListCellRenderer() {
+	private final ListCellRenderer classpathListCellRenderer = new DefaultListCellRenderer() {
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 			JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-			EntryPath entryPath = (EntryPath) value;
+			ClasspathEntry entryPath = (ClasspathEntry) value;
 
 			label.setBorder(BorderFactory.createEmptyBorder(3, 6, 3, 6));
 			label.setText(entryPath.path);
@@ -245,48 +186,26 @@ public class ClasspathsPanel extends javax.swing.JPanel {
 		}
 	};
 
-	// -------------------------------------------------------------------------
-	// Inner Classes
-	// -------------------------------------------------------------------------
+	private final ListCellRenderer modulesListCellRenderer = new DefaultListCellRenderer() {
+		@Override
+		public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+			JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			GwtModule module = (GwtModule) value;
 
-	private static class EntryPath {
-		public String path;
-		public String sourcepath;
-		public boolean exported;
-		public boolean overwritten = false;
-		public boolean added = false;
+			label.setBorder(BorderFactory.createEmptyBorder(3, 6, 3, 6));
+			label.setText(module.name);
 
-		public EntryPath(String path, String sourcepath, boolean exported) {
-			this.path = path;
-			this.sourcepath = sourcepath;
-			this.exported = exported;
-		}
-
-		public EntryPath(String preffix, String path, String sourcepath, boolean exported) {
-			this.path = preffix + path;
-			this.sourcepath = sourcepath != null ? preffix + sourcepath : null;
-			this.exported = exported;
-		}
-
-		public void testOverwritten(List<EntryPath> entries) {
-			for (EntryPath e : entries) {
-				if (e.path.equals(path)) {
-					overwritten = true;
-					return;
-				}
+			if (module.overwritten) {
+				label.setForeground(new Color(0x3D5277));
+			} else if (module.added) {
+				label.setForeground(new Color(0x008800));
+			} else {
+				label.setForeground(new Color(0xD1B40F));
 			}
-		}
 
-		public boolean testAdded(List<EntryPath> entries) {
-			for (EntryPath e : entries) {
-				if (e.path.equals(path)) {
-					return false;
-				}
-			}
-			added = true;
-			return true;
+			return label;
 		}
-	}
+	};
 
 	// -------------------------------------------------------------------------
 	// Generated stuff
@@ -352,10 +271,12 @@ public class ClasspathsPanel extends javax.swing.JPanel {
         );
 
         deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_delete.png"))); // NOI18N
-        deleteBtn.setText("Delete selected element");
+        deleteBtn.setText("<html>\nDelete selected <font color=\"#D1B40F\"><b>unknown</b></font> element(s)");
 
+        jPanel7.setOpaque(false);
         jPanel7.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
 
+        jPanel6.setOpaque(false);
         jPanel6.setLayout(new java.awt.GridLayout(2, 1, 0, 10));
 
         jPanel1.setOpaque(false);
@@ -383,7 +304,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
         );
 
         jPanel6.add(jPanel1);
@@ -413,7 +334,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jLabel6)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE))
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
         );
 
         jPanel6.add(jPanel4);
@@ -448,7 +369,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel5)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
         );
 
         jPanel5.add(jPanel3);
@@ -478,7 +399,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel4)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
         );
 
         jPanel5.add(jPanel2);
@@ -508,7 +429,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addComponent(jLabel7)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE))
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
         );
 
         jPanel5.add(jPanel8);
@@ -524,7 +445,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(paintedPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(deleteBtn)
+                        .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(validateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -544,7 +465,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(backBtn)
                     .addComponent(validateBtn)
-                    .addComponent(deleteBtn))
+                    .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())

@@ -100,7 +100,7 @@ public class MainPanel extends PaintedPanel {
 		goPanel.init();
 		librarySetupPanel.init();
 
-		versionLabel.initAndCheck("3.0.0-alpha", "versions",
+		versionLabel.initAndCheck("3.0.0-beta", "versions",
 			"http://libgdx.badlogicgames.com/nightlies/config/config.txt",
 			"http://libgdx.badlogicgames.com/download.html");
 
