@@ -46,7 +46,7 @@ import org.apache.commons.io.FilenameUtils;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class LibrarySetupPanel extends javax.swing.JPanel {
+public class LibrarySelectionPanel extends javax.swing.JPanel {
 	private static final Color LIB_FOUND_COLOR = new Color(0x008800);
 	private static final Color LIB_NOTFOUND_COLOR = new Color(0x880000);
 
@@ -55,7 +55,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	private final Map<String, JComponent> libsNamesCmps = new HashMap<String, JComponent>();
 	private int count = 0;
 
-    public LibrarySetupPanel(MainPanel mainPanel) {
+    public LibrarySelectionPanel(MainPanel mainPanel) {
 		this.mainPanel = mainPanel;
         initComponents();
 
@@ -105,7 +105,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 				preselectLibraryArchive(name);
 			}
 
-			Ctx.fireCfgCreateChanged();
+			Ctx.fireCfgSetupChanged();
 
 			if (Ctx.libs.getNames().size() < total) {
 				String msg = "<html>Could not retrieve the definitions for:<br/>";
@@ -126,14 +126,14 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 	private void buildLibraryPanel(final String libraryName) {
 		ActionListener nameChkAL = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
 			if (((JCheckBox) e.getSource()).isSelected()) {
-				if (!Ctx.cfgCreate.libraries.contains(libraryName)) Ctx.cfgCreate.libraries.add(libraryName);
+				if (!Ctx.cfgSetup.libraries.contains(libraryName)) Ctx.cfgSetup.libraries.add(libraryName);
 				if (!Ctx.cfgUpdate.libraries.contains(libraryName)) Ctx.cfgUpdate.libraries.add(libraryName);
 			} else {
-				Ctx.cfgCreate.libraries.remove(libraryName);
+				Ctx.cfgSetup.libraries.remove(libraryName);
 				Ctx.cfgUpdate.libraries.remove(libraryName);
 			}
 
-			Ctx.fireCfgCreateChanged();
+			Ctx.fireCfgSetupChanged();
 			Ctx.fireCfgUpdateChanged();
 		}};
 
@@ -252,7 +252,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 					FileUtils.moveFile(new File(output + ".tmp"), new File(output));
 				} catch (IOException ex) {
 					String msg = "Could not rename \"" + output + ".tmp" + "\" into \"" + output + "\"";
-					JOptionPane.showMessageDialog(SwingUtils.getJFrame(LibrarySetupPanel.this), msg);
+					JOptionPane.showMessageDialog(SwingUtils.getJFrame(LibrarySelectionPanel.this), msg);
 				}
 				select(libraryName, new File(output));
 			}
@@ -261,13 +261,13 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 
 	private void select(String libraryName, File zipFile) {
 		libsSelectedFiles.put(libraryName, zipFile);
-		Ctx.cfgCreate.librariesZipPaths.put(libraryName, zipFile.getPath());
+		Ctx.cfgSetup.librariesZipPaths.put(libraryName, zipFile.getPath());
 		Ctx.cfgUpdate.librariesZipPaths.put(libraryName, zipFile.getPath());
 
 		libsNamesCmps.get(libraryName).setToolTipText("Using archive: \"" + zipFile.getPath() + "\"");
 		libsNamesCmps.get(libraryName).setForeground(LIB_FOUND_COLOR);
 
-		Ctx.fireCfgCreateChanged();
+		Ctx.fireCfgSetupChanged();
 	}
 
 	// -------------------------------------------------------------------------

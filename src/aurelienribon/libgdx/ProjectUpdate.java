@@ -1,16 +1,26 @@
 package aurelienribon.libgdx;
 
+import aurelienribon.libgdx.Helper.ClasspathEntry;
+import aurelienribon.libgdx.Helper.GwtModule;
+import aurelienribon.utils.XmlUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathConstants;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Standalone class used to update an existing libgdx project.
@@ -20,10 +30,10 @@ import org.apache.commons.io.IOUtils;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class ProjectUpdate {
-	private final ProjectConfiguration cfg;
+	private final ProjectUpdateConfiguration cfg;
 	private final LibraryManager libs;
 
-	public ProjectUpdate(ProjectConfiguration cfg, LibraryManager libs) {
+	public ProjectUpdate(ProjectUpdateConfiguration cfg, LibraryManager libs) {
 		this.cfg = cfg;
 		this.libs = libs;
 	}
@@ -34,15 +44,15 @@ public class ProjectUpdate {
 
 	/**
 	 * Selected libraries are inflated from their zip files, and put in the
-	 * libs folders of the projects.
+	 * correct folders of the projects.
 	 * @throws IOException
 	 */
 	public void inflateLibraries() throws IOException {
-		File commonPrjLibsDir = new File(getCommonPrjPath() + "/libs");
-		File desktopPrjLibsDir = new File(getDesktopPrjPath() + "/libs");
-		File androidPrjLibsDir = new File(getAndroidPrjPath() + "/libs");
-		File htmlPrjLibsDir = new File(getHtmlPrjPath() + "/war/WEB-INF/lib");
-		File dataDir = new File(getAndroidPrjPath() + "/assets");
+		File commonPrjLibsDir = new File(Helper.getCorePrjPath(cfg) + "libs");
+		File desktopPrjLibsDir = new File(Helper.getDesktopPrjPath(cfg) + "libs");
+		File androidPrjLibsDir = new File(Helper.getAndroidPrjPath(cfg) + "libs");
+		File htmlPrjLibsDir = new File(Helper.getHtmlPrjPath(cfg) + "war/WEB-INF/lib");
+		File dataDir = new File(Helper.getAndroidPrjPath(cfg) + "assets");
 
 		for (String library : cfg.libraries) {
 			InputStream is = new FileInputStream(cfg.librariesZipPaths.get(library));
@@ -84,69 +94,30 @@ public class ProjectUpdate {
 	 * Classpaths are configurated according to the selected libraries.
 	 * @throws IOException
 	 */
-	public void configureLibraries() throws IOException {
-		List<String> entriesCommon = new ArrayList<String>();
-		List<String> entriesDesktop = new ArrayList<String>();
-		List<String> entriesAndroid = new ArrayList<String>();
-		List<String> entriesHtml = new ArrayList<String>();
-		List<String> gwtInherits = new ArrayList<String>();
+	public void editClasspaths() throws IOException, TransformerException {
+		writeClasspath(new File(Helper.getCorePrjPath(cfg), ".classpath"), cfg.coreClasspath);
 
-		for (String library : cfg.libraries) {
-			LibraryDef def = libs.getDef(library);
-
-			for (String file : def.libsCommon) {
-				if (!isLibJar(file)) continue;
-				String source = getSource(def.libsCommon, file);
-				entriesCommon.add(buildClasspathEntry(file, source, "libs/", true));
-				entriesAndroid.add(buildClasspathEntry(file, source, "/@{PRJ_COMMON_NAME}/libs/", true));
-				entriesHtml.add(buildClasspathEntry(file, source, "/@{PRJ_COMMON_NAME}/libs/", false));
-				if (source != null) entriesHtml.add(buildClasspathEntry(source, null, "/@{PRJ_COMMON_NAME}/libs/", false));
-			}
-
-			for (String file : def.libsDesktop) {
-				if (!isLibJar(file)) continue;
-				String source = getSource(def.libsDesktop, file);
-				entriesDesktop.add(buildClasspathEntry(file, source, "libs/", false));
-			}
-
-			for (String file : def.libsAndroid) {
-				if (!isLibJar(file)) continue;
-				String source = getSource(def.libsAndroid, file);
-				entriesAndroid.add(buildClasspathEntry(file, source, "libs/", true));
-			}
-
-			for (String file : def.libsHtml) {
-				if (!isLibJar(file)) continue;
-				String source = getSource(def.libsHtml, file);
-				entriesHtml.add(buildClasspathEntry(file, source, "war/WEB-INF/lib/", false));
-				if (source != null) entriesHtml.add(buildClasspathEntry(source, null, "war/WEB-INF/lib/", false));
-			}
-
-			if (def.gwtModuleName != null) {
-				gwtInherits.add("<inherits name='" + def.gwtModuleName + "' />");
-			}
+		if (cfg.isAndroidIncluded) {
+			writeClasspath(new File(Helper.getAndroidPrjPath(cfg), ".classpath"), cfg.androidClasspath);
 		}
 
-		templateManager.define("CLASSPATHENTRIES_COMMON", flatten(entriesCommon, "\t", "\n").trim());
-		templateManager.define("CLASSPATHENTRIES_DESKTOP", flatten(entriesDesktop, "\t", "\n").trim());
-		templateManager.define("CLASSPATHENTRIES_ANDROID", flatten(entriesAndroid, "\t", "\n").trim());
-		templateManager.define("CLASSPATHENTRIES_HTML", flatten(entriesHtml, "\t", "\n").trim());
-		templateManager.define("GWT_INHERITS", flatten(gwtInherits, "\t", "\n").trim());
-		templateManager.processOver(new File(tmpDst, "prj-common/.classpath"));
-		templateManager.processOver(new File(tmpDst, "prj-desktop/.classpath"));
-		templateManager.processOver(new File(tmpDst, "prj-android/.classpath"));
-		templateManager.processOver(new File(tmpDst, "prj-html/.classpath"));
-		templateManager.processOver(new File(tmpDst, "prj-html/src/GwtDefinition.gwt.xml"));
+		if (cfg.isDesktopIncluded) {
+			writeClasspath(new File(Helper.getDesktopPrjPath(cfg), ".classpath"), cfg.desktopClasspath);
+		}
+
+		if (cfg.isHtmlIncluded) {
+			File htmlDir = new File(Helper.getHtmlPrjPath(cfg));
+			writeClasspath(new File(htmlDir, ".classpath"), cfg.htmlClasspath);
+			for (File file : FileUtils.listFiles(htmlDir, new String[] {"gwt.xml"}, true)) {
+				if (file.getName().equals("GwtDefinition.gwt.xml"))
+					writeGwtDefinition(file, cfg.gwtModules);
+			}
+		}
 	}
 
 	// -------------------------------------------------------------------------
 	// Helpers
 	// -------------------------------------------------------------------------
-
-	private String getCommonPrjPath() {return cfg.destinationPath + "/" + cfg.projectName + cfg.suffixCommon;}
-	private String getDesktopPrjPath() {return cfg.destinationPath + "/" + cfg.projectName + cfg.suffixDesktop;}
-	private String getAndroidPrjPath() {return cfg.destinationPath + "/" + cfg.projectName + cfg.suffixAndroid;}
-	private String getHtmlPrjPath() {return cfg.destinationPath + "/" + cfg.projectName + cfg.suffixHtml;}
 
 	private void copyEntry(ZipInputStream zis, String name, File dst) throws IOException {
 		File file = new File(dst, name);
@@ -155,5 +126,68 @@ public class ProjectUpdate {
 		OutputStream os = new FileOutputStream(file);
 		IOUtils.copy(zis, os);
 		os.close();
+	}
+
+	private void writeClasspath(File classpathFile, List<ClasspathEntry> classpath) {
+		try {
+			Document doc = XmlUtils.getParser().parse(classpathFile);
+			Node root = (Node) XmlUtils.xpath("classpath", doc, XPathConstants.NODE);
+			NodeList libsNodes = (NodeList) XmlUtils.xpath("classpath/classpathentry[@kind='lib' and @path]", doc, XPathConstants.NODESET);
+
+			for (int i=0; i<libsNodes.getLength(); i++) {
+				root.removeChild(libsNodes.item(i));
+			}
+
+			for (ClasspathEntry entry : classpath) {
+				Element elem = doc.createElement("classpathentry");
+				root.appendChild(elem);
+
+				elem.setAttribute("kind", "lib");
+				if (entry.exported) elem.setAttribute("exported", "true");
+				elem.setAttribute("path", entry.path);
+				if (entry.sourcepath != null) elem.setAttribute("sourcepath", entry.sourcepath);
+			}
+
+			XmlUtils.clean(doc);
+			String str = XmlUtils.transform(doc);
+			FileUtils.writeStringToFile(classpathFile, str);
+
+		} catch (SAXException ex) {
+			throw new RuntimeException(ex);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		} catch (TransformerException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	private void writeGwtDefinition(File gwtDefitionFile, List<GwtModule> modules) {
+		try {
+			Document doc = XmlUtils.getParser().parse(gwtDefitionFile);
+			Node root = (Node) XmlUtils.xpath("module", doc, XPathConstants.NODE);
+			NodeList nodes = (NodeList) XmlUtils.xpath("module/inherits", doc, XPathConstants.NODESET);
+
+			for (int i=0; i<nodes.getLength(); i++) {
+				root.removeChild(nodes.item(i));
+			}
+
+			for (GwtModule module : modules) {
+				Element elem = doc.createElement("inherits");
+				root.appendChild(elem);
+
+				elem.setAttribute("name", module.name);
+			}
+
+			XmlUtils.clean(doc);
+			String str = XmlUtils.transform(doc);
+			FileUtils.writeStringToFile(gwtDefitionFile, str);
+
+		} catch (SAXException ex) {
+			throw new RuntimeException(ex);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		} catch (TransformerException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 }

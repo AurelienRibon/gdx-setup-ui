@@ -3,13 +3,13 @@ package aurelienribon.libgdx.ui;
 import aurelienribon.libgdx.LibraryDef;
 import aurelienribon.libgdx.ui.panels.AdvancedSettingsPanel;
 import aurelienribon.libgdx.ui.panels.ClasspathsPanel;
-import aurelienribon.libgdx.ui.panels.ConfigCreatePanel;
+import aurelienribon.libgdx.ui.panels.ConfigSetupPanel;
 import aurelienribon.libgdx.ui.panels.ConfigUpdatePanel;
-import aurelienribon.libgdx.ui.panels.GenerationCreatePanel;
-import aurelienribon.libgdx.ui.panels.GenerationUpdatePanel;
+import aurelienribon.libgdx.ui.panels.ProcessSetupPanel;
+import aurelienribon.libgdx.ui.panels.ProcessUpdatePanel;
 import aurelienribon.libgdx.ui.panels.GoPanel;
 import aurelienribon.libgdx.ui.panels.LibraryInfoPanel;
-import aurelienribon.libgdx.ui.panels.LibrarySetupPanel;
+import aurelienribon.libgdx.ui.panels.LibrarySelectionPanel;
 import aurelienribon.libgdx.ui.panels.ResultPanel;
 import aurelienribon.libgdx.ui.panels.SelectionPanel;
 import aurelienribon.libgdx.ui.panels.TaskPanel;
@@ -37,18 +37,18 @@ import org.apache.commons.io.IOUtils;
  */
 public class MainPanel extends PaintedPanel {
 	private final SelectionPanel selectionPanel = new SelectionPanel(this);
-	private final ConfigCreatePanel configCreatePanel = new ConfigCreatePanel(this);
+	private final ConfigSetupPanel configSetupPanel = new ConfigSetupPanel(this);
 	private final ConfigUpdatePanel configUpdatePanel = new ConfigUpdatePanel(this);
 	private final VersionLabel versionLabel = new VersionLabel();
-	private final LibrarySetupPanel librarySetupPanel = new LibrarySetupPanel(this);
+	private final LibrarySelectionPanel librarySelectionPanel = new LibrarySelectionPanel(this);
 	private final ResultPanel resultPanel = new ResultPanel();
 	private final GoPanel goPanel = new GoPanel(this);
 	private final TaskPanel taskPanel = new TaskPanel();
 	private final AdvancedSettingsPanel advancedSettingsPanel = new AdvancedSettingsPanel();
 	private final LibraryInfoPanel libraryInfoPanel = new LibraryInfoPanel(this);
 	private final ClasspathsPanel classpathsPanel = new ClasspathsPanel(this);
-	private final GenerationCreatePanel generationCreatePanel = new GenerationCreatePanel(this);
-	private final GenerationUpdatePanel generationUpdatePanel = new GenerationUpdatePanel(this);
+	private final ProcessSetupPanel processSetupPanel = new ProcessSetupPanel(this);
+	private final ProcessUpdatePanel processUpdatePanel = new ProcessUpdatePanel(this);
 
 	private final SlidingLayersPanel panel = new SlidingLayersPanel();
 
@@ -59,46 +59,46 @@ public class MainPanel extends PaintedPanel {
 
 		Style.registerCssClasses(this, ".rootPanel");
 		Style.registerCssClasses(selectionPanel, ".groupPanel", "#selectionPanel");
-		Style.registerCssClasses(configCreatePanel, ".groupPanel", "#configCreatePanel");
+		Style.registerCssClasses(configSetupPanel, ".groupPanel", "#configSetupPanel");
 		Style.registerCssClasses(configUpdatePanel, ".groupPanel", "#configUpdatePanel");
 		Style.registerCssClasses(versionLabel, ".versionLabel");
-		Style.registerCssClasses(librarySetupPanel, ".groupPanel", "#librarySetupPanel");
+		Style.registerCssClasses(librarySelectionPanel, ".groupPanel", "#librarySetupPanel");
 		Style.registerCssClasses(resultPanel, ".groupPanel", "#resultPanel");
 		Style.registerCssClasses(goPanel, ".groupPanel", "#goPanel");
 		Style.registerCssClasses(advancedSettingsPanel, ".groupPanel", "#advancedSettingsPanel");
 		Style.registerCssClasses(libraryInfoPanel, ".groupPanel", "#libraryInfoPanel");
 		Style.registerCssClasses(classpathsPanel, ".groupPanel", "#classpathsPanel");
-		Style.registerCssClasses(generationCreatePanel, ".groupPanel", "#generationPanel");
-		Style.registerCssClasses(generationUpdatePanel, ".groupPanel", "#generationUpdatePanel");
+		Style.registerCssClasses(processSetupPanel, ".groupPanel", "#processSetupPanel");
+		Style.registerCssClasses(processUpdatePanel, ".groupPanel", "#processUpdatePanel");
 
 		Style style = new Style(Res.getUrl("css/style.css"));
 		Style.apply(this, style);
 		Style.apply(selectionPanel, style);
-		Style.apply(configCreatePanel, style);
+		Style.apply(configSetupPanel, style);
 		Style.apply(configUpdatePanel, style);
 		Style.apply(versionLabel, style);
-		Style.apply(librarySetupPanel, style);
+		Style.apply(librarySelectionPanel, style);
 		Style.apply(resultPanel, style);
 		Style.apply(goPanel, style);
 		Style.apply(taskPanel, style);
 		Style.apply(advancedSettingsPanel, style);
 		Style.apply(libraryInfoPanel, style);
 		Style.apply(classpathsPanel, style);
-		Style.apply(generationCreatePanel, style);
-		Style.apply(generationUpdatePanel, style);
+		Style.apply(processSetupPanel, style);
+		Style.apply(processUpdatePanel, style);
 
 		try {
 			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
 			LibraryDef def = new LibraryDef(rawDef);
 			Ctx.libs.addDef("libgdx", def);
-			Ctx.cfgCreate.libraries.add("libgdx");
+			Ctx.cfgSetup.libraries.add("libgdx");
 			Ctx.cfgUpdate.libraries.add("libgdx");
 		} catch (IOException ex) {
 			assert false;
 		}
 
 		goPanel.init();
-		librarySetupPanel.init();
+		librarySelectionPanel.init();
 
 		versionLabel.initAndCheck("3.0.0-beta", "versions",
 			"http://libgdx.badlogicgames.com/nightlies/config/config.txt",
@@ -125,7 +125,7 @@ public class MainPanel extends PaintedPanel {
 		public void onComplete() {
 			if (Ctx.testLibUrl != null) Ctx.libs.addUrl("__test_url__", Ctx.testLibUrl);
 			if (Ctx.testLibDef != null) Ctx.libs.addDef("__test_def__", Ctx.testLibDef);
-			if (Ctx.testLibDef != null) librarySetupPanel.registerLibrary("__test_def__");
+			if (Ctx.testLibDef != null) librarySelectionPanel.registerLibrary("__test_def__");
 
 			for (String name : Ctx.libs.getNames()) {
 				DownloadTask task = Ctx.libs.downloadDef(name);
@@ -133,31 +133,33 @@ public class MainPanel extends PaintedPanel {
 
 				task.addListener(new DownloadListener() {
 					@Override public void onComplete() {
-						librarySetupPanel.registerLibrary(libraryName);
+						librarySelectionPanel.registerLibrary(libraryName);
 					}
 
 					@Override
 					public void onError(IOException ex) {
-						librarySetupPanel.registerLibrary(null);
+						librarySelectionPanel.registerLibrary(null);
 					}
 				});
 			}
 		}
 	};
 
+	public void launchUpdateProcess() {
+		processUpdatePanel.launch();
+	}
+
 	// -------------------------------------------------------------------------
 	// Configurations
 	// -------------------------------------------------------------------------
 
-	private SlidingLayersConfig initCfg, createCfg, updateCfg;
-	private SlidingLayersConfig createAdvSettingsCfg;
-	private SlidingLayersConfig createLibraryInfoCfg;
-	private SlidingLayersConfig createGenerationCfg;
+	private SlidingLayersConfig initCfg, setupCfg, updateCfg;
+	private SlidingLayersConfig setupAdvSettingsCfg;
+	private SlidingLayersConfig setupLibraryInfoCfg;
+	private SlidingLayersConfig setupGenerationCfg;
 	private SlidingLayersConfig updateGenerationCfg;
 
-	private boolean isFirstPanelShown = true;
-	private boolean isCreateSetupUsed = true;
-	private boolean isGenerationCreatePanelOpen = false;
+	private boolean isProcessSetupPanelOpen = false;
 	private String currentLibraryInfo;
 
 	private void initConfigurations() {
@@ -176,23 +178,23 @@ public class MainPanel extends PaintedPanel {
 			.end()
 			.tile(1, 0, taskPanel);
 
-		createCfg = new SlidingLayersConfig(panel)
+		setupCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).row(true, 30).column(false, 1)
 			.beginGrid(0, 0)
 				.row(false, 1).column(false, 1).column(false, 1).column(false, 1)
 				.beginGrid(0, 0)
 					.row(true, selectionPanel.getPreferredSize().height)
-					.row(true, configCreatePanel.getPreferredSize().height)
+					.row(true, configSetupPanel.getPreferredSize().height)
 					.row(true, versionLabel.getPreferredSize().height)
 					.column(false, 1)
 					.tile(0, 0, selectionPanel)
-					.tile(1, 0, configCreatePanel)
+					.tile(1, 0, configSetupPanel)
 					.tile(2, 0, versionLabel)
 				.end()
 				.beginGrid(0, 1)
 					.row(false, 1)
 					.column(false, 1)
-					.tile(0, 0, librarySetupPanel)
+					.tile(0, 0, librarySelectionPanel)
 				.end()
 				.beginGrid(0, 2)
 					.row(false, 1)
@@ -220,7 +222,7 @@ public class MainPanel extends PaintedPanel {
 				.beginGrid(0, 1)
 					.row(false, 1)
 					.column(false, 1)
-					.tile(0, 0, librarySetupPanel)
+					.tile(0, 0, librarySelectionPanel)
 				.end()
 				.beginGrid(0, 2)
 					.row(true, goPanel.getPreferredSize().height)
@@ -230,27 +232,27 @@ public class MainPanel extends PaintedPanel {
 			.end()
 			.tile(1, 0, taskPanel);
 
-		createAdvSettingsCfg = new SlidingLayersConfig(panel)
+		setupAdvSettingsCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 1).column(false, 2)
 			.beginGrid(0, 0)
-				.row(true, configCreatePanel.getPreferredSize().height)
+				.row(true, configSetupPanel.getPreferredSize().height)
 				.row(true, versionLabel.getPreferredSize().height)
 				.column(false, 1)
-				.tile(0, 0, configCreatePanel)
+				.tile(0, 0, configSetupPanel)
 				.tile(1, 0, versionLabel)
 			.end()
 			.tile(0, 1, advancedSettingsPanel);
 
-		createLibraryInfoCfg = new SlidingLayersConfig(panel)
+		setupLibraryInfoCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).row(true, 30).column(false, 1)
 			.beginGrid(0, 0)
 				.row(false, 1).column(false, 1).column(false, 2)
-				.tile(0, 0, librarySetupPanel)
+				.tile(0, 0, librarySelectionPanel)
 				.tile(0, 1, libraryInfoPanel)
 			.end()
 			.tile(1, 0, taskPanel);
 
-		createGenerationCfg = new SlidingLayersConfig(panel)
+		setupGenerationCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 2).column(false, 1)
 			.beginGrid(0, 1)
 				.row(false, 1)
@@ -259,129 +261,135 @@ public class MainPanel extends PaintedPanel {
 				.tile(0, 0, resultPanel)
 				.tile(1, 0, goPanel)
 			.end()
-			.tile(0, 0, generationCreatePanel);
+			.tile(0, 0, processSetupPanel);
 
 		updateGenerationCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 2).column(false, 1)
 			.tile(0, 0, classpathsPanel)
-			.tile(0, 1, generationUpdatePanel);
+			.tile(0, 1, processUpdatePanel);
 	}
 
 	public void showCreateSetup() {
-		if (isFirstPanelShown) {
-			Ctx.mode = Ctx.Mode.CREATE;
-			Ctx.fireModeChangedChanged();
+		switch (Ctx.mode) {
+			case INIT:
+				Ctx.mode = Ctx.Mode.SETUP;
+				Ctx.fireModeChangedChanged();
 
-			panel.timeline()
-				.pushTo(new SlidingLayersConfig(panel)
-					.column(false, 1).column(false, 1).column(false, 1)
-					.row(true, selectionPanel.getPreferredSize().height)
-					.row(true, configCreatePanel.getPreferredSize().height)
-					.row(true, versionLabel.getPreferredSize().height)
-					.tile(0, 0, selectionPanel)
-					.tile(2, 0, versionLabel)
-					.delay(0.15f, versionLabel))
-				.pushSet(createCfg.clone()
-					.hide(Direction.LEFT, configCreatePanel)
-					.hide(Direction.UP, librarySetupPanel)
-					.hide(Direction.RIGHT, resultPanel, goPanel))
-				.pushTo(createCfg.clone()
-					.delayIncr(0.05f, configCreatePanel, librarySetupPanel, resultPanel, goPanel))
-				.play();
+				panel.timeline()
+					.pushTo(new SlidingLayersConfig(panel)
+						.column(false, 1).column(false, 1).column(false, 1)
+						.row(true, selectionPanel.getPreferredSize().height)
+						.row(true, configSetupPanel.getPreferredSize().height)
+						.row(true, versionLabel.getPreferredSize().height)
+						.tile(0, 0, selectionPanel)
+						.tile(2, 0, versionLabel)
+						.delay(0.15f, versionLabel))
+					.pushSet(setupCfg.clone()
+						.hide(Direction.LEFT, configSetupPanel)
+						.hide(Direction.UP, librarySelectionPanel)
+						.hide(Direction.RIGHT, resultPanel, goPanel))
+					.pushTo(setupCfg.clone()
+						.delayIncr(0.05f, configSetupPanel, librarySelectionPanel, resultPanel, goPanel))
+					.play();
+				break;
 
-		} else if (!isCreateSetupUsed) {
-			Ctx.mode = Ctx.Mode.CREATE;
-			Ctx.fireModeChangedChanged();
+			case UPDATE:
+				Ctx.mode = Ctx.Mode.SETUP;
+				Ctx.fireModeChangedChanged();
 
-			panel.timeline()
-				.pushTo(updateCfg.clone()
-					.hide(Direction.LEFT, configUpdatePanel))
-				.pushTo(createCfg.clone()
-					.hide(Direction.RIGHT, resultPanel)
-					.hide(Direction.LEFT, configCreatePanel))
-				.pushTo(createCfg)
-				.play();
+				panel.timeline()
+					.pushTo(updateCfg.clone()
+						.hide(Direction.LEFT, configUpdatePanel))
+					.pushTo(setupCfg.clone()
+						.hide(Direction.RIGHT, resultPanel)
+						.hide(Direction.LEFT, configSetupPanel))
+					.pushTo(setupCfg)
+					.play();
+				break;
 		}
-
-		isCreateSetupUsed = true;
-		isFirstPanelShown = false;
 	}
 
 	public void showUpdateSetup() {
-		if (isFirstPanelShown) {
-			Ctx.mode = Ctx.Mode.UPDATE;
-			Ctx.fireModeChangedChanged();
+		switch (Ctx.mode) {
+			case INIT:
+				Ctx.mode = Ctx.Mode.UPDATE;
+				Ctx.fireModeChangedChanged();
 
-			panel.timeline()
-				.pushTo(new SlidingLayersConfig(panel)
-					.column(false, 1).column(false, 1).column(false, 1)
-					.row(true, selectionPanel.getPreferredSize().height)
-					.row(true, configUpdatePanel.getPreferredSize().height)
-					.row(true, versionLabel.getPreferredSize().height)
-					.tile(0, 0, selectionPanel)
-					.tile(2, 0, versionLabel)
-					.delay(0.15f, versionLabel))
-				.pushSet(updateCfg.clone()
-					.hide(Direction.LEFT, configUpdatePanel)
-					.hide(Direction.UP, librarySetupPanel)
-					.hide(Direction.RIGHT, goPanel))
-				.pushTo(updateCfg.clone()
-					.delayIncr(0.05f, configUpdatePanel, librarySetupPanel, goPanel))
-				.play();
+				panel.timeline()
+					.pushTo(new SlidingLayersConfig(panel)
+						.column(false, 1).column(false, 1).column(false, 1)
+						.row(true, selectionPanel.getPreferredSize().height)
+						.row(true, configUpdatePanel.getPreferredSize().height)
+						.row(true, versionLabel.getPreferredSize().height)
+						.tile(0, 0, selectionPanel)
+						.tile(2, 0, versionLabel)
+						.delay(0.15f, versionLabel))
+					.pushSet(updateCfg.clone()
+						.hide(Direction.LEFT, configUpdatePanel)
+						.hide(Direction.UP, librarySelectionPanel)
+						.hide(Direction.RIGHT, goPanel))
+					.pushTo(updateCfg.clone()
+						.delayIncr(0.05f, configUpdatePanel, librarySelectionPanel, goPanel))
+					.play();
+				break;
 
-		} else if (isCreateSetupUsed) {
-			Ctx.mode = Ctx.Mode.UPDATE;
-			Ctx.fireModeChangedChanged();
-
-			panel.timeline()
-				.pushTo(createCfg.clone()
-					.hide(Direction.RIGHT, resultPanel)
-					.hide(Direction.LEFT, configCreatePanel))
-				.pushTo(updateCfg.clone()
-					.hide(Direction.LEFT, configUpdatePanel))
-				.pushTo(updateCfg)
-				.play();
+			case SETUP:
+				Ctx.mode = Ctx.Mode.UPDATE;
+				Ctx.fireModeChangedChanged();
+				
+				panel.timeline()
+					.pushTo(setupCfg.clone()
+						.hide(Direction.RIGHT, resultPanel)
+						.hide(Direction.LEFT, configSetupPanel))
+					.pushTo(updateCfg.clone()
+						.hide(Direction.LEFT, configUpdatePanel))
+					.pushTo(updateCfg)
+					.play();
+				break;
 		}
-
-		isCreateSetupUsed = false;
-		isFirstPanelShown = false;
 	}
 
 	public void showAdvancedSettings() {
-		if (isCreateSetupUsed) {
-			panel.timeline()
-				.pushTo(createCfg.clone()
-					.hide(Direction.DOWN, taskPanel)
-					.hide(Direction.UP, selectionPanel, librarySetupPanel)
-					.hide(Direction.RIGHT, resultPanel, goPanel)
-					.changeRow(0, configCreatePanel)
-					.changeRow(1, versionLabel)
-					.delayIncr(0.05f, librarySetupPanel, configCreatePanel, versionLabel, resultPanel, goPanel, taskPanel))
-				.pushSet(createAdvSettingsCfg.clone()
-					.hide(Direction.RIGHT, advancedSettingsPanel))
-				.pushTo(createAdvSettingsCfg)
-				.play();
-		} else {
+		switch (Ctx.mode) {
+			case SETUP:
+				panel.timeline()
+					.pushTo(setupCfg.clone()
+						.hide(Direction.DOWN, taskPanel)
+						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
+						.hide(Direction.RIGHT, resultPanel, goPanel)
+						.changeRow(0, configSetupPanel)
+						.changeRow(1, versionLabel)
+						.delayIncr(0.05f, librarySelectionPanel, configSetupPanel, versionLabel, resultPanel, goPanel, taskPanel))
+					.pushSet(setupAdvSettingsCfg.clone()
+						.hide(Direction.RIGHT, advancedSettingsPanel))
+					.pushTo(setupAdvSettingsCfg)
+					.play();
+				break;
 
+			case UPDATE:
+				break;
 		}
 	}
 
 	public void hideAdvancedSettings() {
-		if (isCreateSetupUsed) {
-			panel.timeline()
-				.pushTo(createAdvSettingsCfg.clone()
-					.hide(Direction.RIGHT, advancedSettingsPanel))
-				.pushSet(createCfg.clone()
-					.hide(Direction.DOWN, taskPanel)
-					.hide(Direction.UP, selectionPanel, librarySetupPanel)
-					.hide(Direction.RIGHT, resultPanel, goPanel)
-					.changeRow(0, configCreatePanel)
-					.changeRow(1, versionLabel))
-				.pushTo(createCfg.clone()
-					.delayIncr(0.05f, versionLabel, configCreatePanel, selectionPanel, librarySetupPanel, resultPanel, goPanel, taskPanel))
-				.play();
-		} else {
+		switch (Ctx.mode) {
+			case SETUP:
+				panel.timeline()
+					.pushTo(setupAdvSettingsCfg.clone()
+						.hide(Direction.RIGHT, advancedSettingsPanel))
+					.pushSet(setupCfg.clone()
+						.hide(Direction.DOWN, taskPanel)
+						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
+						.hide(Direction.RIGHT, resultPanel, goPanel)
+						.changeRow(0, configSetupPanel)
+						.changeRow(1, versionLabel))
+					.pushTo(setupCfg.clone()
+						.delayIncr(0.05f, versionLabel, configSetupPanel, selectionPanel, librarySelectionPanel, resultPanel, goPanel, taskPanel))
+					.play();
+				break;
 
+			case UPDATE:
+				break;
 		}
 	}
 
@@ -396,83 +404,89 @@ public class MainPanel extends PaintedPanel {
 			return;
 		}
 
-		if (isCreateSetupUsed) {
-			currentLibraryInfo = libraryName;
-			libraryInfoPanel.setup(libraryName);
+		switch (Ctx.mode) {
+			case SETUP:
+				currentLibraryInfo = libraryName;
+				libraryInfoPanel.setup(libraryName);
 
-			panel.timeline()
-				.pushTo(createCfg.clone()
-					.hide(Direction.LEFT, selectionPanel, configCreatePanel, versionLabel)
-					.hide(Direction.RIGHT, resultPanel, goPanel)
-					.delayIncr(0.02f, librarySetupPanel, configCreatePanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
-				.pushTo(createLibraryInfoCfg.clone()
-					.hide(Direction.RIGHT, libraryInfoPanel))
-				.pushTo(createLibraryInfoCfg)
-				.play();
-		} else {
+				panel.timeline()
+					.pushTo(setupCfg.clone()
+						.hide(Direction.LEFT, selectionPanel, configSetupPanel, versionLabel)
+						.hide(Direction.RIGHT, resultPanel, goPanel)
+						.delayIncr(0.02f, librarySelectionPanel, configSetupPanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
+					.pushTo(setupLibraryInfoCfg.clone()
+						.hide(Direction.RIGHT, libraryInfoPanel))
+					.pushTo(setupLibraryInfoCfg)
+					.play();
+				break;
 
+			case UPDATE:
+				break;
 		}
 	}
 
 	public void hideLibraryInfo() {
 		currentLibraryInfo = null;
 
-		if (isCreateSetupUsed) {
-			panel.timeline()
-				.pushTo(createLibraryInfoCfg.clone()
-					.hide(Direction.RIGHT, libraryInfoPanel))
-				.pushTo(createCfg.clone()
-					.hide(Direction.LEFT, selectionPanel, configCreatePanel, versionLabel)
-					.hide(Direction.RIGHT, resultPanel, goPanel))
-				.pushTo(createCfg.clone()
-					.delayIncr(0.02f, librarySetupPanel, configCreatePanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
-				.play();
-		} else {
+		switch (Ctx.mode) {
+			case SETUP:
+				panel.timeline()
+					.pushTo(setupLibraryInfoCfg.clone()
+						.hide(Direction.RIGHT, libraryInfoPanel))
+					.pushTo(setupCfg.clone()
+						.hide(Direction.LEFT, selectionPanel, configSetupPanel, versionLabel)
+						.hide(Direction.RIGHT, resultPanel, goPanel))
+					.pushTo(setupCfg.clone()
+						.delayIncr(0.02f, librarySelectionPanel, configSetupPanel, versionLabel, resultPanel, goPanel, versionLabel, taskPanel))
+					.play();
+				break;
 
+			case UPDATE:
+				break;
 		}
 	}
 
 	public void showGenerationCreatePanel() {
-		if (isGenerationCreatePanelOpen) {
+		if (isProcessSetupPanelOpen) {
 			hideGenerationCreatePanel();
 			return;
 		}
 
-		isGenerationCreatePanelOpen = true;
+		isProcessSetupPanelOpen = true;
 
 		panel.timeline()
-			.pushTo(createCfg.clone()
-				.hide(Direction.DOWN, taskPanel, selectionPanel, configCreatePanel, versionLabel, librarySetupPanel)
-				.delayIncr(0.05f, librarySetupPanel, versionLabel, configCreatePanel, selectionPanel))
-			.pushTo(createGenerationCfg.clone()
-				.hide(Direction.UP, generationCreatePanel))
-			.pushTo(createGenerationCfg)
+			.pushTo(setupCfg.clone()
+				.hide(Direction.DOWN, taskPanel, selectionPanel, configSetupPanel, versionLabel, librarySelectionPanel)
+				.delayIncr(0.05f, librarySelectionPanel, versionLabel, configSetupPanel, selectionPanel))
+			.pushTo(setupGenerationCfg.clone()
+				.hide(Direction.UP, processSetupPanel))
+			.pushTo(setupGenerationCfg)
 			.play();
 	}
 
 	public void hideGenerationCreatePanel() {
-		isGenerationCreatePanelOpen = false;
+		isProcessSetupPanelOpen = false;
 
 		panel.timeline()
-			.pushTo(createGenerationCfg.clone()
-				.hide(Direction.DOWN, generationCreatePanel))
-			.pushTo(createCfg.clone()
-				.hide(Direction.UP, selectionPanel, configCreatePanel, versionLabel, librarySetupPanel)
+			.pushTo(setupGenerationCfg.clone()
+				.hide(Direction.DOWN, processSetupPanel))
+			.pushTo(setupCfg.clone()
+				.hide(Direction.UP, selectionPanel, configSetupPanel, versionLabel, librarySelectionPanel)
 				.hide(Direction.DOWN, taskPanel))
-			.pushTo(createCfg.clone()
-				.delayIncr(0.05f, versionLabel, configCreatePanel, selectionPanel, librarySetupPanel, taskPanel))
+			.pushTo(setupCfg.clone()
+				.delayIncr(0.05f, versionLabel, configSetupPanel, selectionPanel, librarySelectionPanel, taskPanel))
 			.play();
 	}
 
 	public void showGenerationUpdatePanel() {
 		panel.timeline()
 			.pushTo(updateCfg.clone()
-				.hide(Direction.DOWN, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySetupPanel)
+				.hide(Direction.DOWN, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySelectionPanel)
 				.hide(Direction.UP, goPanel)
-				.delayIncr(0.05f, taskPanel, librarySetupPanel, versionLabel, configUpdatePanel, selectionPanel, goPanel))
+				.delayIncr(0.05f, taskPanel, librarySelectionPanel, versionLabel, configUpdatePanel, selectionPanel, goPanel))
 			.pushTo(updateGenerationCfg.clone()
 				.hide(Direction.UP, classpathsPanel)
-				.hide(Direction.DOWN, generationUpdatePanel))
+				.hide(Direction.DOWN, processUpdatePanel))
 			.pushTo(updateGenerationCfg)
 			.play();
 	}
@@ -481,12 +495,12 @@ public class MainPanel extends PaintedPanel {
 		panel.timeline()
 			.pushTo(updateGenerationCfg.clone()
 				.hide(Direction.UP, classpathsPanel)
-				.hide(Direction.DOWN, generationUpdatePanel))
+				.hide(Direction.DOWN, processUpdatePanel))
 			.pushTo(updateCfg.clone()
-				.hide(Direction.DOWN, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySetupPanel)
+				.hide(Direction.DOWN, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySelectionPanel)
 				.hide(Direction.UP, goPanel))
 			.pushTo(updateCfg
-				.delayIncr(0.05f, librarySetupPanel, selectionPanel, configUpdatePanel, versionLabel, goPanel, taskPanel))
+				.delayIncr(0.05f, librarySelectionPanel, selectionPanel, configUpdatePanel, versionLabel, goPanel, taskPanel))
 			.play();
 	}
 }

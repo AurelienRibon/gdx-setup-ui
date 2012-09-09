@@ -1,15 +1,11 @@
 package aurelienribon.libgdx;
 
+import aurelienribon.utils.XmlUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -19,48 +15,39 @@ import org.xml.sax.SAXException;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class Helper {
-	private static final DocumentBuilderFactory domFactory;
-	private static final XPath xpath;
-
-	static {
-		domFactory = DocumentBuilderFactory.newInstance();
-		domFactory.setNamespaceAware(true);
-		xpath = XPathFactory.newInstance().newXPath();
-	}
-
 	// -------------------------------------------------------------------------
 	// Project Configuration
 	// -------------------------------------------------------------------------
 
-	public static String getCorePrjName(ProjectConfiguration cfg) {
+	public static String getCorePrjName(BaseProjectConfiguration cfg) {
 		return cfg.projectName + cfg.suffixCommon;
 	}
 
-	public static String getDesktopPrjName(ProjectConfiguration cfg) {
+	public static String getDesktopPrjName(BaseProjectConfiguration cfg) {
 		return cfg.projectName + cfg.suffixDesktop;
 	}
 
-	public static String getAndroidPrjName(ProjectConfiguration cfg) {
+	public static String getAndroidPrjName(BaseProjectConfiguration cfg) {
 		return cfg.projectName + cfg.suffixAndroid;
 	}
 
-	public static String getHtmlPrjName(ProjectConfiguration cfg) {
+	public static String getHtmlPrjName(BaseProjectConfiguration cfg) {
 		return cfg.projectName + cfg.suffixHtml;
 	}
 
-	public static String getCorePrjPath(ProjectConfiguration cfg) {
+	public static String getCorePrjPath(BaseProjectConfiguration cfg) {
 		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixCommon + "/", true);
 	}
 
-	public static String getDesktopPrjPath(ProjectConfiguration cfg) {
+	public static String getDesktopPrjPath(BaseProjectConfiguration cfg) {
 		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixDesktop + "/", true);
 	}
 
-	public static String getAndroidPrjPath(ProjectConfiguration cfg) {
+	public static String getAndroidPrjPath(BaseProjectConfiguration cfg) {
 		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixAndroid + "/", true);
 	}
 
-	public static String getHtmlPrjPath(ProjectConfiguration cfg) {
+	public static String getHtmlPrjPath(BaseProjectConfiguration cfg) {
 		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixHtml + "/", true);
 	}
 
@@ -91,7 +78,7 @@ public class Helper {
 		return null;
 	}
 
-	public static List<ClasspathEntry> getCoreClasspathEntries(ProjectConfiguration cfg, LibraryManager libs) {
+	public static List<ClasspathEntry> getCoreClasspathEntries(BaseProjectConfiguration cfg, LibraryManager libs) {
 		List<ClasspathEntry> classpath = new ArrayList<ClasspathEntry>();
 
 		for (String library : cfg.libraries) {
@@ -107,8 +94,10 @@ public class Helper {
 		return classpath;
 	}
 
-	public static List<ClasspathEntry> getAndroidClasspathEntries(ProjectConfiguration cfg, LibraryManager libs) {
+	public static List<ClasspathEntry> getAndroidClasspathEntries(BaseProjectConfiguration cfg, LibraryManager libs) {
 		List<ClasspathEntry> classpath = new ArrayList<ClasspathEntry>();
+		if (!cfg.isAndroidIncluded) return classpath;
+
 		String corePrjName = getCorePrjName(cfg);
 
 		for (String library : cfg.libraries) {
@@ -130,8 +119,9 @@ public class Helper {
 		return classpath;
 	}
 
-	public static List<ClasspathEntry> getDesktopClasspathEntries(ProjectConfiguration cfg, LibraryManager libs) {
+	public static List<ClasspathEntry> getDesktopClasspathEntries(BaseProjectConfiguration cfg, LibraryManager libs) {
 		List<ClasspathEntry> classpath = new ArrayList<ClasspathEntry>();
+		if (!cfg.isDesktopIncluded) return classpath;
 
 		for (String library : cfg.libraries) {
 			LibraryDef def = libs.getDef(library);
@@ -146,8 +136,10 @@ public class Helper {
 		return classpath;
 	}
 
-	public static List<ClasspathEntry> getHtmlClasspathEntries(ProjectConfiguration cfg, LibraryManager libs) {
+	public static List<ClasspathEntry> getHtmlClasspathEntries(BaseProjectConfiguration cfg, LibraryManager libs) {
 		List<ClasspathEntry> classpath = new ArrayList<ClasspathEntry>();
+		if (!cfg.isHtmlIncluded) return classpath;
+
 		String corePrjName = getCorePrjName(cfg);
 
 		for (String library : cfg.libraries) {
@@ -171,29 +163,28 @@ public class Helper {
 		return classpath;
 	}
 
-	public static List<GwtModule> getGwtModules(ProjectConfiguration cfg, LibraryManager libs) {
-		List<GwtModule> newGwtModules = new ArrayList<GwtModule>();
+	public static List<GwtModule> getGwtModules(BaseProjectConfiguration cfg, LibraryManager libs) {
+		List<GwtModule> gwtModules = new ArrayList<GwtModule>();
+		if (!cfg.isHtmlIncluded) return gwtModules;
 
 		for (String library : cfg.libraries) {
 			LibraryDef def = libs.getDef(library);
 
 			if (def.gwtModuleName != null) {
-				newGwtModules.add(new GwtModule(def.gwtModuleName));
+				gwtModules.add(new GwtModule(def.gwtModuleName));
 			}
 		}
 
-		return newGwtModules;
+		return gwtModules;
 	}
 
 	public static List<ClasspathEntry> getClasspathEntries(File classpathFile) {
 		List<ClasspathEntry> classpath = new ArrayList<ClasspathEntry>();
+		if (!classpathFile.isFile()) return classpath;
 
 		try {
-			Document doc = domFactory.newDocumentBuilder().parse(classpathFile);
-
-			NodeList nodes = (NodeList) xpath
-				.compile("classpath/classpathentry[@kind='lib' and @path]")
-				.evaluate(doc, XPathConstants.NODESET);
+			Document doc = XmlUtils.getParser().parse(classpathFile);
+			NodeList nodes = (NodeList) XmlUtils.xpath("classpath/classpathentry[@kind='lib' and @path]", doc, XPathConstants.NODESET);
 
 			for (int i=0; i<nodes.getLength(); i++) {
 				String path = nodes.item(i).getAttributes().getNamedItem("path").getNodeValue();
@@ -205,10 +196,8 @@ public class Helper {
 				classpath.add(new ClasspathEntry(path, sourcepath, exported));
 			}
 
-		} catch (ParserConfigurationException ex) {
 		} catch (SAXException ex) {
 		} catch (IOException ex) {
-		} catch (XPathExpressionException ex) {
 		}
 
 		return classpath;
@@ -216,23 +205,19 @@ public class Helper {
 
 	public static List<GwtModule> getGwtModules(File modulesFile) {
 		List<GwtModule> modules = new ArrayList<GwtModule>();
+		if (!modulesFile.isFile()) return modules;
 
 		try {
-			Document doc = domFactory.newDocumentBuilder().parse(modulesFile);
-
-			NodeList nodes = (NodeList) xpath
-				.compile("module/inherits[@name]")
-				.evaluate(doc, XPathConstants.NODESET);
+			Document doc = XmlUtils.getParser().parse(modulesFile);
+			NodeList nodes = (NodeList) XmlUtils.xpath("module/inherits[@name]", doc, XPathConstants.NODESET);
 
 			for (int i=0; i<nodes.getLength(); i++) {
 				String name = nodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
 				modules.add(new GwtModule(name));
 			}
 
-		} catch (ParserConfigurationException ex) {
 		} catch (SAXException ex) {
 		} catch (IOException ex) {
-		} catch (XPathExpressionException ex) {
 		}
 
 		return modules;
@@ -268,6 +253,16 @@ public class Helper {
 		}
 
 		@Override
+		public String toString() {
+			String str = "<classpathentry kind=\"lib\" ";
+			if (exported) str += "exported=\"true\" ";
+			str += "path=\"" + path + "\"";
+			if (sourcepath != null) str += " sourcepath=\"" + sourcepath + "\"";
+			str += "/>";
+			return str;
+		}
+
+		@Override
 		public int compareTo(ClasspathEntry o) {
 			if (path.startsWith("/") && !o.path.startsWith("/")) return 1;
 			if (!path.startsWith("/") && o.path.startsWith("/")) return -1;
@@ -292,6 +287,11 @@ public class Helper {
 			for (GwtModule e : entries) if (e.name.equals(name)) return false;
 			added = true;
 			return true;
+		}
+
+		@Override
+		public String toString() {
+			return "<inherits name='" + name + "' />";
 		}
 
 		@Override

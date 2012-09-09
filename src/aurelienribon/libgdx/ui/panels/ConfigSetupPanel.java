@@ -24,18 +24,18 @@ import javax.swing.SwingUtilities;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class ConfigCreatePanel extends javax.swing.JPanel {
+public class ConfigSetupPanel extends javax.swing.JPanel {
 	private boolean clicToShowSettings = true;
 
-    public ConfigCreatePanel(final MainPanel mainPanel) {
+    public ConfigSetupPanel(final MainPanel mainPanel) {
         initComponents();
 
-		nameField.setText(Ctx.cfgCreate.projectName);
-		packageField.setText(Ctx.cfgCreate.packageName);
-		mainClassField.setText(Ctx.cfgCreate.mainClassName);
+		nameField.setText(Ctx.cfgSetup.projectName);
+		packageField.setText(Ctx.cfgSetup.packageName);
+		mainClassField.setText(Ctx.cfgSetup.mainClassName);
 
 		try {
-			File destDir = new File(Ctx.cfgCreate.destinationPath);
+			File destDir = new File(Ctx.cfgSetup.destinationPath);
 			destinationField.setText(destDir.getCanonicalPath());
 		} catch (IOException ex) {
 			assert false;
@@ -81,7 +81,7 @@ public class ConfigCreatePanel extends javax.swing.JPanel {
     }
 
 	private void browse() {
-		String path = Ctx.cfgCreate.destinationPath;
+		String path = Ctx.cfgSetup.destinationPath;
 		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
 		JFileChooser chooser = new JFileChooser(new File(path));
@@ -95,14 +95,14 @@ public class ConfigCreatePanel extends javax.swing.JPanel {
 	}
 
 	private void update() {
-		Ctx.cfgCreate.projectName = nameField.getText();
-		Ctx.cfgCreate.packageName = packageField.getText();
-		Ctx.cfgCreate.mainClassName = mainClassField.getText();
-		Ctx.cfgCreate.destinationPath = destinationField.getText();
-		Ctx.cfgCreate.isDesktopIncluded = genDesktopPrjChk.isSelected();
-		Ctx.cfgCreate.isAndroidIncluded = genAndroidPrjChk.isSelected();
-		Ctx.cfgCreate.isHtmlIncluded = genHtmlPrjChk.isSelected();
-		Ctx.fireCfgCreateChanged();
+		Ctx.cfgSetup.projectName = nameField.getText();
+		Ctx.cfgSetup.packageName = packageField.getText();
+		Ctx.cfgSetup.mainClassName = mainClassField.getText();
+		Ctx.cfgSetup.destinationPath = destinationField.getText();
+		Ctx.cfgSetup.isDesktopIncluded = genDesktopPrjChk.isSelected();
+		Ctx.cfgSetup.isAndroidIncluded = genAndroidPrjChk.isSelected();
+		Ctx.cfgSetup.isHtmlIncluded = genHtmlPrjChk.isSelected();
+		Ctx.fireCfgSetupChanged();
 	}
 
 	private final KeyListener updateOnTypeKeyListener = new KeyAdapter() {
@@ -134,7 +134,7 @@ public class ConfigCreatePanel extends javax.swing.JPanel {
 			JTextField field = (JTextField) e.getSource();
 			if (!Pattern.compile("[a-zA-Z0-9_-]*").matcher(field.getText()).matches()) {
 				String msg = "Only alphanumeric, '-' and '_' characters are allowed for project name.";
-				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigCreatePanel.this);
+				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigSetupPanel.this);
 				JOptionPane.showMessageDialog(frame, msg);
 				field.setText(backup);
 				update();
@@ -156,7 +156,7 @@ public class ConfigCreatePanel extends javax.swing.JPanel {
 			JTextField field = (JTextField) e.getSource();
 			if (!Pattern.compile("[a-zA-Z0-9_\\.]*").matcher(field.getText()).matches()) {
 				String msg = "Only alphanumeric, '_' and '.' characters are allowed for package name.";
-				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigCreatePanel.this);
+				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigSetupPanel.this);
 				JOptionPane.showMessageDialog(frame, msg);
 				field.setText(backup);
 				update();
@@ -178,7 +178,7 @@ public class ConfigCreatePanel extends javax.swing.JPanel {
 			JTextField field = (JTextField) e.getSource();
 			if (!Pattern.compile("[a-zA-Z0-9_]*").matcher(field.getText()).matches()) {
 				String msg = "Only alphanumeric and '_' characters are allowed for class name.\n";
-				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigCreatePanel.this);
+				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ConfigSetupPanel.this);
 
 				JOptionPane.showMessageDialog(frame, msg);
 				field.setText(backup);

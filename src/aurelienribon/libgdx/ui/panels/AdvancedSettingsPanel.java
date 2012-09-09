@@ -20,13 +20,13 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     public AdvancedSettingsPanel() {
         initComponents();
 
-		commonSuffixField.setText(Ctx.cfgCreate.suffixCommon);
-		desktopSuffixField.setText(Ctx.cfgCreate.suffixDesktop);
-		androidSuffixField.setText(Ctx.cfgCreate.suffixAndroid);
-		htmlSuffixField.setText(Ctx.cfgCreate.suffixHtml);
-		androidMinSdkField.setText(Ctx.cfgCreate.androidMinSdkVersion);
-		androidTargetSdkField.setText(Ctx.cfgCreate.androidTargetSdkVersion);
-		androidMaxSdkField.setText(Ctx.cfgCreate.androidMaxSdkVersion);
+		commonSuffixField.setText(Ctx.cfgSetup.suffixCommon);
+		desktopSuffixField.setText(Ctx.cfgSetup.suffixDesktop);
+		androidSuffixField.setText(Ctx.cfgSetup.suffixAndroid);
+		htmlSuffixField.setText(Ctx.cfgSetup.suffixHtml);
+		androidMinSdkField.setText(Ctx.cfgSetup.androidMinSdkVersion);
+		androidTargetSdkField.setText(Ctx.cfgSetup.androidTargetSdkVersion);
+		androidMaxSdkField.setText(Ctx.cfgSetup.androidMaxSdkVersion);
 
 		commonSuffixField.addMouseListener(selectOnFocusMouseListener);
 		desktopSuffixField.addMouseListener(selectOnFocusMouseListener);
@@ -53,13 +53,13 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
     }
 
 	private void update() {
-		Ctx.cfgCreate.suffixCommon = commonSuffixField.getText();
-		Ctx.cfgCreate.suffixDesktop = desktopSuffixField.getText();
-		Ctx.cfgCreate.suffixAndroid = androidSuffixField.getText();
-		Ctx.cfgCreate.androidMinSdkVersion = androidMinSdkField.getText();
-		Ctx.cfgCreate.androidMaxSdkVersion = androidMaxSdkField.getText();
-		Ctx.cfgCreate.androidTargetSdkVersion = androidTargetSdkField.getText();
-		Ctx.fireCfgCreateChanged();
+		Ctx.cfgSetup.suffixCommon = commonSuffixField.getText();
+		Ctx.cfgSetup.suffixDesktop = desktopSuffixField.getText();
+		Ctx.cfgSetup.suffixAndroid = androidSuffixField.getText();
+		Ctx.cfgSetup.androidMinSdkVersion = androidMinSdkField.getText();
+		Ctx.cfgSetup.androidMaxSdkVersion = androidMaxSdkField.getText();
+		Ctx.cfgSetup.androidTargetSdkVersion = androidTargetSdkField.getText();
+		Ctx.fireCfgSetupChanged();
 	}
 
 	private final KeyListener updateOnTypeKeyListener = new KeyAdapter() {

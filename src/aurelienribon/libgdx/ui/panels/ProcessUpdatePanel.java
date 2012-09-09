@@ -1,49 +1,41 @@
 package aurelienribon.libgdx.ui.panels;
 
+import aurelienribon.libgdx.ProjectUpdate;
+import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
+import java.io.IOException;
 import javax.swing.SwingUtilities;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class GenerationUpdatePanel extends javax.swing.JPanel {
-    public GenerationUpdatePanel(final MainPanel mainPanel) {
+public class ProcessUpdatePanel extends javax.swing.JPanel {
+    public ProcessUpdatePanel(final MainPanel mainPanel) {
         initComponents();
 
 		Style.registerCssClasses(jScrollPane1, ".frame");
 		Style.registerCssClasses(progressArea, ".progressArea");
     }
 
-	public void generate() {
+	public void launch() {
 		progressArea.setText("");
 
-//		final ProjectSetup setup = new ProjectSetup(Ctx.cfgCreate, Ctx.libs);
-//
-//		new Thread(new Runnable() {
-//			@Override public void run() {
-//				try {
-//					report("Decompressing projects...");
-//					setup.inflateProjects();
-//					report(" done\nDecompressing libraries...");
-//					setup.inflateLibraries();
-//					report(" done\nConfiguring libraries...");
-//					setup.configureLibraries();
-//					report(" done\nPost-processing files...");
-//					setup.postProcess();
-//					report(" done\nCopying projects...");
-//					setup.copy();
-//					report(" done\nCleaning...");
-//					setup.clean();
-//					report(" done\nAll done!");
-//				} catch (final IOException ex) {
-//					report("\n[error] " + ex.getMessage());
-//					report("\nCleaning...");
-//					setup.clean();
-//					report("done");
-//				}
-//			}
-//		}).start();
+		final ProjectUpdate update = new ProjectUpdate(Ctx.cfgUpdate, Ctx.libs);
+
+		new Thread(new Runnable() {
+			@Override public void run() {
+				try {
+					report("Decompressing libraries...");
+					update.inflateLibraries();
+					report(" done\nEditing classpaths...");
+					update.editClasspaths();
+					report(" done\nAll done!");
+				} catch (final Exception ex) {
+					report("\n[error] " + ex.getMessage());
+				}
+			}
+		}).start();
 	}
 
 	private void report(final String txt) {

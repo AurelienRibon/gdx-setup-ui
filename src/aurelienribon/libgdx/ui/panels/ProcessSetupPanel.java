@@ -17,8 +17,8 @@ import javax.swing.SwingUtilities;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class GenerationCreatePanel extends javax.swing.JPanel {
-    public GenerationCreatePanel(final MainPanel mainPanel) {
+public class ProcessSetupPanel extends javax.swing.JPanel {
+    public ProcessSetupPanel(final MainPanel mainPanel) {
         initComponents();
 
 		Style.registerCssClasses(jScrollPane1, ".frame");
@@ -47,7 +47,7 @@ public class GenerationCreatePanel extends javax.swing.JPanel {
 		importQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
 				HelpImportDialog dialog = new HelpImportDialog(null);
-				dialog.setLocationRelativeTo(GenerationCreatePanel.this);
+				dialog.setLocationRelativeTo(ProcessSetupPanel.this);
 				dialog.pack();
 				dialog.setVisible(true);
 			}
@@ -56,7 +56,7 @@ public class GenerationCreatePanel extends javax.swing.JPanel {
 		fixHtmlQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
 				HelpFixHtmlDialog dialog = new HelpFixHtmlDialog(null);
-				dialog.setLocationRelativeTo(GenerationCreatePanel.this);
+				dialog.setLocationRelativeTo(ProcessSetupPanel.this);
 				dialog.pack();
 				dialog.setVisible(true);
 			}
@@ -66,7 +66,7 @@ public class GenerationCreatePanel extends javax.swing.JPanel {
 	private void generate() {
 		progressArea.setText("");
 
-		final ProjectSetup setup = new ProjectSetup(Ctx.cfgCreate, Ctx.libs);
+		final ProjectSetup setup = new ProjectSetup(Ctx.cfgSetup, Ctx.libs);
 
 		new Thread(new Runnable() {
 			@Override public void run() {

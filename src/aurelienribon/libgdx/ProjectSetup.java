@@ -40,12 +40,12 @@ import org.apache.commons.io.IOUtils;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class ProjectSetup {
-	private final ProjectConfiguration cfg;
+	private final ProjectSetupConfiguration cfg;
 	private final LibraryManager libs;
 	private final File tmpDst = new File("__libgdx_setup_tmp");
 	private final TemplateManager templateManager = new TemplateManager();
 
-	public ProjectSetup(ProjectConfiguration cfg, LibraryManager libs) {
+	public ProjectSetup(ProjectSetupConfiguration cfg, LibraryManager libs) {
 		this.cfg = cfg;
 		this.libs = libs;
 

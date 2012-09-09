@@ -1,8 +1,10 @@
 package aurelienribon.libgdx.ui.panels;
 
+import aurelienribon.libgdx.BaseProjectConfiguration;
 import aurelienribon.libgdx.Helper;
 import aurelienribon.libgdx.LibraryManager;
-import aurelienribon.libgdx.ProjectConfiguration;
+import aurelienribon.libgdx.ProjectSetupConfiguration;
+import aurelienribon.libgdx.ProjectUpdateConfiguration;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
@@ -29,7 +31,7 @@ public class GoPanel extends javax.swing.JPanel {
 		goBtn.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
 				switch (Ctx.mode) {
-					case CREATE: mainPanel.showGenerationCreatePanel(); break;
+					case SETUP: mainPanel.showGenerationCreatePanel(); break;
 					case UPDATE: mainPanel.showGenerationUpdatePanel(); break;
 				}
 			}
@@ -45,14 +47,14 @@ public class GoPanel extends javax.swing.JPanel {
 		errorLabel.firePropertyChange("error", true, false);
 
 		switch (Ctx.mode) {
-			case CREATE:
-				if (isProjectCreationValid(Ctx.cfgCreate, Ctx.libs)) {
+			case SETUP:
+				if (isProjectCreationValid(Ctx.cfgSetup, Ctx.libs)) {
 					goBtn.setEnabled(true);
 					errorLabel.setText("<html>Your configuration is valid.");
 					errorLabel.firePropertyChange("valid", false, true);
 				} else {
 					goBtn.setEnabled(false);
-					errorLabel.setText("<html>" + getCreationErrorMessage(Ctx.cfgCreate));
+					errorLabel.setText("<html>" + getCreationErrorMessage(Ctx.cfgSetup));
 					errorLabel.firePropertyChange("error", false, true);
 				}
 
@@ -77,7 +79,7 @@ public class GoPanel extends javax.swing.JPanel {
 		}
 	}
 
-	private boolean isProjectCreationValid(ProjectConfiguration cfg, LibraryManager libs) {
+	private boolean isProjectCreationValid(ProjectSetupConfiguration cfg, LibraryManager libs) {
 		if (cfg.projectName.trim().equals("")) return false;
 		if (cfg.packageName.trim().equals("")) return false;
 		if (cfg.packageName.endsWith(".")) return false;
@@ -90,7 +92,7 @@ public class GoPanel extends javax.swing.JPanel {
 		return true;
 	}
 
-	private boolean isProjectUpdateValid(ProjectConfiguration cfg) {
+	private boolean isProjectUpdateValid(ProjectUpdateConfiguration cfg) {
 		File coreDir = new File(Helper.getCorePrjPath(cfg));
 
 		if (!coreDir.isDirectory()) return false;
@@ -103,7 +105,7 @@ public class GoPanel extends javax.swing.JPanel {
 		return true;
 	}
 
-	private boolean isLibraryValid(ProjectConfiguration cfg, String libraryName) {
+	private boolean isLibraryValid(BaseProjectConfiguration cfg, String libraryName) {
 		String path = cfg.librariesZipPaths.get(libraryName);
 		if (path == null) return false;
 		if (!path.endsWith(".zip")) return false;
@@ -111,7 +113,7 @@ public class GoPanel extends javax.swing.JPanel {
 		return true;
 	}
 
-	private String getCreationErrorMessage(ProjectConfiguration cfg) {
+	private String getCreationErrorMessage(ProjectSetupConfiguration cfg) {
 		if (cfg.projectName.trim().equals("")) return "Project name is not set.";
 		if (cfg.packageName.trim().equals("")) return "Package name is not set.";
 		if (cfg.packageName.endsWith(".")) return "Package name ends with a dot.";
@@ -125,7 +127,7 @@ public class GoPanel extends javax.swing.JPanel {
 		return "No error found";
 	}
 
-	private String getUpdateErrorMessage(ProjectConfiguration cfg, LibraryManager libs) {
+	private String getUpdateErrorMessage(ProjectUpdateConfiguration cfg, LibraryManager libs) {
 		File coreDir = new File(Helper.getCorePrjPath(cfg));
 
 		if (!coreDir.isDirectory()) return "No core project was selected.";
