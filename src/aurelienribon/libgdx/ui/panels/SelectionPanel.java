@@ -2,8 +2,11 @@ package aurelienribon.libgdx.ui.panels;
 
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.SwingUtils;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -14,16 +17,20 @@ public class SelectionPanel extends javax.swing.JPanel {
 
 		Style.registerCssClasses(headerPanel, ".header");
 		Style.registerCssClasses(numberLabel, ".headerNumber");
-		Style.registerCssClasses(createBtn, ".selectionButton");
-		Style.registerCssClasses(updateBtn, ".selectionButton");
 
-		createBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+		setupBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
 			mainPanel.showCreateSetup();
 		}});
 
 		updateBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
 			mainPanel.showUpdateSetup();
 		}});
+
+		SwingUtils.addWindowListener(this, new WindowAdapter() {
+			@Override public void windowOpened(WindowEvent e) {
+				setupBtn.requestFocusInWindow();
+			}
+		});
     }
 
 	// -------------------------------------------------------------------------
@@ -39,7 +46,7 @@ public class SelectionPanel extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         numberLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        createBtn = new javax.swing.JButton();
+        setupBtn = new javax.swing.JButton();
         updateBtn = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
@@ -56,7 +63,7 @@ public class SelectionPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup()
                 .addComponent(numberLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE))
         );
         headerPanelLayout.setVerticalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -72,9 +79,11 @@ public class SelectionPanel extends javax.swing.JPanel {
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new java.awt.GridLayout(1, 0, 10, 0));
 
-        createBtn.setText("Create new project");
-        jPanel1.add(createBtn);
+        setupBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_add.png"))); // NOI18N
+        setupBtn.setText("Create new project");
+        jPanel1.add(setupBtn);
 
+        updateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_update.png"))); // NOI18N
         updateBtn.setText("Update existing project");
         jPanel1.add(updateBtn);
 
@@ -83,11 +92,11 @@ public class SelectionPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton createBtn;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel numberLabel;
+    private javax.swing.JButton setupBtn;
     private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables
 

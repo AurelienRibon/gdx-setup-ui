@@ -38,10 +38,6 @@ public class GoPanel extends javax.swing.JPanel {
 		});
     }
 
-	public void init() {
-		update();
-	}
-
 	private void update() {
 		errorLabel.firePropertyChange("valid", true, false);
 		errorLabel.firePropertyChange("error", true, false);

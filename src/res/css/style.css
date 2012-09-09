@@ -106,19 +106,6 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-swing-foreground: #888;
 }
 
-.legendPanel {
-	-swing-background: #BBC8D8;
-}
-
-.legendPanel javax-swing-JLabel {
-	-swing-font-size: 10;
-	-swing-foreground: #3D5277;
-}
-
-.legendLabel {
-	-swing-border: emptyborder(5, 5, 5, 5);
-}
-
 /*******************************************************************************
  * Task Bar
  ******************************************************************************/
@@ -172,9 +159,7 @@ javax-swing-JToolBar > javax-swing-JButton {
 .statusLabel:notfound {-swing-foreground: #800; -swing-text: "Not found";}
 .statusLabel:found {-swing-foreground: #080; -swing-text: "Found";}
 
-.frame {
-	-swing-border: lineborder(#3D5277, 1);
-}
+.frame {-swing-border: lineborder(#3D5277, 1);}
 
 .versionLabel {
 	-swing-background: #FFF;

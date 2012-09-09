@@ -70,11 +70,10 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(numberLabel, ".headerNumber");
 		Style.registerCssClasses(sectionLabel1, ".sectionLabel");
 		Style.registerCssClasses(sectionLabel2, ".sectionLabel");
-		Style.registerCssClasses(legendPanel, ".legendPanel");
-		Style.registerCssClasses(legendLabel, ".legendLabel");
+		Style.registerCssClasses(legendPanel, ".optionGroupPanel");
     }
 
-	public void init() {
+	public void initializeLibgdx() {
 		libsNamesCmps.put("libgdx", libgdxLabel);
 		libgdxLabel.setForeground(LIB_NOTFOUND_COLOR);
 		preselectLibraryArchive("libgdx");
@@ -292,7 +291,7 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
         libgdxGetNightliesBtn = new javax.swing.JButton();
         sectionLabel2 = new javax.swing.JLabel();
         legendPanel = new aurelienribon.ui.components.PaintedPanel();
-        legendLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         librariesScrollPane = new javax.swing.JScrollPane();
         librariesPanel = new javax.swing.JPanel();
         librariesUpdateLabel = new javax.swing.JLabel();
@@ -371,19 +370,23 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 
         sectionLabel2.setText("Third-party");
 
-        legendLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/legend.png"))); // NOI18N
+        jLabel1.setText("<html>\n<b>Legend</b><br/>\n<font color=\"#008800\">library name:</font> zip archive found (see tooltip)<br/>\n<font color=\"#880000\">library name:</font> zip archive not found<br/>");
 
         javax.swing.GroupLayout legendPanelLayout = new javax.swing.GroupLayout(legendPanel);
         legendPanel.setLayout(legendPanelLayout);
         legendPanelLayout.setHorizontalGroup(
             legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(legendPanelLayout.createSequentialGroup()
-                .addComponent(legendLabel)
-                .addGap(0, 47, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         legendPanelLayout.setVerticalGroup(
             legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(legendLabel)
+            .addGroup(legendPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         librariesScrollPane.setOpaque(false);
@@ -430,9 +433,9 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel headerPanel;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JLabel legendLabel;
     private aurelienribon.ui.components.PaintedPanel legendPanel;
     private javax.swing.JButton libgdxBrowseBtn;
     private javax.swing.JButton libgdxGetNightliesBtn;

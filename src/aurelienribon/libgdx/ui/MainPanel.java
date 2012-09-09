@@ -71,21 +71,14 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(processSetupPanel, ".groupPanel", "#processSetupPanel");
 		Style.registerCssClasses(processUpdatePanel, ".groupPanel", "#processUpdatePanel");
 
+		Object[] targets = new Object[] {
+			this, selectionPanel, configSetupPanel, configUpdatePanel, versionLabel,
+			librarySelectionPanel, previewPanel, goPanel, taskPanel, advancedSettingsPanel,
+			libraryInfoPanel, classpathsPanel, processSetupPanel, processUpdatePanel
+		};
+
 		Style style = new Style(Res.getUrl("css/style.css"));
-		Style.apply(this, style);
-		Style.apply(selectionPanel, style);
-		Style.apply(configSetupPanel, style);
-		Style.apply(configUpdatePanel, style);
-		Style.apply(versionLabel, style);
-		Style.apply(librarySelectionPanel, style);
-		Style.apply(previewPanel, style);
-		Style.apply(goPanel, style);
-		Style.apply(taskPanel, style);
-		Style.apply(advancedSettingsPanel, style);
-		Style.apply(libraryInfoPanel, style);
-		Style.apply(classpathsPanel, style);
-		Style.apply(processSetupPanel, style);
-		Style.apply(processUpdatePanel, style);
+		for (Object t : targets) Style.apply(t, style);
 
 		try {
 			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
@@ -93,12 +86,10 @@ public class MainPanel extends PaintedPanel {
 			Ctx.libs.addDef("libgdx", def);
 			Ctx.cfgSetup.libraries.add("libgdx");
 			Ctx.cfgUpdate.libraries.add("libgdx");
+			librarySelectionPanel.initializeLibgdx();
 		} catch (IOException ex) {
 			assert false;
 		}
-
-		goPanel.init();
-		librarySelectionPanel.init();
 
 		versionLabel.initAndCheck("3.0.0-beta", "versions",
 			"http://libgdx.badlogicgames.com/nightlies/config/config.txt",
@@ -171,8 +162,11 @@ public class MainPanel extends PaintedPanel {
 		initCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).row(true, 30).column(false, 1)
 			.beginGrid(0, 0)
-				.row(false, 10).row(false, 15).row(true, versionLabel.getPreferredSize().height).row(false, 10)
-				.column(false, 1).column(false, 2).column(false, 1)
+				.row(false, 1)
+				.row(true, selectionPanel.getPreferredSize().height)
+				.row(true, versionLabel.getPreferredSize().height)
+				.row(false, 1)
+				.column(false, 1).column(false, 1).column(false, 1)
 				.tile(0, 0, logo)
 				.tile(1, 1, selectionPanel)
 				.tile(2, 1, versionLabel)
