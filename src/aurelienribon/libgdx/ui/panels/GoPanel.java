@@ -1,8 +1,8 @@
 package aurelienribon.libgdx.ui.panels;
 
+import aurelienribon.libgdx.Helper;
 import aurelienribon.libgdx.LibraryManager;
 import aurelienribon.libgdx.ProjectConfiguration;
-import aurelienribon.libgdx.Helper;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
@@ -29,8 +29,8 @@ public class GoPanel extends javax.swing.JPanel {
 		goBtn.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
 				switch (Ctx.mode) {
-					case CREATE: mainPanel.showGenerationPanel(); break;
-					case UPDATE: mainPanel.showClasspathsPanel(); break;
+					case CREATE: mainPanel.showGenerationCreatePanel(); break;
+					case UPDATE: mainPanel.showGenerationUpdatePanel(); break;
 				}
 			}
 		});
@@ -56,6 +56,7 @@ public class GoPanel extends javax.swing.JPanel {
 					errorLabel.firePropertyChange("error", false, true);
 				}
 
+				numberLabel.setText("5");
 				goBtn.setText("Generate the projects");
 				break;
 
@@ -70,6 +71,7 @@ public class GoPanel extends javax.swing.JPanel {
 					errorLabel.firePropertyChange("error", false, true);
 				}
 
+				numberLabel.setText("4");
 				goBtn.setText("Update the projects");
 				break;
 		}

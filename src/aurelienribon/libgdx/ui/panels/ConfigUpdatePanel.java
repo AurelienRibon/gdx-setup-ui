@@ -12,7 +12,6 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import org.apache.commons.io.FileUtils;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/

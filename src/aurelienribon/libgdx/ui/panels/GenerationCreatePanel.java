@@ -17,8 +17,8 @@ import javax.swing.SwingUtilities;
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
-public class GenerationPanel extends javax.swing.JPanel {
-    public GenerationPanel(final MainPanel mainPanel) {
+public class GenerationCreatePanel extends javax.swing.JPanel {
+    public GenerationCreatePanel(final MainPanel mainPanel) {
         initComponents();
 
 		Style.registerCssClasses(jScrollPane1, ".frame");
@@ -40,14 +40,14 @@ public class GenerationPanel extends javax.swing.JPanel {
 		closeLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		closeLabel.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
-				mainPanel.hideGenerationPanel();
+				mainPanel.hideGenerationCreatePanel();
 			}
 		});
 
 		importQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
 				HelpImportDialog dialog = new HelpImportDialog(null);
-				dialog.setLocationRelativeTo(GenerationPanel.this);
+				dialog.setLocationRelativeTo(GenerationCreatePanel.this);
 				dialog.pack();
 				dialog.setVisible(true);
 			}
@@ -56,7 +56,7 @@ public class GenerationPanel extends javax.swing.JPanel {
 		fixHtmlQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
 				HelpFixHtmlDialog dialog = new HelpFixHtmlDialog(null);
-				dialog.setLocationRelativeTo(GenerationPanel.this);
+				dialog.setLocationRelativeTo(GenerationCreatePanel.this);
 				dialog.pack();
 				dialog.setVisible(true);
 			}

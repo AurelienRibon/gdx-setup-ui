@@ -25,7 +25,7 @@
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="validateBtn" linkSize="1" min="-2" pref="108" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="cancelBtn" linkSize="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="backBtn" linkSize="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jPanel7" alignment="0" max="32767" attributes="0"/>
               </Group>
@@ -37,10 +37,10 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel7" pref="335" max="32767" attributes="0"/>
+              <Component id="jPanel7" max="32767" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="cancelBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="backBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="validateBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="deleteBtn" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -52,13 +52,19 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="cancelBtn">
+    <Component class="javax.swing.JButton" name="backBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Cancel"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/res/gfx/ic_back.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Go back"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="validateBtn">
       <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/res/gfx/ic_ok.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Validate"/>
       </Properties>
     </Component>

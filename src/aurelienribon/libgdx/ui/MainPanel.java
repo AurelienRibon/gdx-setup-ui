@@ -5,7 +5,8 @@ import aurelienribon.libgdx.ui.panels.AdvancedSettingsPanel;
 import aurelienribon.libgdx.ui.panels.ClasspathsPanel;
 import aurelienribon.libgdx.ui.panels.ConfigCreatePanel;
 import aurelienribon.libgdx.ui.panels.ConfigUpdatePanel;
-import aurelienribon.libgdx.ui.panels.GenerationPanel;
+import aurelienribon.libgdx.ui.panels.GenerationCreatePanel;
+import aurelienribon.libgdx.ui.panels.GenerationUpdatePanel;
 import aurelienribon.libgdx.ui.panels.GoPanel;
 import aurelienribon.libgdx.ui.panels.LibraryInfoPanel;
 import aurelienribon.libgdx.ui.panels.LibrarySetupPanel;
@@ -46,7 +47,8 @@ public class MainPanel extends PaintedPanel {
 	private final AdvancedSettingsPanel advancedSettingsPanel = new AdvancedSettingsPanel();
 	private final LibraryInfoPanel libraryInfoPanel = new LibraryInfoPanel(this);
 	private final ClasspathsPanel classpathsPanel = new ClasspathsPanel(this);
-	private final GenerationPanel generationPanel = new GenerationPanel(this);
+	private final GenerationCreatePanel generationCreatePanel = new GenerationCreatePanel(this);
+	private final GenerationUpdatePanel generationUpdatePanel = new GenerationUpdatePanel(this);
 
 	private final SlidingLayersPanel panel = new SlidingLayersPanel();
 
@@ -66,7 +68,8 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(advancedSettingsPanel, ".groupPanel", "#advancedSettingsPanel");
 		Style.registerCssClasses(libraryInfoPanel, ".groupPanel", "#libraryInfoPanel");
 		Style.registerCssClasses(classpathsPanel, ".groupPanel", "#classpathsPanel");
-		Style.registerCssClasses(generationPanel, ".groupPanel", "#generationPanel");
+		Style.registerCssClasses(generationCreatePanel, ".groupPanel", "#generationPanel");
+		Style.registerCssClasses(generationUpdatePanel, ".groupPanel", "#generationUpdatePanel");
 
 		Style style = new Style(Res.getUrl("css/style.css"));
 		Style.apply(this, style);
@@ -81,7 +84,8 @@ public class MainPanel extends PaintedPanel {
 		Style.apply(advancedSettingsPanel, style);
 		Style.apply(libraryInfoPanel, style);
 		Style.apply(classpathsPanel, style);
-		Style.apply(generationPanel, style);
+		Style.apply(generationCreatePanel, style);
+		Style.apply(generationUpdatePanel, style);
 
 		try {
 			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
@@ -149,11 +153,11 @@ public class MainPanel extends PaintedPanel {
 	private SlidingLayersConfig createAdvSettingsCfg;
 	private SlidingLayersConfig createLibraryInfoCfg;
 	private SlidingLayersConfig createGenerationCfg;
-	private SlidingLayersConfig updateClasspathsCfg;
+	private SlidingLayersConfig updateGenerationCfg;
 
 	private boolean isFirstPanelShown = true;
 	private boolean isCreateSetupUsed = true;
-	private boolean isGenerationPanelOpen = false;
+	private boolean isGenerationCreatePanelOpen = false;
 	private String currentLibraryInfo;
 
 	private void initConfigurations() {
@@ -255,16 +259,12 @@ public class MainPanel extends PaintedPanel {
 				.tile(0, 0, resultPanel)
 				.tile(1, 0, goPanel)
 			.end()
-			.tile(0, 0, generationPanel);
+			.tile(0, 0, generationCreatePanel);
 
-		updateClasspathsCfg = new SlidingLayersConfig(panel)
+		updateGenerationCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 2).column(false, 1)
-			.beginGrid(0, 1)
-				.row(true, goPanel.getPreferredSize().height)
-				.column(false, 1)
-				.tile(0, 0, goPanel)
-			.end()
-			.tile(0, 0, classpathsPanel);
+			.tile(0, 0, classpathsPanel)
+			.tile(0, 1, generationUpdatePanel);
 	}
 
 	public void showCreateSetup() {
@@ -432,30 +432,30 @@ public class MainPanel extends PaintedPanel {
 		}
 	}
 
-	public void showGenerationPanel() {
-		if (isGenerationPanelOpen) {
-			hideGenerationPanel();
+	public void showGenerationCreatePanel() {
+		if (isGenerationCreatePanelOpen) {
+			hideGenerationCreatePanel();
 			return;
 		}
 
-		isGenerationPanelOpen = true;
+		isGenerationCreatePanelOpen = true;
 
 		panel.timeline()
 			.pushTo(createCfg.clone()
 				.hide(Direction.DOWN, taskPanel, selectionPanel, configCreatePanel, versionLabel, librarySetupPanel)
 				.delayIncr(0.05f, librarySetupPanel, versionLabel, configCreatePanel, selectionPanel))
 			.pushTo(createGenerationCfg.clone()
-				.hide(Direction.UP, generationPanel))
+				.hide(Direction.UP, generationCreatePanel))
 			.pushTo(createGenerationCfg)
 			.play();
 	}
 
-	public void hideGenerationPanel() {
-		isGenerationPanelOpen = false;
+	public void hideGenerationCreatePanel() {
+		isGenerationCreatePanelOpen = false;
 
 		panel.timeline()
 			.pushTo(createGenerationCfg.clone()
-				.hide(Direction.DOWN, generationPanel))
+				.hide(Direction.DOWN, generationCreatePanel))
 			.pushTo(createCfg.clone()
 				.hide(Direction.UP, selectionPanel, configCreatePanel, versionLabel, librarySetupPanel)
 				.hide(Direction.DOWN, taskPanel))
@@ -464,18 +464,29 @@ public class MainPanel extends PaintedPanel {
 			.play();
 	}
 
-	public void showClasspathsPanel() {
+	public void showGenerationUpdatePanel() {
 		panel.timeline()
-			.pushTo(createCfg.clone()
-				.hide(Direction.DOWN, taskPanel, selectionPanel, configCreatePanel, versionLabel, librarySetupPanel)
-				.delayIncr(0.05f, librarySetupPanel, versionLabel, configCreatePanel, selectionPanel))
-			.pushTo(updateClasspathsCfg.clone()
-				.hide(Direction.UP, classpathsPanel))
-			.pushTo(updateClasspathsCfg)
+			.pushTo(updateCfg.clone()
+				.hide(Direction.DOWN, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySetupPanel)
+				.hide(Direction.UP, goPanel)
+				.delayIncr(0.05f, taskPanel, librarySetupPanel, versionLabel, configUpdatePanel, selectionPanel, goPanel))
+			.pushTo(updateGenerationCfg.clone()
+				.hide(Direction.UP, classpathsPanel)
+				.hide(Direction.DOWN, generationUpdatePanel))
+			.pushTo(updateGenerationCfg)
 			.play();
 	}
 
-	public void hideClasspathsPanel() {
-		
+	public void hideGenerationUpdatePanel() {
+		panel.timeline()
+			.pushTo(updateGenerationCfg.clone()
+				.hide(Direction.UP, classpathsPanel)
+				.hide(Direction.DOWN, generationUpdatePanel))
+			.pushTo(updateCfg.clone()
+				.hide(Direction.DOWN, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySetupPanel)
+				.hide(Direction.UP, goPanel))
+			.pushTo(updateCfg
+				.delayIncr(0.05f, librarySetupPanel, selectionPanel, configUpdatePanel, versionLabel, goPanel, taskPanel))
+			.play();
 	}
 }

@@ -50,6 +50,7 @@ javax-swing-JToolBar > javax-swing-JButton {
 #libraryInfoPanel {-ar-border-title: "Library information";}
 #classpathsPanel {-ar-border-title: "Classpaths Review";}
 #generationPanel {-ar-border-title: "Launch";}
+#generationUpdatePanel {-ar-border-title: "Progress Report";}
 
 /*******************************************************************************
  * Root panels

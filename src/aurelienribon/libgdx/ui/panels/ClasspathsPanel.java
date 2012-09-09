@@ -9,6 +9,8 @@ import aurelienribon.utils.notifications.AutoListModel;
 import aurelienribon.utils.notifications.ObservableList;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,6 +66,10 @@ public class ClasspathsPanel extends javax.swing.JPanel {
 
 		Ctx.listeners.add(new Ctx.Listener() {
 			@Override public void cfgUpdateChanged() {update();}
+		});
+
+		backBtn.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {mainPanel.hideGenerationUpdatePanel();}
 		});
     }
 
@@ -290,7 +296,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cancelBtn = new javax.swing.JButton();
+        backBtn = new javax.swing.JButton();
         validateBtn = new javax.swing.JButton();
         paintedPanel1 = new aurelienribon.ui.components.PaintedPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -319,8 +325,10 @@ public class ClasspathsPanel extends javax.swing.JPanel {
         gwtList = new javax.swing.JList();
         jLabel7 = new javax.swing.JLabel();
 
-        cancelBtn.setText("Cancel");
+        backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_back.png"))); // NOI18N
+        backBtn.setText("Go back");
 
+        validateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_ok.png"))); // NOI18N
         validateBtn.setText("Validate");
 
         jLabel2.setText("<html><b>Legend</b>\n<br/>\n<font color=\"#3D5277\"><b>Blue</b></font> is an element that will be updated, <font color=\"#008800\"><b>green</b></font> is a new element (you selected a new library), and <font color=\"#D1B40F\"><b>orange</b></font> is an element that is not updated, or that is unknown.\n<br/><br/>\nPlease review your classpaths before proceeding. Specifically, you should look at the orange entries, and remove those that are not needed in your project. When updating a project, some libraries may have changed their names, leaving old entries undesirable.");
@@ -520,21 +528,21 @@ public class ClasspathsPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(validateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelBtn))
+                        .addComponent(backBtn))
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cancelBtn, validateBtn});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backBtn, validateBtn});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelBtn)
+                    .addComponent(backBtn)
                     .addComponent(validateBtn)
                     .addComponent(deleteBtn))
                 .addGap(18, 18, 18)
@@ -545,7 +553,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList androidList;
-    private javax.swing.JButton cancelBtn;
+    private javax.swing.JButton backBtn;
     private javax.swing.JList coreList;
     private javax.swing.JButton deleteBtn;
     private javax.swing.JList desktopList;
