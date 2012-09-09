@@ -52,7 +52,7 @@ public class PreviewPanel extends javax.swing.JPanel {
 			setOpaque(false);
 
 			Ctx.listeners.add(new Ctx.Listener() {
-				@Override public void cfgCreateChanged() {
+				@Override public void cfgSetupChanged() {
 					update();
 				}
 			});

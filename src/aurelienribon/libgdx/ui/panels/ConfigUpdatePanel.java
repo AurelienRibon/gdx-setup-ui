@@ -1,6 +1,8 @@
 package aurelienribon.libgdx.ui.panels;
 
 import aurelienribon.libgdx.Helper;
+import aurelienribon.libgdx.Helper.ClasspathEntry;
+import aurelienribon.libgdx.Helper.GwtModule;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
@@ -10,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.JFileChooser;
@@ -49,6 +52,12 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 		Style.registerCssClasses(statusAndroidLabel, ".statusLabel");
 		Style.registerCssClasses(statusDesktopLabel, ".statusLabel");
 		Style.registerCssClasses(statusHtmlLabel, ".statusLabel");
+
+		Ctx.listeners.add(new Ctx.Listener() {
+			@Override public void cfgUpdateChanged() {
+				updateClasspaths();
+			}
+		});
     }
 
 	private void browse() {
@@ -63,7 +72,6 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 			pathField.setText(chooser.getSelectedFile().getPath());
 			updateConfig(chooser.getSelectedFile());
 			updatePanel();
-			Ctx.fireCfgUpdateChanged();
 		}
 	}
 
@@ -98,81 +106,91 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 				}
 			}
 
+			Ctx.fireCfgUpdateChanged();
+		}
+	}
+
+	private void updateClasspaths() {
+		if (!Ctx.cfgUpdate.projectName.equals("")) {
 			updateCoreClasspath();
 			if (Ctx.cfgUpdate.isAndroidIncluded) updateAndroidClasspath();
 			if (Ctx.cfgUpdate.isDesktopIncluded) updateDesktopClasspath();
 			if (Ctx.cfgUpdate.isHtmlIncluded) updateHtmlClasspath();
 			if (Ctx.cfgUpdate.isHtmlIncluded) updateGwtModule();
 		}
-
 	}
 
 	private void updateCoreClasspath() {
 		File coreDir = new File(Helper.getCorePrjPath(Ctx.cfgUpdate));
 
-		Ctx.cfgUpdate.coreClasspath.clear();
-		Ctx.cfgUpdate.coreClasspath.addAll(Helper.getClasspathEntries(new File(coreDir, ".classpath")));
+		List<ClasspathEntry> classpath = new ArrayList<ClasspathEntry>();
+		classpath.addAll(Helper.getClasspathEntries(new File(coreDir, ".classpath")));
 
-		List<Helper.ClasspathEntry> newCoreClasspath = Helper.getCoreClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
-		for (Helper.ClasspathEntry e : Ctx.cfgUpdate.coreClasspath) e.testOverwritten(newCoreClasspath);
-		for (Helper.ClasspathEntry e : newCoreClasspath) if (e.testAdded(Ctx.cfgUpdate.coreClasspath)) Ctx.cfgUpdate.coreClasspath.add(e);
+		List<ClasspathEntry> newClasspath = Helper.getCoreClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+		for (ClasspathEntry e : classpath) e.testOverwritten(newClasspath);
+		for (ClasspathEntry e : newClasspath) if (e.testAdded(classpath)) classpath.add(e);
 
-		Collections.sort(Ctx.cfgUpdate.coreClasspath);
+		Collections.sort(classpath);
+		Ctx.cfgUpdate.coreClasspath.replaceBy(classpath);
 	}
 
 	private void updateAndroidClasspath() {
 		File androidDir = new File(Helper.getAndroidPrjPath(Ctx.cfgUpdate));
 
-		Ctx.cfgUpdate.androidClasspath.clear();
-		Ctx.cfgUpdate.androidClasspath.addAll(Helper.getClasspathEntries(new File(androidDir, ".classpath")));
+		List<ClasspathEntry> classpath = new ArrayList<ClasspathEntry>();
+		classpath.addAll(Helper.getClasspathEntries(new File(androidDir, ".classpath")));
 
-		List<Helper.ClasspathEntry> newAndroidClasspath = Helper.getAndroidClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
-		for (Helper.ClasspathEntry e : Ctx.cfgUpdate.androidClasspath) e.testOverwritten(newAndroidClasspath);
-		for (Helper.ClasspathEntry e : newAndroidClasspath) if (e.testAdded(Ctx.cfgUpdate.androidClasspath)) Ctx.cfgUpdate.androidClasspath.add(e);
+		List<ClasspathEntry> newClasspath = Helper.getAndroidClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+		for (ClasspathEntry e : classpath) e.testOverwritten(newClasspath);
+		for (ClasspathEntry e : newClasspath) if (e.testAdded(classpath)) classpath.add(e);
 
-		Collections.sort(Ctx.cfgUpdate.androidClasspath);
+		Collections.sort(classpath);
+		Ctx.cfgUpdate.androidClasspath.replaceBy(classpath);
 	}
 
 	private void updateDesktopClasspath() {
 		File desktopDir = new File(Helper.getDesktopPrjPath(Ctx.cfgUpdate));
 
-		Ctx.cfgUpdate.desktopClasspath.clear();
-		Ctx.cfgUpdate.desktopClasspath.addAll(Helper.getClasspathEntries(new File(desktopDir, ".classpath")));
+		List<ClasspathEntry> classpath = new ArrayList<ClasspathEntry>();
+		classpath.addAll(Helper.getClasspathEntries(new File(desktopDir, ".classpath")));
 
-		List<Helper.ClasspathEntry> newDesktopClasspath = Helper.getDesktopClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
-		for (Helper.ClasspathEntry e : Ctx.cfgUpdate.desktopClasspath) e.testOverwritten(newDesktopClasspath);
-		for (Helper.ClasspathEntry e : newDesktopClasspath) if (e.testAdded(Ctx.cfgUpdate.desktopClasspath)) Ctx.cfgUpdate.desktopClasspath.add(e);
+		List<ClasspathEntry> newClasspath = Helper.getDesktopClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+		for (ClasspathEntry e : classpath) e.testOverwritten(newClasspath);
+		for (ClasspathEntry e : newClasspath) if (e.testAdded(classpath)) classpath.add(e);
 
-		Collections.sort(Ctx.cfgUpdate.desktopClasspath);
+		Collections.sort(classpath);
+		Ctx.cfgUpdate.desktopClasspath.replaceBy(classpath);
 	}
 
 	private void updateHtmlClasspath() {
 		File htmlDir = new File(Helper.getHtmlPrjPath(Ctx.cfgUpdate));
 
-		Ctx.cfgUpdate.htmlClasspath.clear();
-		Ctx.cfgUpdate.htmlClasspath.addAll(Helper.getClasspathEntries(new File(htmlDir, ".classpath")));
+		List<ClasspathEntry> classpath = new ArrayList<ClasspathEntry>();
+		classpath.addAll(Helper.getClasspathEntries(new File(htmlDir, ".classpath")));
 
-		List<Helper.ClasspathEntry> newHtmlClasspath = Helper.getHtmlClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
-		for (Helper.ClasspathEntry e : Ctx.cfgUpdate.htmlClasspath) e.testOverwritten(newHtmlClasspath);
-		for (Helper.ClasspathEntry e : newHtmlClasspath) if (e.testAdded(Ctx.cfgUpdate.htmlClasspath)) Ctx.cfgUpdate.htmlClasspath.add(e);
+		List<ClasspathEntry> newClasspath = Helper.getHtmlClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+		for (ClasspathEntry e : classpath) e.testOverwritten(newClasspath);
+		for (ClasspathEntry e : newClasspath) if (e.testAdded(classpath)) classpath.add(e);
 
-		Collections.sort(Ctx.cfgUpdate.htmlClasspath);
+		Collections.sort(classpath);
+		Ctx.cfgUpdate.htmlClasspath.replaceBy(classpath);
 	}
 
 	private void updateGwtModule() {
 		File htmlDir = new File(Helper.getHtmlPrjPath(Ctx.cfgUpdate));
 
-		Ctx.cfgUpdate.gwtModules.clear();
+		List<GwtModule> gwtModules = new ArrayList<GwtModule>();
 		for (File file : FileUtils.listFiles(htmlDir, new String[] {"gwt.xml"}, true)) {
 			if (file.getName().equals("GwtDefinition.gwt.xml"))
-				Ctx.cfgUpdate.gwtModules.addAll(Helper.getGwtModules(file));
+				gwtModules.addAll(Helper.getGwtModules(file));
 		}
 
 		List<Helper.GwtModule> newGwtModules = Helper.getGwtModules(Ctx.cfgUpdate, Ctx.libs);
-		for (Helper.GwtModule m : Ctx.cfgUpdate.gwtModules) m.testOverwritten(newGwtModules);
-		for (Helper.GwtModule m : newGwtModules) if (m.testAdded(Ctx.cfgUpdate.gwtModules)) Ctx.cfgUpdate.gwtModules.add(m);
+		for (Helper.GwtModule m : gwtModules) m.testOverwritten(newGwtModules);
+		for (Helper.GwtModule m : newGwtModules) if (m.testAdded(gwtModules)) gwtModules.add(m);
 
-		Collections.sort(Ctx.cfgUpdate.gwtModules);
+		Collections.sort(gwtModules);
+		Ctx.cfgUpdate.gwtModules.replaceBy(gwtModules);
 	}
 
 	private void updatePanel() {

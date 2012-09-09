@@ -24,7 +24,7 @@ public class GoPanel extends javax.swing.JPanel {
 
 		Ctx.listeners.add(new Ctx.Listener() {
 			@Override public void modeChanged() {update();}
-			@Override public void cfgCreateChanged() {update();}
+			@Override public void cfgSetupChanged() {update();}
 			@Override public void cfgUpdateChanged() {update();}
 		});
 

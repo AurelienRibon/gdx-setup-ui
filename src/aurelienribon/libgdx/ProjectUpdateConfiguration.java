@@ -12,4 +12,8 @@ public class ProjectUpdateConfiguration extends BaseProjectConfiguration {
 	public final ObservableList<Helper.ClasspathEntry> desktopClasspath = new ObservableList<Helper.ClasspathEntry>();
 	public final ObservableList<Helper.ClasspathEntry> htmlClasspath = new ObservableList<Helper.ClasspathEntry>();
 	public final ObservableList<Helper.GwtModule> gwtModules = new ObservableList<Helper.GwtModule>();
+
+	public ProjectUpdateConfiguration() {
+		projectName = "";
+	}
 }

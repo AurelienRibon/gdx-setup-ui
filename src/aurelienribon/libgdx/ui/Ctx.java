@@ -27,11 +27,11 @@ public class Ctx {
 
 	public static class Listener {
 		public void modeChanged() {}
-		public void cfgCreateChanged() {}
+		public void cfgSetupChanged() {}
 		public void cfgUpdateChanged() {}
 	}
 
 	public static void fireModeChangedChanged() {for (Listener l : listeners) l.modeChanged();}
-	public static void fireCfgSetupChanged() {for (Listener l : listeners) l.cfgCreateChanged();}
+	public static void fireCfgSetupChanged() {for (Listener l : listeners) l.cfgSetupChanged();}
 	public static void fireCfgUpdateChanged() {for (Listener l : listeners) l.cfgUpdateChanged();}
 }

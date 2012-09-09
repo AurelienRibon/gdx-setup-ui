@@ -6,7 +6,6 @@ import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
 import aurelienribon.utils.notifications.AutoListModel;
-import aurelienribon.utils.notifications.ObservableList;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -21,12 +20,6 @@ import javax.swing.ListCellRenderer;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class ClasspathsPanel extends javax.swing.JPanel {
-	private final ObservableList<ClasspathEntry> coreClasspath = Ctx.cfgUpdate.coreClasspath;
-	private final ObservableList<ClasspathEntry> androidClasspath = Ctx.cfgUpdate.androidClasspath;
-	private final ObservableList<ClasspathEntry> desktopClasspath = Ctx.cfgUpdate.desktopClasspath;
-	private final ObservableList<ClasspathEntry> htmlClasspath = Ctx.cfgUpdate.htmlClasspath;
-	private final ObservableList<GwtModule> gwtModules = Ctx.cfgUpdate.gwtModules;
-
     public ClasspathsPanel(final MainPanel mainPanel) {
         initComponents();
 
@@ -37,11 +30,11 @@ public class ClasspathsPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(jScrollPane7, ".frame");
 		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
 
-		coreList.setModel(new AutoListModel<ClasspathEntry>(coreClasspath));
-		androidList.setModel(new AutoListModel<ClasspathEntry>(androidClasspath));
-		desktopList.setModel(new AutoListModel<ClasspathEntry>(desktopClasspath));
-		htmlList.setModel(new AutoListModel<ClasspathEntry>(htmlClasspath));
-		gwtList.setModel(new AutoListModel<GwtModule>(gwtModules));
+		coreList.setModel(new AutoListModel<ClasspathEntry>(Ctx.cfgUpdate.coreClasspath));
+		androidList.setModel(new AutoListModel<ClasspathEntry>(Ctx.cfgUpdate.androidClasspath));
+		desktopList.setModel(new AutoListModel<ClasspathEntry>(Ctx.cfgUpdate.desktopClasspath));
+		htmlList.setModel(new AutoListModel<ClasspathEntry>(Ctx.cfgUpdate.htmlClasspath));
+		gwtList.setModel(new AutoListModel<GwtModule>(Ctx.cfgUpdate.gwtModules));
 
 		coreList.setCellRenderer(classpathListCellRenderer);
 		androidList.setCellRenderer(classpathListCellRenderer);
@@ -57,27 +50,27 @@ public class ClasspathsPanel extends javax.swing.JPanel {
 	private void delete() {
 		for (Object o : coreList.getSelectedValues()) {
 			ClasspathEntry e = (ClasspathEntry) o;
-			if (!e.added && !e.overwritten) coreClasspath.remove(e);
+			if (!e.added && !e.overwritten) Ctx.cfgUpdate.coreClasspath.remove(e);
 		}
 
 		for (Object o : androidList.getSelectedValues()) {
 			ClasspathEntry e = (ClasspathEntry) o;
-			if (!e.added && !e.overwritten) androidClasspath.remove(e);
+			if (!e.added && !e.overwritten) Ctx.cfgUpdate.androidClasspath.remove(e);
 		}
 
 		for (Object o : desktopList.getSelectedValues()) {
 			ClasspathEntry e = (ClasspathEntry) o;
-			if (!e.added && !e.overwritten) desktopClasspath.remove(e);
+			if (!e.added && !e.overwritten) Ctx.cfgUpdate.desktopClasspath.remove(e);
 		}
 
 		for (Object o : htmlList.getSelectedValues()) {
 			ClasspathEntry e = (ClasspathEntry) o;
-			if (!e.added && !e.overwritten) htmlClasspath.remove(e);
+			if (!e.added && !e.overwritten) Ctx.cfgUpdate.htmlClasspath.remove(e);
 		}
 
 		for (Object o : gwtList.getSelectedValues()) {
 			GwtModule m = (GwtModule) o;
-			if (!m.added && !m.overwritten) gwtModules.remove(m);
+			if (!m.added && !m.overwritten) Ctx.cfgUpdate.gwtModules.remove(m);
 		}
 
 		coreList.clearSelection();
