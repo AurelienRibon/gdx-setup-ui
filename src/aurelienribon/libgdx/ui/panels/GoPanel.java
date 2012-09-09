@@ -2,7 +2,7 @@ package aurelienribon.libgdx.ui.panels;
 
 import aurelienribon.libgdx.LibraryManager;
 import aurelienribon.libgdx.ProjectConfiguration;
-import aurelienribon.libgdx.ProjectConfigurationHelper;
+import aurelienribon.libgdx.Helper;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
@@ -89,7 +89,7 @@ public class GoPanel extends javax.swing.JPanel {
 	}
 
 	private boolean isProjectUpdateValid(ProjectConfiguration cfg) {
-		File coreDir = new File(ProjectConfigurationHelper.getCommonPrjPath(cfg));
+		File coreDir = new File(Helper.getCorePrjPath(cfg));
 
 		if (!coreDir.isDirectory()) return false;
 		if (!new File(coreDir, ".classpath").isFile()) return false;
@@ -124,7 +124,7 @@ public class GoPanel extends javax.swing.JPanel {
 	}
 
 	private String getUpdateErrorMessage(ProjectConfiguration cfg, LibraryManager libs) {
-		File coreDir = new File(ProjectConfigurationHelper.getCommonPrjPath(cfg));
+		File coreDir = new File(Helper.getCorePrjPath(cfg));
 
 		if (!coreDir.isDirectory()) return "No core project was selected.";
 		if (!new File(coreDir, ".classpath").isFile()) return "No .classpath file was found in the selected directory.";

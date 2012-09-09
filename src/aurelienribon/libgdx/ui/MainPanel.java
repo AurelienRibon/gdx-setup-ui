@@ -88,6 +88,7 @@ public class MainPanel extends PaintedPanel {
 			LibraryDef def = new LibraryDef(rawDef);
 			Ctx.libs.addDef("libgdx", def);
 			Ctx.cfgCreate.libraries.add("libgdx");
+			Ctx.cfgUpdate.libraries.add("libgdx");
 		} catch (IOException ex) {
 			assert false;
 		}
@@ -218,11 +219,9 @@ public class MainPanel extends PaintedPanel {
 					.tile(0, 0, librarySetupPanel)
 				.end()
 				.beginGrid(0, 2)
-					.row(false, 1)
 					.row(true, goPanel.getPreferredSize().height)
 					.column(false, 1)
-					.tile(0, 0, resultPanel)
-					.tile(1, 0, goPanel)
+					.tile(0, 0, goPanel)
 				.end()
 			.end()
 			.tile(1, 0, taskPanel);
@@ -261,11 +260,9 @@ public class MainPanel extends PaintedPanel {
 		updateClasspathsCfg = new SlidingLayersConfig(panel)
 			.row(false, 1).column(false, 2).column(false, 1)
 			.beginGrid(0, 1)
-				.row(false, 1)
 				.row(true, goPanel.getPreferredSize().height)
 				.column(false, 1)
-				.tile(0, 0, resultPanel)
-				.tile(1, 0, goPanel)
+				.tile(0, 0, goPanel)
 			.end()
 			.tile(0, 0, classpathsPanel);
 	}
@@ -300,6 +297,7 @@ public class MainPanel extends PaintedPanel {
 				.pushTo(updateCfg.clone()
 					.hide(Direction.LEFT, configUpdatePanel))
 				.pushTo(createCfg.clone()
+					.hide(Direction.RIGHT, resultPanel)
 					.hide(Direction.LEFT, configCreatePanel))
 				.pushTo(createCfg)
 				.play();
@@ -326,9 +324,9 @@ public class MainPanel extends PaintedPanel {
 				.pushSet(updateCfg.clone()
 					.hide(Direction.LEFT, configUpdatePanel)
 					.hide(Direction.UP, librarySetupPanel)
-					.hide(Direction.RIGHT, resultPanel, goPanel))
+					.hide(Direction.RIGHT, goPanel))
 				.pushTo(updateCfg.clone()
-					.delayIncr(0.05f, configUpdatePanel, librarySetupPanel, resultPanel, goPanel))
+					.delayIncr(0.05f, configUpdatePanel, librarySetupPanel, goPanel))
 				.play();
 
 		} else if (isCreateSetupUsed) {
@@ -337,6 +335,7 @@ public class MainPanel extends PaintedPanel {
 
 			panel.timeline()
 				.pushTo(createCfg.clone()
+					.hide(Direction.RIGHT, resultPanel)
 					.hide(Direction.LEFT, configCreatePanel))
 				.pushTo(updateCfg.clone()
 					.hide(Direction.LEFT, configUpdatePanel))
@@ -477,6 +476,6 @@ public class MainPanel extends PaintedPanel {
 	}
 
 	public void hideClasspathsPanel() {
-
+		
 	}
 }

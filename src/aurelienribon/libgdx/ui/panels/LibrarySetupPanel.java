@@ -134,6 +134,7 @@ public class LibrarySetupPanel extends javax.swing.JPanel {
 			}
 
 			Ctx.fireCfgCreateChanged();
+			Ctx.fireCfgUpdateChanged();
 		}};
 
 		Action infoAction = new AbstractAction() {@Override public void actionPerformed(ActionEvent e) {showInfo(libraryName);}};
