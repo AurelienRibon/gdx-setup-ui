@@ -219,7 +219,7 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        jLabel4.setText("<html> Main parameters defining your project. See the overview panel to know if it suits your needs.");
+        jLabel4.setText("<html> Select the directory of a core project. See the advanced settings if your project is not recognized.");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         numberLabel.setText("2");
@@ -334,7 +334,7 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(statusHtmlLabel))
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addGap(18, 32, Short.MAX_VALUE)
                 .addComponent(advancedSettingsLabel)
                 .addContainerGap())
         );

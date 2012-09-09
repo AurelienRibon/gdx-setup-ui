@@ -46,7 +46,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="jLabel4">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt; Main parameters defining your project. See the overview panel to know if it suits your needs."/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt; Select the directory of a core project. See the advanced settings if your project is not recognized."/>
             <Property name="verticalAlignment" type="int" value="1"/>
           </Properties>
         </Component>
@@ -139,7 +139,7 @@
                       <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="statusHtmlLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="separate" max="32767" attributes="0"/>
+                  <EmptySpace type="separate" pref="32" max="32767" attributes="0"/>
                   <Component id="advancedSettingsLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
