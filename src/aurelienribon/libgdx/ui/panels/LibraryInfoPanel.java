@@ -175,7 +175,7 @@ public class LibraryInfoPanel extends javax.swing.JPanel {
         logoLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         logoLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        closeLabel.setText("< Close");
+        closeLabel.setText("< Close this panel");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

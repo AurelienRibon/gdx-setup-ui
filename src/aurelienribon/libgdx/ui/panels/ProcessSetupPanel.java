@@ -26,7 +26,6 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(fixHtmlQuestion, ".linkLabel");
 		Style.registerCssClasses(paintedPanel1, ".optionGroupPanel");
 		Style.registerCssClasses(progressArea, ".progressArea");
-		Style.registerCssClasses(closeLabel, ".linkLabel");
 
 		importQuestion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		fixHtmlQuestion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -37,9 +36,8 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
 			}
 		});
 
-		closeLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		closeLabel.addMouseListener(new MouseAdapter() {
-			@Override public void mousePressed(MouseEvent e) {
+		backBtn.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {
 				mainPanel.hideGenerationCreatePanel();
 			}
 		});
@@ -116,7 +114,7 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
         importQuestion = new javax.swing.JLabel();
         fixHtmlQuestion = new javax.swing.JLabel();
         startBtn = new javax.swing.JButton();
-        closeLabel = new javax.swing.JLabel();
+        backBtn = new javax.swing.JButton();
 
         progressArea.setEditable(false);
         progressArea.setColumns(20);
@@ -150,9 +148,11 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        startBtn.setText("Start the generation");
+        startBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_ok.png"))); // NOI18N
+        startBtn.setText("Generate!");
 
-        closeLabel.setText("Close >");
+        backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_back.png"))); // NOI18N
+        backBtn.setText("Go back");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -164,20 +164,24 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
                     .addComponent(paintedPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(closeLabel)))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backBtn, startBtn});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(startBtn)
-                    .addComponent(closeLabel))
+                    .addComponent(backBtn))
                 .addGap(18, 18, 18)
                 .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -185,7 +189,7 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel closeLabel;
+    private javax.swing.JButton backBtn;
     private javax.swing.JLabel fixHtmlQuestion;
     private javax.swing.JLabel importQuestion;
     private javax.swing.JScrollPane jScrollPane1;

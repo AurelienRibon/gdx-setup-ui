@@ -49,8 +49,8 @@ javax-swing-JToolBar > javax-swing-JButton {
 #advancedSettingsPanel {-ar-border-title: "Advanced Settings";}
 #libraryInfoPanel {-ar-border-title: "Library information";}
 #classpathsPanel {-ar-border-title: "Classpaths Review";}
-#generationPanel {-ar-border-title: "Launch";}
-#generationUpdatePanel {-ar-border-title: "Progress Report";}
+#processSetupPanel {-ar-border-title: "Launch";}
+#processUpdatePanel {-ar-border-title: "Progress Report";}
 
 /*******************************************************************************
  * Root panels
