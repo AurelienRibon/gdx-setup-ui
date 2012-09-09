@@ -1,5 +1,6 @@
 package aurelienribon.libgdx.ui.panels;
 
+import aurelienribon.libgdx.Helper;
 import aurelienribon.libgdx.ui.Ctx;
 import aurelienribon.libgdx.ui.MainPanel;
 import aurelienribon.ui.css.Style;
@@ -9,9 +10,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import org.apache.commons.io.FileUtils;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -57,61 +61,135 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 
 		if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
 			pathField.setText(chooser.getSelectedFile().getPath());
-			update(chooser.getSelectedFile());
+			updateConfig(chooser.getSelectedFile());
+			updatePanel();
 			Ctx.fireCfgUpdateChanged();
 		}
 	}
 
-	private void update(File coreDir) {
-		Ctx.cfgUpdate.destinationPath = coreDir.getParent();
-		Ctx.cfgUpdate.projectName = "";
+	private void updateConfig(File coreDir) {
+		if (!coreDir.isDirectory()) return;
 
+		String dirName = coreDir.getName();
+
+		if (dirName.endsWith(Ctx.cfgUpdate.suffixCommon) && new File(coreDir, ".classpath").isFile()) {
+			String prjName = dirName.substring(0, dirName.length() - Ctx.cfgUpdate.suffixCommon.length());
+
+			Ctx.cfgUpdate.destinationPath = coreDir.getParent();
+			Ctx.cfgUpdate.projectName = prjName;
+			Ctx.cfgUpdate.isAndroidIncluded = false;
+			Ctx.cfgUpdate.isDesktopIncluded = false;
+			Ctx.cfgUpdate.isHtmlIncluded = false;
+
+			for (File dir : new File(Ctx.cfgUpdate.destinationPath).listFiles()) {
+				if (!dir.isDirectory()) continue;
+				String name = dir.getName();
+
+				if (name.equals(Ctx.cfgUpdate.projectName + Ctx.cfgUpdate.suffixAndroid) && new File(dir, ".classpath").isFile()) {
+					Ctx.cfgUpdate.isAndroidIncluded = true;
+				}
+
+				if (name.equals(Ctx.cfgUpdate.projectName + Ctx.cfgUpdate.suffixDesktop) && new File(dir, ".classpath").isFile()) {
+					Ctx.cfgUpdate.isDesktopIncluded = true;
+				}
+
+				if (name.equals(Ctx.cfgUpdate.projectName + Ctx.cfgUpdate.suffixHtml) && new File(dir, ".classpath").isFile()) {
+					Ctx.cfgUpdate.isHtmlIncluded = true;
+				}
+			}
+
+			updateCoreClasspath();
+			if (Ctx.cfgUpdate.isAndroidIncluded) updateAndroidClasspath();
+			if (Ctx.cfgUpdate.isDesktopIncluded) updateDesktopClasspath();
+			if (Ctx.cfgUpdate.isHtmlIncluded) updateHtmlClasspath();
+			if (Ctx.cfgUpdate.isHtmlIncluded) updateGwtModule();
+		}
+
+	}
+
+	private void updateCoreClasspath() {
+		File coreDir = new File(Helper.getCorePrjPath(Ctx.cfgUpdate));
+
+		Ctx.cfgUpdate.coreClasspath.clear();
+		Ctx.cfgUpdate.coreClasspath.addAll(Helper.getClasspathEntries(new File(coreDir, ".classpath")));
+
+		List<Helper.ClasspathEntry> newCoreClasspath = Helper.getCoreClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+		for (Helper.ClasspathEntry e : Ctx.cfgUpdate.coreClasspath) e.testOverwritten(newCoreClasspath);
+		for (Helper.ClasspathEntry e : newCoreClasspath) if (e.testAdded(Ctx.cfgUpdate.coreClasspath)) Ctx.cfgUpdate.coreClasspath.add(e);
+
+		Collections.sort(Ctx.cfgUpdate.coreClasspath);
+	}
+
+	private void updateAndroidClasspath() {
+		File androidDir = new File(Helper.getAndroidPrjPath(Ctx.cfgUpdate));
+
+		Ctx.cfgUpdate.androidClasspath.clear();
+		Ctx.cfgUpdate.androidClasspath.addAll(Helper.getClasspathEntries(new File(androidDir, ".classpath")));
+
+		List<Helper.ClasspathEntry> newAndroidClasspath = Helper.getAndroidClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+		for (Helper.ClasspathEntry e : Ctx.cfgUpdate.androidClasspath) e.testOverwritten(newAndroidClasspath);
+		for (Helper.ClasspathEntry e : newAndroidClasspath) if (e.testAdded(Ctx.cfgUpdate.androidClasspath)) Ctx.cfgUpdate.androidClasspath.add(e);
+
+		Collections.sort(Ctx.cfgUpdate.androidClasspath);
+	}
+
+	private void updateDesktopClasspath() {
+		File desktopDir = new File(Helper.getDesktopPrjPath(Ctx.cfgUpdate));
+
+		Ctx.cfgUpdate.desktopClasspath.clear();
+		Ctx.cfgUpdate.desktopClasspath.addAll(Helper.getClasspathEntries(new File(desktopDir, ".classpath")));
+
+		List<Helper.ClasspathEntry> newDesktopClasspath = Helper.getDesktopClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+		for (Helper.ClasspathEntry e : Ctx.cfgUpdate.desktopClasspath) e.testOverwritten(newDesktopClasspath);
+		for (Helper.ClasspathEntry e : newDesktopClasspath) if (e.testAdded(Ctx.cfgUpdate.desktopClasspath)) Ctx.cfgUpdate.desktopClasspath.add(e);
+
+		Collections.sort(Ctx.cfgUpdate.desktopClasspath);
+	}
+
+	private void updateHtmlClasspath() {
+		File htmlDir = new File(Helper.getHtmlPrjPath(Ctx.cfgUpdate));
+
+		Ctx.cfgUpdate.htmlClasspath.clear();
+		Ctx.cfgUpdate.htmlClasspath.addAll(Helper.getClasspathEntries(new File(htmlDir, ".classpath")));
+
+		List<Helper.ClasspathEntry> newHtmlClasspath = Helper.getHtmlClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
+		for (Helper.ClasspathEntry e : Ctx.cfgUpdate.htmlClasspath) e.testOverwritten(newHtmlClasspath);
+		for (Helper.ClasspathEntry e : newHtmlClasspath) if (e.testAdded(Ctx.cfgUpdate.htmlClasspath)) Ctx.cfgUpdate.htmlClasspath.add(e);
+
+		Collections.sort(Ctx.cfgUpdate.htmlClasspath);
+	}
+
+	private void updateGwtModule() {
+		File htmlDir = new File(Helper.getHtmlPrjPath(Ctx.cfgUpdate));
+
+		Ctx.cfgUpdate.gwtModules.clear();
+		for (File file : FileUtils.listFiles(htmlDir, new String[] {"gwt.xml"}, true)) {
+			if (file.getName().equals("GwtDefinition.gwt.xml"))
+				Ctx.cfgUpdate.gwtModules.addAll(Helper.getGwtModules(file));
+		}
+
+		List<Helper.GwtModule> newGwtModules = Helper.getGwtModules(Ctx.cfgUpdate, Ctx.libs);
+		for (Helper.GwtModule m : Ctx.cfgUpdate.gwtModules) m.testOverwritten(newGwtModules);
+		for (Helper.GwtModule m : newGwtModules) if (m.testAdded(Ctx.cfgUpdate.gwtModules)) Ctx.cfgUpdate.gwtModules.add(m);
+
+		Collections.sort(Ctx.cfgUpdate.gwtModules);
+	}
+
+	private void updatePanel() {
 		statusCoreLabel.firePropertyChange("found", true, false);
 		statusAndroidLabel.firePropertyChange("found", true, false);
 		statusDesktopLabel.firePropertyChange("found", true, false);
 		statusHtmlLabel.firePropertyChange("found", true, false);
+
 		statusCoreLabel.firePropertyChange("notfound", false, true);
 		statusAndroidLabel.firePropertyChange("notfound", false, true);
 		statusDesktopLabel.firePropertyChange("notfound", false, true);
 		statusHtmlLabel.firePropertyChange("notfound", false, true);
 
-		String dirName = coreDir.getName();
-		if (dirName.endsWith(Ctx.cfgUpdate.suffixCommon)) {
-			dirName = dirName.substring(0, dirName.length() - Ctx.cfgUpdate.suffixCommon.length());
-		} else {
-			return;
-		}
-
-		if (!new File(coreDir, ".classpath").isFile()) {
-			return;
-		}
-
-		Ctx.cfgUpdate.projectName = dirName;
-		statusCoreLabel.firePropertyChange("found", false, true);
-
-		Ctx.cfgUpdate.isAndroidIncluded = false;
-		Ctx.cfgUpdate.isDesktopIncluded = false;
-		Ctx.cfgUpdate.isHtmlIncluded = false;
-
-		for (File dir : new File(Ctx.cfgUpdate.destinationPath).listFiles()) {
-			if (!dir.isDirectory()) continue;
-			String name = dir.getName();
-
-			if (name.equals(Ctx.cfgUpdate.projectName + Ctx.cfgUpdate.suffixAndroid) && new File(dir, ".classpath").isFile()) {
-				Ctx.cfgUpdate.isAndroidIncluded = true;
-				statusAndroidLabel.firePropertyChange("found", false, true);
-			}
-
-			if (name.equals(Ctx.cfgUpdate.projectName + Ctx.cfgUpdate.suffixDesktop) && new File(dir, ".classpath").isFile()) {
-				Ctx.cfgUpdate.isDesktopIncluded = true;
-				statusDesktopLabel.firePropertyChange("found", false, true);
-			}
-
-			if (name.equals(Ctx.cfgUpdate.projectName + Ctx.cfgUpdate.suffixHtml) && new File(dir, ".classpath").isFile()) {
-				Ctx.cfgUpdate.isHtmlIncluded = true;
-				statusHtmlLabel.firePropertyChange("found", false, true);
-			}
-		}
+		if (!Ctx.cfgUpdate.projectName.equals("")) statusCoreLabel.firePropertyChange("found", false, true);
+		if (Ctx.cfgUpdate.isAndroidIncluded) statusAndroidLabel.firePropertyChange("found", false, true);
+		if (Ctx.cfgUpdate.isDesktopIncluded) statusDesktopLabel.firePropertyChange("found", false, true);
+		if (Ctx.cfgUpdate.isHtmlIncluded) statusHtmlLabel.firePropertyChange("found", false, true);
 	}
 
 	// -------------------------------------------------------------------------

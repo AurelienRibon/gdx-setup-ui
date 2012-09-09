@@ -1,6 +1,5 @@
 package aurelienribon.libgdx.ui.panels;
 
-import aurelienribon.libgdx.Helper;
 import aurelienribon.libgdx.Helper.ClasspathEntry;
 import aurelienribon.libgdx.Helper.GwtModule;
 import aurelienribon.libgdx.ui.Ctx;
@@ -12,15 +11,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import org.apache.commons.io.FileUtils;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -54,65 +49,10 @@ public class ClasspathsPanel extends javax.swing.JPanel {
 		htmlList.setCellRenderer(classpathListCellRenderer);
 		gwtList.setCellRenderer(modulesListCellRenderer);
 
-		Ctx.listeners.add(new Ctx.Listener() {
-			@Override public void cfgUpdateChanged() {update();}
-		});
-
 		backBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {mainPanel.hideGenerationUpdatePanel();}});
  		deleteBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {delete();}});
  		validateBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {mainPanel.launchUpdateProcess();}});
   }
-
-	private void update() {
-		File coreDir = new File(Helper.getCorePrjPath(Ctx.cfgUpdate));
-		File androidDir = new File(Helper.getAndroidPrjPath(Ctx.cfgUpdate));
-		File desktopDir = new File(Helper.getDesktopPrjPath(Ctx.cfgUpdate));
-		File htmlDir = new File(Helper.getHtmlPrjPath(Ctx.cfgUpdate));
-
-		if (!coreDir.isDirectory()) return;
-
-		coreClasspath.clear();
-		androidClasspath.clear();
-		desktopClasspath.clear();
-		htmlClasspath.clear();
-		gwtModules.clear();
-
-		coreClasspath.addAll(Helper.getClasspathEntries(new File(coreDir, ".classpath")));
-		androidClasspath.addAll(Helper.getClasspathEntries(new File(androidDir, ".classpath")));
-		desktopClasspath.addAll(Helper.getClasspathEntries(new File(desktopDir, ".classpath")));
-		htmlClasspath.addAll(Helper.getClasspathEntries(new File(htmlDir, ".classpath")));
-
-		if (Ctx.cfgUpdate.isHtmlIncluded) {
-			for (File file : FileUtils.listFiles(htmlDir, new String[] {"gwt.xml"}, true)) {
-				if (file.getName().equals("GwtDefinition.gwt.xml"))
-					gwtModules.addAll(Helper.getGwtModules(file));
-			}
-		}
-
-		List<ClasspathEntry> newCoreClasspath = Helper.getCoreClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
-		List<ClasspathEntry> newAndroidClasspath = Helper.getAndroidClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
-		List<ClasspathEntry> newDesktopClasspath = Helper.getDesktopClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
-		List<ClasspathEntry> newHtmlClasspath = Helper.getHtmlClasspathEntries(Ctx.cfgUpdate, Ctx.libs);
-		List<GwtModule> newGwtModules = Helper.getGwtModules(Ctx.cfgUpdate, Ctx.libs);
-
-		for (ClasspathEntry e : coreClasspath) e.testOverwritten(newCoreClasspath);
-		for (ClasspathEntry e : androidClasspath) e.testOverwritten(newAndroidClasspath);
-		for (ClasspathEntry e : desktopClasspath) e.testOverwritten(newDesktopClasspath);
-		for (ClasspathEntry e : htmlClasspath) e.testOverwritten(newHtmlClasspath);
-		for (GwtModule m : gwtModules) m.testOverwritten(newGwtModules);
-
-		for (ClasspathEntry e : newCoreClasspath) if (e.testAdded(coreClasspath)) coreClasspath.add(e);
-		for (ClasspathEntry e : newAndroidClasspath) if (e.testAdded(androidClasspath)) androidClasspath.add(e);
-		for (ClasspathEntry e : newDesktopClasspath) if (e.testAdded(desktopClasspath)) desktopClasspath.add(e);
-		for (ClasspathEntry e : newHtmlClasspath) if (e.testAdded(htmlClasspath)) htmlClasspath.add(e);
-		for (GwtModule m : newGwtModules) if (m.testAdded(gwtModules)) gwtModules.add(m);
-
-		Collections.sort(coreClasspath);
-		Collections.sort(androidClasspath);
-		Collections.sort(desktopClasspath);
-		Collections.sort(htmlClasspath);
-		Collections.sort(gwtModules);
-	}
 
 	private void delete() {
 		for (Object o : coreList.getSelectedValues()) {

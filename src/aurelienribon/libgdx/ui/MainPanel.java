@@ -62,7 +62,7 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(configSetupPanel, ".groupPanel", "#configSetupPanel");
 		Style.registerCssClasses(configUpdatePanel, ".groupPanel", "#configUpdatePanel");
 		Style.registerCssClasses(versionLabel, ".versionLabel");
-		Style.registerCssClasses(librarySelectionPanel, ".groupPanel", "#librarySetupPanel");
+		Style.registerCssClasses(librarySelectionPanel, ".groupPanel", "#librarySelectionPanel");
 		Style.registerCssClasses(previewPanel, ".groupPanel", "#previewPanel");
 		Style.registerCssClasses(goPanel, ".groupPanel", "#goPanel");
 		Style.registerCssClasses(advancedSettingsPanel, ".groupPanel", "#advancedSettingsPanel");
