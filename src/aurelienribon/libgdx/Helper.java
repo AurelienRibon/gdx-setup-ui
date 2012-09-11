@@ -251,17 +251,7 @@ public class Helper {
 			added = true;
 			return true;
 		}
-
-		@Override
-		public String toString() {
-			String str = "<classpathentry kind=\"lib\" ";
-			if (exported) str += "exported=\"true\" ";
-			str += "path=\"" + path + "\"";
-			if (sourcepath != null) str += " sourcepath=\"" + sourcepath + "\"";
-			str += "/>";
-			return str;
-		}
-
+		
 		@Override
 		public int compareTo(ClasspathEntry o) {
 			if (path.startsWith("/") && !o.path.startsWith("/")) return 1;
@@ -284,14 +274,11 @@ public class Helper {
 		}
 
 		public boolean testAdded(List<GwtModule> entries) {
-			for (GwtModule e : entries) if (e.name.equals(name)) return false;
+			for (GwtModule e : entries)
+				if (e.name.equals(name))
+					return false;
 			added = true;
 			return true;
-		}
-
-		@Override
-		public String toString() {
-			return "<inherits name='" + name + "' />";
 		}
 
 		@Override

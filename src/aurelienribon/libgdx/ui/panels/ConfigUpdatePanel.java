@@ -177,12 +177,13 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 	}
 
 	private void updateGwtModule() {
-		File htmlDir = new File(Helper.getHtmlPrjPath(Ctx.cfgUpdate));
+		File htmlSrcDir = new File(Helper.getHtmlPrjPath(Ctx.cfgUpdate), "src");
 
 		List<GwtModule> gwtModules = new ArrayList<GwtModule>();
-		for (File file : FileUtils.listFiles(htmlDir, new String[] {"gwt.xml"}, true)) {
-			if (file.getName().equals("GwtDefinition.gwt.xml"))
+		for (File file : FileUtils.listFiles(htmlSrcDir, new String[] {"gwt.xml"}, true)) {
+			if (file.getName().equals("GwtDefinition.gwt.xml")) {
 				gwtModules.addAll(Helper.getGwtModules(file));
+			}
 		}
 
 		List<Helper.GwtModule> newGwtModules = Helper.getGwtModules(Ctx.cfgUpdate, Ctx.libs);

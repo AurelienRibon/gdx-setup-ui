@@ -1,11 +1,12 @@
+/bin/*
 /build/*
-/nbproject/*
 /dist/*
+/nbproject/*
 /tmp/*
 
 /manifest.mf
 /nbbuild.xml
 
+/*.jar
 /*.tmp
 /*.zip
-/*.jar
