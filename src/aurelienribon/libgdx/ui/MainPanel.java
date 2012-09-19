@@ -13,17 +13,18 @@ import aurelienribon.libgdx.ui.panels.ProcessSetupPanel;
 import aurelienribon.libgdx.ui.panels.ProcessUpdatePanel;
 import aurelienribon.libgdx.ui.panels.SelectionPanel;
 import aurelienribon.libgdx.ui.panels.TaskPanel;
+import aurelienribon.slidinglayout.SLAnimator;
+import aurelienribon.slidinglayout.SLConfig;
+import aurelienribon.slidinglayout.SLKeyframe;
+import aurelienribon.slidinglayout.SLPanel;
+import aurelienribon.slidinglayout.SLSide;
 import aurelienribon.ui.components.PaintedPanel;
 import aurelienribon.ui.css.Style;
-import aurelienribon.utils.Animator;
 import aurelienribon.utils.HttpUtils.DownloadListener;
 import aurelienribon.utils.HttpUtils.DownloadTask;
 import aurelienribon.utils.Res;
 import aurelienribon.utils.SwingUtils;
 import aurelienribon.utils.VersionLabel;
-import aurelienribon.utils.slidingpanels.SlidingLayersConfig;
-import aurelienribon.utils.slidingpanels.SlidingLayersConfig.Direction;
-import aurelienribon.utils.slidingpanels.SlidingLayersPanel;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -36,6 +37,8 @@ import org.apache.commons.io.IOUtils;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class MainPanel extends PaintedPanel {
+	private final SLPanel rootPanel = new SLPanel();
+	private final JLabel logoLabel = new JLabel(Res.getImage("gfx/logo.png"));
 	private final SelectionPanel selectionPanel = new SelectionPanel(this);
 	private final ConfigSetupPanel configSetupPanel = new ConfigSetupPanel(this);
 	private final ConfigUpdatePanel configUpdatePanel = new ConfigUpdatePanel(this);
@@ -50,12 +53,16 @@ public class MainPanel extends PaintedPanel {
 	private final ProcessSetupPanel processSetupPanel = new ProcessSetupPanel(this);
 	private final ProcessUpdatePanel processUpdatePanel = new ProcessUpdatePanel(this);
 
-	private final SlidingLayersPanel panel = new SlidingLayersPanel();
+	private final float transitionDuration = 0.7f;
+	private final int gap = 10;
 
 	public MainPanel() {
 		SwingUtils.importFont(Res.getStream("fonts/SquareFont.ttf"));
 		setLayout(new BorderLayout());
-		add(panel, BorderLayout.CENTER);
+		add(rootPanel, BorderLayout.CENTER);
+
+		logoLabel.setVerticalAlignment(SwingConstants.TOP);
+		logoLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
 		Style.registerCssClasses(this, ".rootPanel");
 		Style.registerCssClasses(selectionPanel, ".groupPanel", "#selectionPanel");
@@ -95,13 +102,12 @@ public class MainPanel extends PaintedPanel {
 			"http://libgdx.badlogicgames.com/nightlies/config/config.txt",
 			"http://libgdx.badlogicgames.com/download.html");
 
-		Animator.setTweenManagersCount(2);
-		Animator.start();
-		panel.setTweenManager(Animator.getTweenManager(0));
-		taskPanel.setTweenManager(Animator.getTweenManager(1));
+		SLAnimator.start();
+		rootPanel.setTweenManager(SLAnimator.createTweenManager());
+		taskPanel.setTweenManager(SLAnimator.createTweenManager());
 
 		initConfigurations();
-		panel.timeline().pushSet(initCfg).play();
+		rootPanel.initialize(initCfg);
 
 		SwingUtils.addWindowListener(this, new WindowAdapter() {
 			@Override
@@ -150,135 +156,136 @@ public class MainPanel extends PaintedPanel {
 	// Configurations
 	// -------------------------------------------------------------------------
 
-	private SlidingLayersConfig initCfg, setupCfg, updateCfg;
-	private SlidingLayersConfig libraryInfoCfg;
-	private SlidingLayersConfig setupAdvSettingsCfg;
-	private SlidingLayersConfig setupGenerationCfg;
-	private SlidingLayersConfig updateAdvSettingsCfg;
-	private SlidingLayersConfig updateGenerationCfg;
+	private SLConfig initCfg, setupCfg, updateCfg;
+	private SLConfig libraryInfoCfg;
+	private SLConfig setupAdvSettingsCfg;
+	private SLConfig setupGenerationCfg;
+	private SLConfig updateAdvSettingsCfg;
+	private SLConfig updateGenerationCfg;
 
 	private boolean isProcessSetupPanelOpen = false;
 	private String currentLibraryInfo;
 
 	private void initConfigurations() {
-		JLabel logo = new JLabel(Res.getImage("gfx/logo.png"));
-		logo.setVerticalAlignment(SwingConstants.TOP);
-		logo.setHorizontalAlignment(SwingConstants.LEFT);
-
-		initCfg = new SlidingLayersConfig(panel)
-			.row(false, 1).row(true, 30).column(false, 1)
+		initCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).row(30).col(1f)
 			.beginGrid(0, 0)
-				.row(false, 1)
-				.row(true, selectionPanel.getPreferredSize().height)
-				.row(true, versionLabel.getPreferredSize().height)
-				.row(false, 1)
-				.column(false, 1).column(false, 1).column(false, 1)
-				.tile(0, 0, logo)
-				.tile(1, 1, selectionPanel)
-				.tile(2, 1, versionLabel)
-			.end()
-			.tile(1, 0, taskPanel);
+				.row(1f)
+				.row(selectionPanel.getPreferredSize().height)
+				.row(versionLabel.getPreferredSize().height)
+				.row(1f)
+				.col(1f).col(1f).col(1f)
+				.place(0, 0, logoLabel)
+				.place(1, 1, selectionPanel)
+				.place(2, 1, versionLabel)
+			.endGrid()
+			.place(1, 0, taskPanel);
 
-		setupCfg = new SlidingLayersConfig(panel)
-			.row(false, 1).row(true, 30).column(false, 1)
+		setupCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).row(30).col(1f)
 			.beginGrid(0, 0)
-				.row(false, 1).column(false, 1).column(false, 1).column(false, 1)
+				.row(1f).col(1f).col(1f).col(1f)
 				.beginGrid(0, 0)
-					.row(true, selectionPanel.getPreferredSize().height)
-					.row(true, configSetupPanel.getPreferredSize().height)
-					.row(true, versionLabel.getPreferredSize().height)
-					.column(false, 1)
-					.tile(0, 0, selectionPanel)
-					.tile(1, 0, configSetupPanel)
-					.tile(2, 0, versionLabel)
-				.end()
+					.row(selectionPanel.getPreferredSize().height)
+					.row(configSetupPanel.getPreferredSize().height)
+					.row(versionLabel.getPreferredSize().height)
+					.col(1f)
+					.place(0, 0, selectionPanel)
+					.place(1, 0, configSetupPanel)
+					.place(2, 0, versionLabel)
+				.endGrid()
 				.beginGrid(0, 1)
-					.row(false, 1)
-					.column(false, 1)
-					.tile(0, 0, librarySelectionPanel)
-				.end()
+					.row(1f)
+					.col(1f)
+					.place(0, 0, librarySelectionPanel)
+				.endGrid()
 				.beginGrid(0, 2)
-					.row(false, 1)
-					.row(true, goPanel.getPreferredSize().height)
-					.column(false, 1)
-					.tile(0, 0, previewPanel)
-					.tile(1, 0, goPanel)
-				.end()
-			.end()
-			.tile(1, 0, taskPanel);
+					.row(1f)
+					.row(goPanel.getPreferredSize().height)
+					.col(1f)
+					.place(0, 0, previewPanel)
+					.place(1, 0, goPanel)
+				.endGrid()
+			.endGrid()
+			.place(1, 0, taskPanel);
 
-		updateCfg = new SlidingLayersConfig(panel)
-			.row(false, 1).row(true, 30).column(false, 1)
+		updateCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).row(30).col(1f)
 			.beginGrid(0, 0)
-				.row(false, 1).column(false, 1).column(false, 1).column(false, 1)
+				.row(1f).col(1f).col(1f).col(1f)
 				.beginGrid(0, 0)
-					.row(true, selectionPanel.getPreferredSize().height)
-					.row(true, configUpdatePanel.getPreferredSize().height)
-					.row(true, versionLabel.getPreferredSize().height)
-					.column(false, 1)
-					.tile(0, 0, selectionPanel)
-					.tile(1, 0, configUpdatePanel)
-					.tile(2, 0, versionLabel)
-				.end()
+					.row(selectionPanel.getPreferredSize().height)
+					.row(configUpdatePanel.getPreferredSize().height)
+					.row(versionLabel.getPreferredSize().height)
+					.col(1f)
+					.place(0, 0, selectionPanel)
+					.place(1, 0, configUpdatePanel)
+					.place(2, 0, versionLabel)
+				.endGrid()
 				.beginGrid(0, 1)
-					.row(false, 1)
-					.column(false, 1)
-					.tile(0, 0, librarySelectionPanel)
-				.end()
+					.row(1f)
+					.col(1f)
+					.place(0, 0, librarySelectionPanel)
+				.endGrid()
 				.beginGrid(0, 2)
-					.row(true, goPanel.getPreferredSize().height)
-					.column(false, 1)
-					.tile(0, 0, goPanel)
-				.end()
-			.end()
-			.tile(1, 0, taskPanel);
+					.row(goPanel.getPreferredSize().height)
+					.col(1f)
+					.place(0, 0, goPanel)
+				.endGrid()
+			.endGrid()
+			.place(1, 0, taskPanel);
 
-		libraryInfoCfg = new SlidingLayersConfig(panel)
-			.row(false, 1).row(true, 30).column(false, 1)
+		libraryInfoCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).row(30).col(1f)
 			.beginGrid(0, 0)
-				.row(false, 1).column(false, 1).column(false, 2)
-				.tile(0, 0, librarySelectionPanel)
-				.tile(0, 1, libraryInfoPanel)
-			.end()
-			.tile(1, 0, taskPanel);
+				.row(1f).col(1f).col(2f)
+				.place(0, 0, librarySelectionPanel)
+				.place(0, 1, libraryInfoPanel)
+			.endGrid()
+			.place(1, 0, taskPanel);
 
-		setupAdvSettingsCfg = new SlidingLayersConfig(panel)
-			.row(false, 1).column(false, 1).column(false, 2)
+		setupAdvSettingsCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).col(1f).col(2f)
 			.beginGrid(0, 0)
-				.row(true, configSetupPanel.getPreferredSize().height)
-				.row(true, versionLabel.getPreferredSize().height)
-				.column(false, 1)
-				.tile(0, 0, configSetupPanel)
-				.tile(1, 0, versionLabel)
-			.end()
-			.tile(0, 1, advancedSettingsPanel);
+				.row(configSetupPanel.getPreferredSize().height)
+				.row(versionLabel.getPreferredSize().height)
+				.col(1f)
+				.place(0, 0, configSetupPanel)
+				.place(1, 0, versionLabel)
+			.endGrid()
+			.place(0, 1, advancedSettingsPanel);
 
-		setupGenerationCfg = new SlidingLayersConfig(panel)
-			.row(false, 1).column(false, 2).column(false, 1)
+		setupGenerationCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).col(2f).col(1f)
 			.beginGrid(0, 1)
-				.row(false, 1)
-				.row(true, goPanel.getPreferredSize().height)
-				.column(false, 1)
-				.tile(0, 0, previewPanel)
-				.tile(1, 0, goPanel)
-			.end()
-			.tile(0, 0, processSetupPanel);
+				.row(1f).col(1f)
+				.place(0, 0, previewPanel)
+			.endGrid()
+			.place(0, 0, processSetupPanel);
 
-		updateAdvSettingsCfg = new SlidingLayersConfig(panel)
-			.row(false, 1).column(false, 1).column(false, 2)
+		updateAdvSettingsCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).col(1f).col(2f)
 			.beginGrid(0, 0)
-				.row(true, configUpdatePanel.getPreferredSize().height)
-				.row(true, versionLabel.getPreferredSize().height)
-				.column(false, 1)
-				.tile(0, 0, configUpdatePanel)
-				.tile(1, 0, versionLabel)
-			.end()
-			.tile(0, 1, advancedSettingsPanel);
+				.row(configUpdatePanel.getPreferredSize().height)
+				.row(versionLabel.getPreferredSize().height)
+				.col(1f)
+				.place(0, 0, configUpdatePanel)
+				.place(1, 0, versionLabel)
+			.endGrid()
+			.place(0, 1, advancedSettingsPanel);
 
-		updateGenerationCfg = new SlidingLayersConfig(panel)
-			.row(false, 1).column(false, 2).column(false, 1)
-			.tile(0, 0, classpathsPanel)
-			.tile(0, 1, processUpdatePanel);
+		updateGenerationCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).col(2f).col(1f)
+			.place(0, 0, classpathsPanel)
+			.place(0, 1, processUpdatePanel);
 	}
 
 	public void showCreateSetup() {
@@ -287,21 +294,13 @@ public class MainPanel extends PaintedPanel {
 				Ctx.mode = Ctx.Mode.SETUP;
 				Ctx.fireModeChangedChanged();
 
-				panel.timeline()
-					.pushTo(new SlidingLayersConfig(panel)
-						.column(false, 1).column(false, 1).column(false, 1)
-						.row(true, selectionPanel.getPreferredSize().height)
-						.row(true, configSetupPanel.getPreferredSize().height)
-						.row(true, versionLabel.getPreferredSize().height)
-						.tile(0, 0, selectionPanel)
-						.tile(2, 0, versionLabel)
-						.delay(0.15f, versionLabel))
-					.pushSet(setupCfg.clone()
-						.hide(Direction.LEFT, configSetupPanel)
-						.hide(Direction.UP, librarySelectionPanel)
-						.hide(Direction.RIGHT, previewPanel, goPanel))
-					.pushTo(setupCfg.clone()
-						.delayIncr(0.05f, configSetupPanel, librarySelectionPanel, previewPanel, goPanel))
+				rootPanel.createTransition()
+					.push(new SLKeyframe(setupCfg, transitionDuration)
+						.setStartSide(SLSide.LEFT, configSetupPanel)
+						.setStartSide(SLSide.TOP, librarySelectionPanel)
+						.setStartSide(SLSide.RIGHT, previewPanel, goPanel)
+						.setEndSide(SLSide.TOP, logoLabel)
+						.setDelay(transitionDuration, configSetupPanel, librarySelectionPanel))
 					.play();
 				break;
 
@@ -309,13 +308,12 @@ public class MainPanel extends PaintedPanel {
 				Ctx.mode = Ctx.Mode.SETUP;
 				Ctx.fireModeChangedChanged();
 
-				panel.timeline()
-					.pushTo(updateCfg.clone()
-						.hide(Direction.LEFT, configUpdatePanel))
-					.pushTo(setupCfg.clone()
-						.hide(Direction.RIGHT, previewPanel)
-						.hide(Direction.LEFT, configSetupPanel))
-					.pushTo(setupCfg)
+				rootPanel.createTransition()
+					.push(new SLKeyframe(setupCfg, transitionDuration)
+						.setEndSide(SLSide.LEFT, configUpdatePanel)
+						.setStartSide(SLSide.TOP, previewPanel)
+						.setStartSide(SLSide.LEFT, configSetupPanel)
+						.setDelay(transitionDuration, configSetupPanel))
 					.play();
 				break;
 		}
@@ -327,21 +325,13 @@ public class MainPanel extends PaintedPanel {
 				Ctx.mode = Ctx.Mode.UPDATE;
 				Ctx.fireModeChangedChanged();
 
-				panel.timeline()
-					.pushTo(new SlidingLayersConfig(panel)
-						.column(false, 1).column(false, 1).column(false, 1)
-						.row(true, selectionPanel.getPreferredSize().height)
-						.row(true, configUpdatePanel.getPreferredSize().height)
-						.row(true, versionLabel.getPreferredSize().height)
-						.tile(0, 0, selectionPanel)
-						.tile(2, 0, versionLabel)
-						.delay(0.15f, versionLabel))
-					.pushSet(updateCfg.clone()
-						.hide(Direction.LEFT, configUpdatePanel)
-						.hide(Direction.UP, librarySelectionPanel)
-						.hide(Direction.RIGHT, goPanel))
-					.pushTo(updateCfg.clone()
-						.delayIncr(0.05f, configUpdatePanel, librarySelectionPanel, goPanel))
+				rootPanel.createTransition()
+					.push(new SLKeyframe(updateCfg, transitionDuration)
+						.setStartSide(SLSide.LEFT, configUpdatePanel)
+						.setStartSide(SLSide.TOP, librarySelectionPanel)
+						.setStartSide(SLSide.RIGHT, goPanel)
+						.setEndSide(SLSide.TOP, logoLabel)
+						.setDelay(transitionDuration, configUpdatePanel, librarySelectionPanel))
 					.play();
 				break;
 
@@ -349,13 +339,12 @@ public class MainPanel extends PaintedPanel {
 				Ctx.mode = Ctx.Mode.UPDATE;
 				Ctx.fireModeChangedChanged();
 
-				panel.timeline()
-					.pushTo(setupCfg.clone()
-						.hide(Direction.RIGHT, previewPanel)
-						.hide(Direction.LEFT, configSetupPanel))
-					.pushTo(updateCfg.clone()
-						.hide(Direction.LEFT, configUpdatePanel))
-					.pushTo(updateCfg)
+				rootPanel.createTransition()
+					.push(new SLKeyframe(updateCfg, transitionDuration)
+						.setEndSide(SLSide.TOP, previewPanel)
+						.setEndSide(SLSide.LEFT, configSetupPanel)
+						.setStartSide(SLSide.LEFT, configUpdatePanel)
+						.setDelay(transitionDuration, versionLabel, configUpdatePanel))
 					.play();
 				break;
 		}
@@ -364,32 +353,24 @@ public class MainPanel extends PaintedPanel {
 	public void showAdvancedSettings() {
 		switch (Ctx.mode) {
 			case SETUP:
-				panel.timeline()
-					.pushTo(setupCfg.clone()
-						.hide(Direction.DOWN, taskPanel)
-						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
-						.hide(Direction.RIGHT, previewPanel, goPanel)
-						.changeRow(0, configSetupPanel)
-						.changeRow(1, versionLabel)
-						.delayIncr(0.05f, librarySelectionPanel, configSetupPanel, versionLabel, previewPanel, goPanel, taskPanel))
-					.pushSet(setupAdvSettingsCfg.clone()
-						.hide(Direction.RIGHT, advancedSettingsPanel))
-					.pushTo(setupAdvSettingsCfg)
+				rootPanel.createTransition()
+					.push(new SLKeyframe(setupAdvSettingsCfg, transitionDuration)
+						.setEndSide(SLSide.BOTTOM, taskPanel)
+						.setEndSide(SLSide.TOP, selectionPanel)
+						.setEndSide(SLSide.RIGHT, librarySelectionPanel, previewPanel, goPanel)
+						.setStartSide(SLSide.RIGHT, advancedSettingsPanel)
+						.setDelay(transitionDuration, advancedSettingsPanel))
 					.play();
 				break;
 
 			case UPDATE:
-				panel.timeline()
-					.pushTo(updateCfg.clone()
-						.hide(Direction.DOWN, taskPanel)
-						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
-						.hide(Direction.RIGHT, goPanel)
-						.changeRow(0, configUpdatePanel)
-						.changeRow(1, versionLabel)
-						.delayIncr(0.05f, librarySelectionPanel, configUpdatePanel, versionLabel, goPanel, taskPanel))
-					.pushSet(updateAdvSettingsCfg.clone()
-						.hide(Direction.RIGHT, advancedSettingsPanel))
-					.pushTo(updateAdvSettingsCfg)
+				rootPanel.createTransition()
+					.push(new SLKeyframe(updateAdvSettingsCfg, transitionDuration)
+						.setEndSide(SLSide.BOTTOM, taskPanel)
+						.setEndSide(SLSide.TOP, selectionPanel)
+						.setEndSide(SLSide.RIGHT, librarySelectionPanel, goPanel)
+						.setStartSide(SLSide.RIGHT, advancedSettingsPanel)
+						.setDelay(transitionDuration, advancedSettingsPanel))
 					.play();
 				break;
 		}
@@ -398,32 +379,24 @@ public class MainPanel extends PaintedPanel {
 	public void hideAdvancedSettings() {
 		switch (Ctx.mode) {
 			case SETUP:
-				panel.timeline()
-					.pushTo(setupAdvSettingsCfg.clone()
-						.hide(Direction.RIGHT, advancedSettingsPanel))
-					.pushSet(setupCfg.clone()
-						.hide(Direction.DOWN, taskPanel)
-						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
-						.hide(Direction.RIGHT, previewPanel, goPanel)
-						.changeRow(0, configSetupPanel)
-						.changeRow(1, versionLabel))
-					.pushTo(setupCfg.clone()
-						.delayIncr(0.05f, versionLabel, configSetupPanel, selectionPanel, librarySelectionPanel, previewPanel, goPanel, taskPanel))
+				rootPanel.createTransition()
+					.push(new SLKeyframe(setupCfg, transitionDuration)
+						.setEndSide(SLSide.RIGHT, advancedSettingsPanel)
+						.setStartSide(SLSide.RIGHT, librarySelectionPanel, previewPanel, goPanel)
+						.setStartSide(SLSide.BOTTOM, taskPanel)
+						.setStartSide(SLSide.TOP, selectionPanel)
+						.setDelay(transitionDuration, librarySelectionPanel, previewPanel, goPanel, taskPanel))
 					.play();
 				break;
 
 			case UPDATE:
-				panel.timeline()
-					.pushTo(updateAdvSettingsCfg.clone()
-						.hide(Direction.RIGHT, advancedSettingsPanel))
-					.pushSet(updateCfg.clone()
-						.hide(Direction.DOWN, taskPanel)
-						.hide(Direction.UP, selectionPanel, librarySelectionPanel)
-						.hide(Direction.RIGHT, goPanel)
-						.changeRow(0, configUpdatePanel)
-						.changeRow(1, versionLabel))
-					.pushTo(updateCfg.clone()
-						.delayIncr(0.05f, versionLabel, configUpdatePanel, selectionPanel, librarySelectionPanel, goPanel, taskPanel))
+				rootPanel.createTransition()
+					.push(new SLKeyframe(updateCfg, transitionDuration)
+						.setEndSide(SLSide.RIGHT, advancedSettingsPanel)
+						.setStartSide(SLSide.RIGHT, librarySelectionPanel, goPanel)
+						.setStartSide(SLSide.BOTTOM, taskPanel)
+						.setStartSide(SLSide.TOP, selectionPanel)
+						.setDelay(transitionDuration, librarySelectionPanel, goPanel, taskPanel))
 					.play();
 				break;
 		}
@@ -445,26 +418,22 @@ public class MainPanel extends PaintedPanel {
 
 		switch (Ctx.mode) {
 			case SETUP:
-				panel.timeline()
-					.pushTo(setupCfg.clone()
-						.hide(Direction.LEFT, selectionPanel, configSetupPanel, versionLabel)
-						.hide(Direction.RIGHT, previewPanel, goPanel)
-						.delayIncr(0.02f, librarySelectionPanel, configSetupPanel, versionLabel, previewPanel, goPanel, versionLabel, taskPanel))
-					.pushTo(libraryInfoCfg.clone()
-						.hide(Direction.RIGHT, libraryInfoPanel))
-					.pushTo(libraryInfoCfg)
+				rootPanel.createTransition()
+					.push(new SLKeyframe(libraryInfoCfg, transitionDuration)
+						.setEndSide(SLSide.LEFT, selectionPanel, configSetupPanel, versionLabel)
+						.setEndSide(SLSide.RIGHT, previewPanel, goPanel)
+						.setStartSide(SLSide.RIGHT, libraryInfoPanel)
+						.setDelay(transitionDuration, libraryInfoPanel))
 					.play();
 				break;
 
 			case UPDATE:
-				panel.timeline()
-					.pushTo(updateCfg.clone()
-						.hide(Direction.LEFT, selectionPanel, configUpdatePanel, versionLabel)
-						.hide(Direction.RIGHT, goPanel)
-						.delayIncr(0.02f, librarySelectionPanel, configUpdatePanel, versionLabel, goPanel, versionLabel, taskPanel))
-					.pushTo(libraryInfoCfg.clone()
-						.hide(Direction.RIGHT, libraryInfoPanel))
-					.pushTo(libraryInfoCfg)
+				rootPanel.createTransition()
+					.push(new SLKeyframe(libraryInfoCfg, transitionDuration)
+						.setEndSide(SLSide.LEFT, selectionPanel, configUpdatePanel, versionLabel)
+						.setEndSide(SLSide.RIGHT, goPanel)
+						.setStartSide(SLSide.RIGHT, libraryInfoPanel)
+						.setDelay(transitionDuration, libraryInfoPanel))
 					.play();
 				break;
 		}
@@ -475,26 +444,22 @@ public class MainPanel extends PaintedPanel {
 
 		switch (Ctx.mode) {
 			case SETUP:
-				panel.timeline()
-					.pushTo(libraryInfoCfg.clone()
-						.hide(Direction.RIGHT, libraryInfoPanel))
-					.pushTo(setupCfg.clone()
-						.hide(Direction.LEFT, selectionPanel, configSetupPanel, versionLabel)
-						.hide(Direction.RIGHT, previewPanel, goPanel))
-					.pushTo(setupCfg.clone()
-						.delayIncr(0.02f, librarySelectionPanel, configSetupPanel, versionLabel, previewPanel, goPanel, versionLabel, taskPanel))
+				rootPanel.createTransition()
+					.push(new SLKeyframe(setupCfg, transitionDuration)
+						.setEndSide(SLSide.RIGHT, libraryInfoPanel)
+						.setStartSide(SLSide.RIGHT, previewPanel, goPanel)
+						.setStartSide(SLSide.LEFT, selectionPanel, configSetupPanel, versionLabel)
+						.setDelay(transitionDuration, previewPanel, goPanel))
 					.play();
 				break;
 
 			case UPDATE:
-				panel.timeline()
-					.pushTo(libraryInfoCfg.clone()
-						.hide(Direction.RIGHT, libraryInfoPanel))
-					.pushTo(updateCfg.clone()
-						.hide(Direction.LEFT, selectionPanel, configUpdatePanel, versionLabel)
-						.hide(Direction.RIGHT, goPanel))
-					.pushTo(updateCfg.clone()
-						.delayIncr(0.02f, librarySelectionPanel, configUpdatePanel, versionLabel, goPanel, versionLabel, taskPanel))
+				rootPanel.createTransition()
+					.push(new SLKeyframe(updateCfg, transitionDuration)
+						.setEndSide(SLSide.RIGHT, libraryInfoPanel)
+						.setStartSide(SLSide.RIGHT, goPanel)
+						.setStartSide(SLSide.LEFT, selectionPanel, configUpdatePanel, versionLabel)
+						.setDelay(transitionDuration, goPanel))
 					.play();
 				break;
 		}
@@ -508,53 +473,41 @@ public class MainPanel extends PaintedPanel {
 
 		isProcessSetupPanelOpen = true;
 
-		panel.timeline()
-			.pushTo(setupCfg.clone()
-				.hide(Direction.DOWN, taskPanel, selectionPanel, configSetupPanel, versionLabel, librarySelectionPanel)
-				.delayIncr(0.05f, librarySelectionPanel, versionLabel, configSetupPanel, selectionPanel))
-			.pushTo(setupGenerationCfg.clone()
-				.hide(Direction.UP, processSetupPanel))
-			.pushTo(setupGenerationCfg)
+		rootPanel.createTransition()
+			.push(new SLKeyframe(setupGenerationCfg, transitionDuration)
+				.setEndSide(SLSide.TOP, selectionPanel, configSetupPanel, versionLabel, librarySelectionPanel)
+				.setEndSide(SLSide.BOTTOM, taskPanel, goPanel)
+				.setStartSide(SLSide.BOTTOM, processSetupPanel))
 			.play();
 	}
 
 	public void hideGenerationCreatePanel() {
 		isProcessSetupPanelOpen = false;
 
-		panel.timeline()
-			.pushTo(setupGenerationCfg.clone()
-				.hide(Direction.DOWN, processSetupPanel))
-			.pushTo(setupCfg.clone()
-				.hide(Direction.UP, selectionPanel, configSetupPanel, versionLabel, librarySelectionPanel)
-				.hide(Direction.DOWN, taskPanel))
-			.pushTo(setupCfg.clone()
-				.delayIncr(0.05f, versionLabel, configSetupPanel, selectionPanel, librarySelectionPanel, taskPanel))
+		rootPanel.createTransition()
+			.push(new SLKeyframe(setupCfg, transitionDuration)
+				.setEndSide(SLSide.TOP, processSetupPanel)
+				.setStartSide(SLSide.BOTTOM, taskPanel, selectionPanel, configSetupPanel, versionLabel, librarySelectionPanel, goPanel))
 			.play();
 	}
 
 	public void showGenerationUpdatePanel() {
-		panel.timeline()
-			.pushTo(updateCfg.clone()
-				.hide(Direction.DOWN, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySelectionPanel)
-				.hide(Direction.UP, goPanel)
-				.delayIncr(0.05f, taskPanel, librarySelectionPanel, versionLabel, configUpdatePanel, selectionPanel, goPanel))
-			.pushTo(updateGenerationCfg.clone()
-				.hide(Direction.UP, classpathsPanel)
-				.hide(Direction.DOWN, processUpdatePanel))
-			.pushTo(updateGenerationCfg)
+		rootPanel.createTransition()
+			.push(new SLKeyframe(updateGenerationCfg, transitionDuration)
+				.setEndSide(SLSide.BOTTOM, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySelectionPanel)
+				.setEndSide(SLSide.TOP, goPanel)
+				.setStartSide(SLSide.TOP, classpathsPanel)
+				.setStartSide(SLSide.BOTTOM, processUpdatePanel))
 			.play();
 	}
 
 	public void hideGenerationUpdatePanel() {
-		panel.timeline()
-			.pushTo(updateGenerationCfg.clone()
-				.hide(Direction.UP, classpathsPanel)
-				.hide(Direction.DOWN, processUpdatePanel))
-			.pushTo(updateCfg.clone()
-				.hide(Direction.DOWN, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySelectionPanel)
-				.hide(Direction.UP, goPanel))
-			.pushTo(updateCfg
-				.delayIncr(0.05f, librarySelectionPanel, selectionPanel, configUpdatePanel, versionLabel, goPanel, taskPanel))
+		rootPanel.createTransition()
+			.push(new SLKeyframe(updateCfg, transitionDuration)
+				.setEndSide(SLSide.BOTTOM, classpathsPanel)
+				.setEndSide(SLSide.TOP, processUpdatePanel)
+				.setStartSide(SLSide.TOP, selectionPanel, configUpdatePanel, versionLabel, librarySelectionPanel)
+				.setStartSide(SLSide.BOTTOM, taskPanel, goPanel))
 			.play();
 	}
 }

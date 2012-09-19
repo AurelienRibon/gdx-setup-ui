@@ -1,5 +1,6 @@
 package aurelienribon.libgdx.ui.panels;
 
+import aurelienribon.slidinglayout.SLAnimator;
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
@@ -11,7 +12,6 @@ import aurelienribon.ui.css.Property;
 import aurelienribon.ui.css.Selector;
 import aurelienribon.ui.css.Style;
 import aurelienribon.ui.css.swing.SwingProperties;
-import aurelienribon.utils.Animator;
 import aurelienribon.utils.HttpUtils;
 import aurelienribon.utils.HttpUtils.DownloadListener;
 import aurelienribon.utils.HttpUtils.DownloadTask;
@@ -94,7 +94,7 @@ public class TaskPanel extends JPanel {
 
 		tile.setLocation(getNextTileX() + getWidth(), 2);
 
-		Tween.to(tile, Animator.JComponentAccessor.X, 2)
+		Tween.to(tile, SLAnimator.JComponentAccessor.X, 2)
 			.target(getNextTileX())
 			.ease(Quad.OUT)
 			.start(tweenManager);
@@ -124,8 +124,8 @@ public class TaskPanel extends JPanel {
 			tiles.remove((Tile) source.getUserData());
 
 			for (Tile tile : tiles) {
-				tweenManager.killTarget(tile, Animator.JComponentAccessor.X);
-				Tween.to(tile, Animator.JComponentAccessor.X, 2)
+				tweenManager.killTarget(tile, SLAnimator.JComponentAccessor.X);
+				Tween.to(tile, SLAnimator.JComponentAccessor.X, 2)
 					.target(getTileX(tile))
 					.ease(Quad.OUT)
 					.start(tweenManager);
@@ -198,7 +198,7 @@ public class TaskPanel extends JPanel {
 		}
 
 		public void disappear(float delay) {
-			Tween.to(this, Animator.JComponentAccessor.Y, 0.3f)
+			Tween.to(this, SLAnimator.JComponentAccessor.Y, 0.3f)
 				.targetRelative(50)
 				.ease(Quad.IN)
 				.delay(delay)
