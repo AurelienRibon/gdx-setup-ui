@@ -1,4 +1,4 @@
-package aurelienribon.libgdx;
+package aurelienribon.gdxsetupui;
 
 import aurelienribon.utils.XmlUtils;
 import java.io.File;
@@ -251,7 +251,7 @@ public class Helper {
 			added = true;
 			return true;
 		}
-		
+
 		@Override
 		public int compareTo(ClasspathEntry o) {
 			if (path.startsWith("/") && !o.path.startsWith("/")) return 1;

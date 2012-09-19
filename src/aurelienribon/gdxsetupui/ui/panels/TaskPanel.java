@@ -1,4 +1,4 @@
-package aurelienribon.libgdx.ui.panels;
+package aurelienribon.gdxsetupui.ui.panels;
 
 import aurelienribon.slidinglayout.SLAnimator;
 import aurelienribon.tweenengine.BaseTween;

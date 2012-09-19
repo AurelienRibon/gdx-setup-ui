@@ -1,9 +1,9 @@
-package aurelienribon.libgdx.ui;
+package aurelienribon.gdxsetupui.ui;
 
-import aurelienribon.libgdx.LibraryDef;
-import aurelienribon.libgdx.LibraryManager;
-import aurelienribon.libgdx.ProjectSetupConfiguration;
-import aurelienribon.libgdx.ProjectUpdateConfiguration;
+import aurelienribon.gdxsetupui.LibraryDef;
+import aurelienribon.gdxsetupui.LibraryManager;
+import aurelienribon.gdxsetupui.ProjectSetupConfiguration;
+import aurelienribon.gdxsetupui.ProjectUpdateConfiguration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 

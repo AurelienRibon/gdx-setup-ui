@@ -1,4 +1,4 @@
-package aurelienribon.libgdx;
+package aurelienribon.gdxsetupui;
 
 import aurelienribon.utils.HttpUtils;
 import aurelienribon.utils.HttpUtils.DownloadListener;

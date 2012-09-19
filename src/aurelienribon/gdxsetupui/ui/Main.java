@@ -1,6 +1,6 @@
-package aurelienribon.libgdx.ui;
+package aurelienribon.gdxsetupui.ui;
 
-import aurelienribon.libgdx.LibraryDef;
+import aurelienribon.gdxsetupui.LibraryDef;
 import aurelienribon.ui.components.ArStyle;
 import aurelienribon.ui.css.swing.SwingStyle;
 import java.io.File;

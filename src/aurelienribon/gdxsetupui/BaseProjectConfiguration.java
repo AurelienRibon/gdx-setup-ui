@@ -1,4 +1,4 @@
-package aurelienribon.libgdx;
+package aurelienribon.gdxsetupui;
 
 import java.util.ArrayList;
 import java.util.HashMap;

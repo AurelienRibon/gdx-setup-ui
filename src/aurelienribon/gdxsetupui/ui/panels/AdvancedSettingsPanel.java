@@ -1,6 +1,6 @@
-package aurelienribon.libgdx.ui.panels;
+package aurelienribon.gdxsetupui.ui.panels;
 
-import aurelienribon.libgdx.ui.Ctx;
+import aurelienribon.gdxsetupui.ui.Ctx;
 import aurelienribon.ui.css.Style;
 import aurelienribon.utils.SwingUtils;
 import java.awt.event.KeyAdapter;

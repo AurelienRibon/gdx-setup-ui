@@ -1,8 +1,8 @@
-package aurelienribon.libgdx.ui.panels;
+package aurelienribon.gdxsetupui.ui.panels;
 
-import aurelienribon.libgdx.ProjectUpdate;
-import aurelienribon.libgdx.ui.Ctx;
-import aurelienribon.libgdx.ui.MainPanel;
+import aurelienribon.gdxsetupui.ProjectUpdate;
+import aurelienribon.gdxsetupui.ui.Ctx;
+import aurelienribon.gdxsetupui.ui.MainPanel;
 import aurelienribon.ui.css.Style;
 import javax.swing.SwingUtilities;
 

@@ -1,7 +1,7 @@
-package aurelienribon.libgdx;
+package aurelienribon.gdxsetupui;
 
-import aurelienribon.libgdx.Helper.ClasspathEntry;
-import aurelienribon.libgdx.Helper.GwtModule;
+import aurelienribon.gdxsetupui.Helper.ClasspathEntry;
+import aurelienribon.gdxsetupui.Helper.GwtModule;
 import aurelienribon.utils.XmlUtils;
 import java.io.File;
 import java.io.FileInputStream;

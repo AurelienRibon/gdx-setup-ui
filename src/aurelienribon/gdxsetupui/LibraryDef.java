@@ -1,4 +1,4 @@
-package aurelienribon.libgdx;
+package aurelienribon.gdxsetupui;
 
 import aurelienribon.utils.ParseUtils;
 import java.util.List;

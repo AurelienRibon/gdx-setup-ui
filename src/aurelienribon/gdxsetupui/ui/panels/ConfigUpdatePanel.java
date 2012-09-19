@@ -1,10 +1,10 @@
-package aurelienribon.libgdx.ui.panels;
+package aurelienribon.gdxsetupui.ui.panels;
 
-import aurelienribon.libgdx.Helper;
-import aurelienribon.libgdx.Helper.ClasspathEntry;
-import aurelienribon.libgdx.Helper.GwtModule;
-import aurelienribon.libgdx.ui.Ctx;
-import aurelienribon.libgdx.ui.MainPanel;
+import aurelienribon.gdxsetupui.Helper;
+import aurelienribon.gdxsetupui.Helper.ClasspathEntry;
+import aurelienribon.gdxsetupui.Helper.GwtModule;
+import aurelienribon.gdxsetupui.ui.Ctx;
+import aurelienribon.gdxsetupui.ui.MainPanel;
 import aurelienribon.ui.css.Style;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;

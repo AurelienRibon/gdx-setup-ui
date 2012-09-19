@@ -1,4 +1,4 @@
-package aurelienribon.libgdx;
+package aurelienribon.gdxsetupui;
 
 /**
  * Skeleton for all the parameters related to the configuration of a project.
