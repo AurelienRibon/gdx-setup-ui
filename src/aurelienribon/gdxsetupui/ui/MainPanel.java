@@ -487,18 +487,19 @@ public class MainPanel extends PaintedPanel {
 
 		rootPanel.createTransition()
 			.push(new SLKeyframe(setupCfg, transitionDuration)
-				.setEndSide(SLSide.TOP, processSetupPanel)
-				.setStartSide(SLSide.BOTTOM, taskPanel, selectionPanel, configSetupPanel, versionLabel, librarySelectionPanel, goPanel))
+				.setEndSide(SLSide.BOTTOM, processSetupPanel)
+				.setStartSide(SLSide.TOP, selectionPanel, configSetupPanel, versionLabel, librarySelectionPanel)
+				.setStartSide(SLSide.BOTTOM, taskPanel, goPanel))
 			.play();
 	}
 
 	public void showGenerationUpdatePanel() {
 		rootPanel.createTransition()
 			.push(new SLKeyframe(updateGenerationCfg, transitionDuration)
-				.setEndSide(SLSide.BOTTOM, taskPanel, selectionPanel, configUpdatePanel, versionLabel, librarySelectionPanel)
-				.setEndSide(SLSide.TOP, goPanel)
-				.setStartSide(SLSide.TOP, classpathsPanel)
-				.setStartSide(SLSide.BOTTOM, processUpdatePanel))
+				.setEndSide(SLSide.TOP, selectionPanel, configUpdatePanel, versionLabel, librarySelectionPanel)
+				.setEndSide(SLSide.BOTTOM, taskPanel, goPanel)
+				.setStartSide(SLSide.BOTTOM, classpathsPanel)
+				.setStartSide(SLSide.TOP, processUpdatePanel))
 			.play();
 	}
 

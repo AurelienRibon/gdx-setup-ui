@@ -2,11 +2,8 @@ package aurelienribon.gdxsetupui.ui.panels;
 
 import aurelienribon.gdxsetupui.ui.MainPanel;
 import aurelienribon.ui.css.Style;
-import aurelienribon.utils.SwingUtils;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -25,12 +22,6 @@ public class SelectionPanel extends javax.swing.JPanel {
 		updateBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
 			mainPanel.showUpdateSetup();
 		}});
-
-		SwingUtils.addWindowListener(this, new WindowAdapter() {
-			@Override public void windowOpened(WindowEvent e) {
-				setupBtn.requestFocusInWindow();
-			}
-		});
     }
 
 	// -------------------------------------------------------------------------

@@ -7,6 +7,7 @@ javax-swing-JButton {
 	-swing-verticalalignment: center;
 	-swing-margin: 2 5;
 	-swing-opaque: false;
+	-swing-focusable: false;
 }
 
 javax-swing-JScrollPane {
@@ -166,7 +167,7 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-swing-foreground: #000;
 	-swing-font-size: 10;
 	-swing-opaque: true;
-	-swing-border: emptyborder(1, 5, 1, 5);
+	-swing-border: emptyborder(1, 10, 1, 10);
 }
 .versionLabel:error {-swing-foreground: #800;}
 .versionLabel:newVersion {-swing-foreground: #080;}
