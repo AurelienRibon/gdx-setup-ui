@@ -26,6 +26,7 @@ import aurelienribon.utils.Res;
 import aurelienribon.utils.SwingUtils;
 import aurelienribon.utils.VersionLabel;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class MainPanel extends PaintedPanel {
 	private final ProcessSetupPanel processSetupPanel = new ProcessSetupPanel(this);
 	private final ProcessUpdatePanel processUpdatePanel = new ProcessUpdatePanel(this);
 
-	private final float transitionDuration = 0.7f;
+	private final float transitionDuration = 0.5f;
 	private final int gap = 10;
 
 	public MainPanel() {
@@ -78,14 +79,14 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(processSetupPanel, ".groupPanel", "#processSetupPanel");
 		Style.registerCssClasses(processUpdatePanel, ".groupPanel", "#processUpdatePanel");
 
-		Object[] targets = new Object[] {
+		Component[] targets = new Component[] {
 			this, selectionPanel, configSetupPanel, configUpdatePanel, versionLabel,
 			librarySelectionPanel, previewPanel, goPanel, taskPanel, advancedSettingsPanel,
 			libraryInfoPanel, classpathsPanel, processSetupPanel, processUpdatePanel
 		};
 
 		Style style = new Style(Res.getUrl("css/style.css"));
-		for (Object t : targets) Style.apply(t, style);
+		for (Component target : targets) Style.apply(target, style);
 
 		try {
 			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));

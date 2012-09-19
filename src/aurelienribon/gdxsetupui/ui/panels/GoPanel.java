@@ -2,7 +2,6 @@ package aurelienribon.gdxsetupui.ui.panels;
 
 import aurelienribon.gdxsetupui.BaseProjectConfiguration;
 import aurelienribon.gdxsetupui.Helper;
-import aurelienribon.gdxsetupui.LibraryManager;
 import aurelienribon.gdxsetupui.ProjectSetupConfiguration;
 import aurelienribon.gdxsetupui.ProjectUpdateConfiguration;
 import aurelienribon.gdxsetupui.ui.Ctx;
@@ -44,7 +43,7 @@ public class GoPanel extends javax.swing.JPanel {
 
 		switch (Ctx.mode) {
 			case SETUP:
-				if (isProjectCreationValid(Ctx.cfgSetup, Ctx.libs)) {
+				if (isProjectCreationValid(Ctx.cfgSetup)) {
 					goBtn.setEnabled(true);
 					errorLabel.setText("<html>Your configuration is valid.");
 					errorLabel.firePropertyChange("valid", false, true);
@@ -65,7 +64,7 @@ public class GoPanel extends javax.swing.JPanel {
 					errorLabel.firePropertyChange("valid", false, true);
 				} else {
 					goBtn.setEnabled(false);
-					errorLabel.setText("<html>" + getUpdateErrorMessage(Ctx.cfgUpdate, Ctx.libs));
+					errorLabel.setText("<html>" + getUpdateErrorMessage(Ctx.cfgUpdate));
 					errorLabel.firePropertyChange("error", false, true);
 				}
 
@@ -75,13 +74,13 @@ public class GoPanel extends javax.swing.JPanel {
 		}
 	}
 
-	private boolean isProjectCreationValid(ProjectSetupConfiguration cfg, LibraryManager libs) {
+	private boolean isProjectCreationValid(ProjectSetupConfiguration cfg) {
 		if (cfg.projectName.trim().equals("")) return false;
 		if (cfg.packageName.trim().equals("")) return false;
 		if (cfg.packageName.endsWith(".")) return false;
 		if (cfg.mainClassName.trim().equals("")) return false;
 
-		for (String libraryName : libs.getNames()) {
+		for (String libraryName : cfg.libraries) {
 			if (!isLibraryValid(cfg, libraryName)) return false;
 		}
 
@@ -123,13 +122,13 @@ public class GoPanel extends javax.swing.JPanel {
 		return "No error found";
 	}
 
-	private String getUpdateErrorMessage(ProjectUpdateConfiguration cfg, LibraryManager libs) {
+	private String getUpdateErrorMessage(ProjectUpdateConfiguration cfg) {
 		File coreDir = new File(Helper.getCorePrjPath(cfg));
 
 		if (!coreDir.isDirectory()) return "No core project was selected.";
 		if (!new File(coreDir, ".classpath").isFile()) return "No .classpath file was found in the selected directory.";
 
-		for (String libraryName : libs.getNames()) {
+		for (String libraryName : cfg.libraries) {
 			if (!isLibraryValid(cfg, libraryName))
 				return "At least one selected library has a missing or invalid archive.";
 		}

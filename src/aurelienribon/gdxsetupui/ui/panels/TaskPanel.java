@@ -94,7 +94,7 @@ public class TaskPanel extends JPanel {
 
 		tile.setLocation(getNextTileX() + getWidth(), 2);
 
-		Tween.to(tile, SLAnimator.JComponentAccessor.X, 2)
+		Tween.to(tile, SLAnimator.ComponentAccessor.X, 2)
 			.target(getNextTileX())
 			.ease(Quad.OUT)
 			.start(tweenManager);
@@ -124,8 +124,8 @@ public class TaskPanel extends JPanel {
 			tiles.remove((Tile) source.getUserData());
 
 			for (Tile tile : tiles) {
-				tweenManager.killTarget(tile, SLAnimator.JComponentAccessor.X);
-				Tween.to(tile, SLAnimator.JComponentAccessor.X, 2)
+				tweenManager.killTarget(tile, SLAnimator.ComponentAccessor.X);
+				Tween.to(tile, SLAnimator.ComponentAccessor.X, 2)
 					.target(getTileX(tile))
 					.ease(Quad.OUT)
 					.start(tweenManager);
@@ -198,7 +198,7 @@ public class TaskPanel extends JPanel {
 		}
 
 		public void disappear(float delay) {
-			Tween.to(this, SLAnimator.JComponentAccessor.Y, 0.3f)
+			Tween.to(this, SLAnimator.ComponentAccessor.Y, 0.3f)
 				.targetRelative(50)
 				.ease(Quad.IN)
 				.delay(delay)
