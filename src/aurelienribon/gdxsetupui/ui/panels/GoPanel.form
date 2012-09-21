@@ -104,7 +104,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="numberLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="5"/>
+            <Property name="text" type="java.lang.String" value="4"/>
           </Properties>
         </Component>
       </SubComponents>

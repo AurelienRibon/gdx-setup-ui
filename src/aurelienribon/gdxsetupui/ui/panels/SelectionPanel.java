@@ -12,8 +12,8 @@ public class SelectionPanel extends javax.swing.JPanel {
     public SelectionPanel(final MainPanel mainPanel) {
         initComponents();
 
-		Style.registerCssClasses(headerPanel, ".header");
 		Style.registerCssClasses(numberLabel, ".headerNumber");
+		Style.registerCssClasses(headerPanel, ".header");
 
 		setupBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
 			mainPanel.showSetupView();
@@ -42,10 +42,10 @@ public class SelectionPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout());
 
-        jLabel4.setText("<html> Do you want to create a new project, or update the libraries of an existing project?");
+        jLabel4.setText("<html>You can change from creation mode to update mode when you want");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        numberLabel.setText("1");
+        numberLabel.setText("0");
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
@@ -54,7 +54,7 @@ public class SelectionPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, headerPanelLayout.createSequentialGroup()
                 .addComponent(numberLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE))
+                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE))
         );
         headerPanelLayout.setVerticalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -70,12 +70,10 @@ public class SelectionPanel extends javax.swing.JPanel {
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new java.awt.GridLayout(1, 0, 10, 0));
 
-        setupBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_add.png"))); // NOI18N
-        setupBtn.setText("Create new project");
+        setupBtn.setText("Switch to creation mode");
         jPanel1.add(setupBtn);
 
-        updateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_update.png"))); // NOI18N
-        updateBtn.setText("Update existing project");
+        updateBtn.setText("Switch to update mode");
         jPanel1.add(updateBtn);
 
         add(jPanel1, java.awt.BorderLayout.CENTER);

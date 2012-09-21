@@ -41,7 +41,7 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-ar-border-font: SquareFont plain 14;
 }
 
-#selectionPanel {-ar-border-title: "Mode";}
+#selectionPanel {-ar-border-title: "Mode Selection";}
 #configSetupPanel {-ar-border-title: "Configuration";}
 #configUpdatePanel {-ar-border-title: "Project Selection";}
 #librarySelectionPanel {-ar-border-title: "Library Selection";}

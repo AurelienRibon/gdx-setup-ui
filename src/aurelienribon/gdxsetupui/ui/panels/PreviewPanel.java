@@ -291,7 +291,7 @@ public class PreviewPanel extends javax.swing.JPanel {
         jLabel4.setText("<html> Virtual view of the file tree that will be generated.");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        numberLabel.setText("4");
+        numberLabel.setText("3");
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);

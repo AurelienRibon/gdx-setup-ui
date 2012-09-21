@@ -219,7 +219,7 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
         jLabel4.setText("<html> Main parameters defining your project. See the overview panel to know if it suits your needs.");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        numberLabel.setText("2");
+        numberLabel.setText("1");
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
@@ -338,7 +338,7 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
                 .addComponent(genDesktopPrjChk)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(genHtmlPrjChk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(advancedSettingsLabel)
                 .addContainerGap())
         );

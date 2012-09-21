@@ -49,7 +49,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="numberLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="4"/>
+            <Property name="text" type="java.lang.String" value="3"/>
           </Properties>
         </Component>
       </SubComponents>

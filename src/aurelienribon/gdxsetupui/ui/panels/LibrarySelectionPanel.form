@@ -52,7 +52,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="numberLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="3"/>
+            <Property name="text" type="java.lang.String" value="2"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -93,7 +93,7 @@
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                   <Component id="sectionLabel2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="librariesScrollPane" pref="187" max="32767" attributes="0"/>
+                  <Component id="librariesScrollPane" pref="159" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="legendPanel" min="-2" max="-2" attributes="0"/>
               </Group>

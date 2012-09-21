@@ -301,7 +301,7 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
         jLabel4.setText("<html> Select the libraries you want to include or update. Direct downloads are available to stable and nightly releases.");
         jLabel4.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        numberLabel.setText("3");
+        numberLabel.setText("2");
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
@@ -425,7 +425,7 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(sectionLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(librariesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                .addComponent(librariesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(legendPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );

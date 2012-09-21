@@ -53,7 +53,7 @@ public class GoPanel extends javax.swing.JPanel {
 					errorLabel.firePropertyChange("error", false, true);
 				}
 
-				numberLabel.setText("5");
+				numberLabel.setText("4");
 				goBtn.setText("Generate the projects");
 				break;
 
@@ -68,7 +68,7 @@ public class GoPanel extends javax.swing.JPanel {
 					errorLabel.firePropertyChange("error", false, true);
 				}
 
-				numberLabel.setText("4");
+				numberLabel.setText("3");
 				goBtn.setText("Update the projects");
 				break;
 		}
@@ -188,7 +188,7 @@ public class GoPanel extends javax.swing.JPanel {
         headerLabel.setText("<html> Ready to go?");
         headerLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        numberLabel.setText("5");
+        numberLabel.setText("4");
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
