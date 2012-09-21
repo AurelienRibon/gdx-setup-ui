@@ -18,6 +18,7 @@ import aurelienribon.slidinglayout.SLConfig;
 import aurelienribon.slidinglayout.SLKeyframe;
 import aurelienribon.slidinglayout.SLPanel;
 import aurelienribon.slidinglayout.SLSide;
+import aurelienribon.ui.components.Button;
 import aurelienribon.ui.components.PaintedPanel;
 import aurelienribon.ui.css.Style;
 import aurelienribon.utils.HttpUtils.DownloadListener;
@@ -27,19 +28,19 @@ import aurelienribon.utils.SwingUtils;
 import aurelienribon.utils.VersionLabel;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 import org.apache.commons.io.IOUtils;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class MainPanel extends PaintedPanel {
-	private final SLPanel rootPanel = new SLPanel();
-	private final JLabel logoLabel = new JLabel(Res.getImage("gfx/logo.png"));
+	// Panels
 	private final SelectionPanel selectionPanel = new SelectionPanel(this);
 	private final ConfigSetupPanel configSetupPanel = new ConfigSetupPanel(this);
 	private final ConfigUpdatePanel configUpdatePanel = new ConfigUpdatePanel(this);
@@ -54,6 +55,15 @@ public class MainPanel extends PaintedPanel {
 	private final ProcessSetupPanel processSetupPanel = new ProcessSetupPanel(this);
 	private final ProcessUpdatePanel processUpdatePanel = new ProcessUpdatePanel(this);
 
+	// Start panel components
+	private final JLabel startLogoLabel = new JLabel(Res.getImage("gfx/logo.png"));
+	private final JLabel startQuestionLabel = new JLabel("<html>Do you want to create"
+		+ " a new project, or to update the libraries of an existing one?");
+	private final Button startSetupBtn = new Button() {{setText("Create");}};
+	private final Button startUpdateBtn = new Button() {{setText("Update");}};
+
+	// SlidingLayout
+	private final SLPanel rootPanel = new SLPanel();
 	private final float transitionDuration = 0.5f;
 	private final int gap = 10;
 
@@ -61,32 +71,6 @@ public class MainPanel extends PaintedPanel {
 		SwingUtils.importFont(Res.getStream("fonts/SquareFont.ttf"));
 		setLayout(new BorderLayout());
 		add(rootPanel, BorderLayout.CENTER);
-
-		logoLabel.setVerticalAlignment(SwingConstants.TOP);
-		logoLabel.setHorizontalAlignment(SwingConstants.LEFT);
-
-		Style.registerCssClasses(this, ".rootPanel");
-		Style.registerCssClasses(selectionPanel, ".groupPanel", "#selectionPanel");
-		Style.registerCssClasses(configSetupPanel, ".groupPanel", "#configSetupPanel");
-		Style.registerCssClasses(configUpdatePanel, ".groupPanel", "#configUpdatePanel");
-		Style.registerCssClasses(versionLabel, ".versionLabel");
-		Style.registerCssClasses(librarySelectionPanel, ".groupPanel", "#librarySelectionPanel");
-		Style.registerCssClasses(previewPanel, ".groupPanel", "#previewPanel");
-		Style.registerCssClasses(goPanel, ".groupPanel", "#goPanel");
-		Style.registerCssClasses(advancedSettingsPanel, ".groupPanel", "#advancedSettingsPanel");
-		Style.registerCssClasses(libraryInfoPanel, ".groupPanel", "#libraryInfoPanel");
-		Style.registerCssClasses(classpathsPanel, ".groupPanel", "#classpathsPanel");
-		Style.registerCssClasses(processSetupPanel, ".groupPanel", "#processSetupPanel");
-		Style.registerCssClasses(processUpdatePanel, ".groupPanel", "#processUpdatePanel");
-
-		Component[] targets = new Component[] {
-			this, selectionPanel, configSetupPanel, configUpdatePanel, versionLabel,
-			librarySelectionPanel, previewPanel, goPanel, taskPanel, advancedSettingsPanel,
-			libraryInfoPanel, classpathsPanel, processSetupPanel, processUpdatePanel
-		};
-
-		Style style = new Style(Res.getUrl("css/style.css"));
-		for (Component target : targets) Style.apply(target, style);
 
 		try {
 			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
@@ -99,22 +83,36 @@ public class MainPanel extends PaintedPanel {
 			assert false;
 		}
 
+		startSetupBtn.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {
+				showSetupView();
+			}
+		});
+
+		startUpdateBtn.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {
+				showUpdateView();
+			}
+		});
+
 		versionLabel.initAndCheck("3.0.0-beta", "versions",
 			"http://libgdx.badlogicgames.com/nightlies/config/config.txt",
 			"http://libgdx.badlogicgames.com/download.html");
 
+		initStyle();
+		initConfigurations();
+		rootPanel.initialize(initCfg);
+
 		SLAnimator.start();
 		rootPanel.setTweenManager(SLAnimator.createTweenManager());
 		taskPanel.setTweenManager(SLAnimator.createTweenManager());
-
-		initConfigurations();
-		rootPanel.initialize(initCfg);
 
 		SwingUtils.addWindowListener(this, new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
 				DownloadTask task = Ctx.libs.downloadConfigFile();
 				task.addListener(configFileDownloadListener);
+				rootPanel.repaint();
 			}
 
 			@Override
@@ -154,6 +152,39 @@ public class MainPanel extends PaintedPanel {
 	}
 
 	// -------------------------------------------------------------------------
+	// Style
+	// -------------------------------------------------------------------------
+
+	private void initStyle() {
+		Style.registerCssClasses(this, ".rootPanel");
+		Style.registerCssClasses(selectionPanel, ".groupPanel", "#selectionPanel");
+		Style.registerCssClasses(configSetupPanel, ".groupPanel", "#configSetupPanel");
+		Style.registerCssClasses(configUpdatePanel, ".groupPanel", "#configUpdatePanel");
+		Style.registerCssClasses(versionLabel, ".versionLabel");
+		Style.registerCssClasses(librarySelectionPanel, ".groupPanel", "#librarySelectionPanel");
+		Style.registerCssClasses(previewPanel, ".groupPanel", "#previewPanel");
+		Style.registerCssClasses(goPanel, ".groupPanel", "#goPanel");
+		Style.registerCssClasses(advancedSettingsPanel, ".groupPanel", "#advancedSettingsPanel");
+		Style.registerCssClasses(libraryInfoPanel, ".groupPanel", "#libraryInfoPanel");
+		Style.registerCssClasses(classpathsPanel, ".groupPanel", "#classpathsPanel");
+		Style.registerCssClasses(processSetupPanel, ".groupPanel", "#processSetupPanel");
+		Style.registerCssClasses(processUpdatePanel, ".groupPanel", "#processUpdatePanel");
+		Style.registerCssClasses(startQuestionLabel, ".startQuestionLabel");
+		Style.registerCssClasses(startSetupBtn, ".startButton");
+		Style.registerCssClasses(startUpdateBtn, ".startButton");
+
+		Component[] targets = new Component[] {
+			this, selectionPanel, configSetupPanel, configUpdatePanel, versionLabel,
+			librarySelectionPanel, previewPanel, goPanel, taskPanel, advancedSettingsPanel,
+			libraryInfoPanel, classpathsPanel, processSetupPanel, processUpdatePanel,
+			startQuestionLabel, startSetupBtn, startUpdateBtn
+		};
+
+		Style style = new Style(Res.getUrl("css/style.css"));
+		for (Component target : targets) Style.apply(target, style);
+	}
+
+	// -------------------------------------------------------------------------
 	// Configurations
 	// -------------------------------------------------------------------------
 
@@ -172,14 +203,23 @@ public class MainPanel extends PaintedPanel {
 			.gap(gap, gap)
 			.row(1f).row(30).col(1f)
 			.beginGrid(0, 0)
+				.row(startLogoLabel.getPreferredSize().height)
 				.row(1f)
-				.row(selectionPanel.getPreferredSize().height)
-				.row(versionLabel.getPreferredSize().height)
-				.row(1f)
-				.col(1f).col(1f).col(1f)
-				.place(0, 0, logoLabel)
-				.place(1, 1, selectionPanel)
-				.place(2, 1, versionLabel)
+				.col(1f)
+				.col(startLogoLabel.getPreferredSize().width)
+				.col(1f)
+				.place(0, 1, startLogoLabel)
+				.beginGrid(1, 1)
+					.row(1f).row(50).row(80).row(1f)
+					.col(1f).col(4.5f).col(1f)
+					.place(1, 1, startQuestionLabel)
+					.beginGrid(2, 1)
+						.row(1f)
+						.col(1f).col(1f)
+						.place(0, 0, startSetupBtn)
+						.place(0, 1, startUpdateBtn)
+					.endGrid()
+				.endGrid()
 			.endGrid()
 			.place(1, 0, taskPanel);
 
@@ -289,7 +329,7 @@ public class MainPanel extends PaintedPanel {
 			.place(0, 1, processUpdatePanel);
 	}
 
-	public void showCreateSetup() {
+	public void showSetupView() {
 		switch (Ctx.mode) {
 			case INIT:
 				Ctx.mode = Ctx.Mode.SETUP;
@@ -297,11 +337,13 @@ public class MainPanel extends PaintedPanel {
 
 				rootPanel.createTransition()
 					.push(new SLKeyframe(setupCfg, transitionDuration)
-						.setStartSide(SLSide.LEFT, configSetupPanel)
+						.setStartSide(SLSide.LEFT, selectionPanel, configSetupPanel, versionLabel)
 						.setStartSide(SLSide.TOP, librarySelectionPanel)
 						.setStartSide(SLSide.RIGHT, previewPanel, goPanel)
-						.setEndSide(SLSide.TOP, logoLabel)
-						.setDelay(transitionDuration, configSetupPanel, librarySelectionPanel))
+						.setEndSide(SLSide.LEFT, startLogoLabel)
+						.setEndSide(SLSide.RIGHT, startQuestionLabel, startSetupBtn, startUpdateBtn)
+						.setDelay(transitionDuration, selectionPanel, configSetupPanel, versionLabel,
+							librarySelectionPanel, previewPanel, goPanel))
 					.play();
 				break;
 
@@ -320,7 +362,7 @@ public class MainPanel extends PaintedPanel {
 		}
 	}
 
-	public void showUpdateSetup() {
+	public void showUpdateView() {
 		switch (Ctx.mode) {
 			case INIT:
 				Ctx.mode = Ctx.Mode.UPDATE;
@@ -328,11 +370,13 @@ public class MainPanel extends PaintedPanel {
 
 				rootPanel.createTransition()
 					.push(new SLKeyframe(updateCfg, transitionDuration)
-						.setStartSide(SLSide.LEFT, configUpdatePanel)
+						.setStartSide(SLSide.LEFT, selectionPanel, configUpdatePanel, versionLabel)
 						.setStartSide(SLSide.TOP, librarySelectionPanel)
 						.setStartSide(SLSide.RIGHT, goPanel)
-						.setEndSide(SLSide.TOP, logoLabel)
-						.setDelay(transitionDuration, configUpdatePanel, librarySelectionPanel))
+						.setEndSide(SLSide.LEFT, startLogoLabel)
+						.setEndSide(SLSide.RIGHT, startQuestionLabel, startSetupBtn, startUpdateBtn)
+						.setDelay(transitionDuration, selectionPanel, configUpdatePanel, versionLabel,
+							librarySelectionPanel, goPanel))
 					.play();
 				break;
 

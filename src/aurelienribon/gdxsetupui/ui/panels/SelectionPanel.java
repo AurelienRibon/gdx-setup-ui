@@ -16,11 +16,11 @@ public class SelectionPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(numberLabel, ".headerNumber");
 
 		setupBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			mainPanel.showCreateSetup();
+			mainPanel.showSetupView();
 		}});
 
 		updateBtn.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			mainPanel.showUpdateSetup();
+			mainPanel.showUpdateView();
 		}});
     }
 
