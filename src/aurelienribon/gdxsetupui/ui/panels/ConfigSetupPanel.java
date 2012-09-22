@@ -203,7 +203,6 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
         destinationField = new javax.swing.JTextField();
         nameField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        browseBtn = new javax.swing.JButton();
         packageField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -213,6 +212,7 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         mainClassField = new javax.swing.JTextField();
         advancedSettingsLabel = new javax.swing.JLabel();
+        browseBtn = new aurelienribon.ui.components.Button();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -249,8 +249,6 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("Package");
 
-        browseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_browse.png"))); // NOI18N
-
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("Name");
 
@@ -271,6 +269,8 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
         jLabel5.setText("Game class");
 
         advancedSettingsLabel.setText("Show advanced settings >");
+
+        browseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_folder.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -296,7 +296,7 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(destinationField, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(browseBtn))
+                                .addComponent(browseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(mainClassField)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -329,7 +329,7 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(destinationField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(browseBtn))
+                    .addComponent(browseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(genCommonPrjChk)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -350,7 +350,7 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel advancedSettingsLabel;
-    private javax.swing.JButton browseBtn;
+    private aurelienribon.ui.components.Button browseBtn;
     private javax.swing.JTextField destinationField;
     private javax.swing.JCheckBox genAndroidPrjChk;
     private javax.swing.JCheckBox genCommonPrjChk;

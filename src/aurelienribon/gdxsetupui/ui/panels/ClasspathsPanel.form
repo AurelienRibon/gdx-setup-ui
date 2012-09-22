@@ -23,9 +23,9 @@
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="deleteBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="validateBtn" linkSize="1" min="-2" pref="108" max="-2" attributes="0"/>
+                      <Component id="validateBtn" min="-2" pref="109" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="backBtn" linkSize="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="backBtn" min="-2" pref="104" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jPanel7" alignment="0" max="32767" attributes="0"/>
               </Group>
@@ -37,7 +37,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel7" pref="251" max="32767" attributes="0"/>
+              <Component id="jPanel7" max="32767" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="backBtn" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -52,22 +52,6 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="backBtn">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/res/gfx/ic_back.png"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Go back"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JButton" name="validateBtn">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/res/gfx/ic_ok.png"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Validate"/>
-      </Properties>
-    </Component>
     <Container class="aurelienribon.ui.components.PaintedPanel" name="paintedPanel1">
 
       <Layout>
@@ -99,14 +83,6 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="deleteBtn">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/res/gfx/ic_delete.png"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&#xa;Delete selected &lt;font color=&quot;#D1B40F&quot;&gt;&lt;b&gt;unknown&lt;/b&gt;&lt;/font&gt; element(s)"/>
-      </Properties>
-    </Component>
     <Container class="javax.swing.JPanel" name="jPanel7">
       <Properties>
         <Property name="opaque" type="boolean" value="false"/>
@@ -149,7 +125,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="106" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" pref="85" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -204,7 +180,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="jScrollPane6" pref="106" max="32767" attributes="0"/>
+                          <Component id="jScrollPane6" pref="85" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -272,7 +248,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="jScrollPane5" pref="63" max="32767" attributes="0"/>
+                          <Component id="jScrollPane5" pref="49" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -327,7 +303,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="jScrollPane4" pref="63" max="32767" attributes="0"/>
+                          <Component id="jScrollPane4" pref="49" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -382,7 +358,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="jScrollPane7" pref="63" max="32767" attributes="0"/>
+                          <Component id="jScrollPane7" pref="49" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -421,5 +397,29 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="aurelienribon.ui.components.Button" name="validateBtn">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/res/gfx/ic_ok.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Launch!"/>
+      </Properties>
+    </Component>
+    <Component class="aurelienribon.ui.components.Button" name="backBtn">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/res/gfx/ic_back.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Cancel"/>
+      </Properties>
+    </Component>
+    <Component class="aurelienribon.ui.components.Button" name="deleteBtn">
+      <Properties>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/res/gfx/ic_delete.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt; Delete selected &lt;font color=&quot;#D1B40F&quot;&gt;&lt;b&gt;unknown&lt;/b&gt;&lt;/font&gt; element(s)"/>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

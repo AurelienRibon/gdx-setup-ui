@@ -134,11 +134,8 @@ public class ClasspathsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        backBtn = new javax.swing.JButton();
-        validateBtn = new javax.swing.JButton();
         paintedPanel1 = new aurelienribon.ui.components.PaintedPanel();
         jLabel2 = new javax.swing.JLabel();
-        deleteBtn = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
@@ -162,12 +159,9 @@ public class ClasspathsPanel extends javax.swing.JPanel {
         jScrollPane7 = new javax.swing.JScrollPane();
         gwtList = new javax.swing.JList();
         jLabel7 = new javax.swing.JLabel();
-
-        backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_back.png"))); // NOI18N
-        backBtn.setText("Go back");
-
-        validateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_ok.png"))); // NOI18N
-        validateBtn.setText("Validate");
+        validateBtn = new aurelienribon.ui.components.Button();
+        backBtn = new aurelienribon.ui.components.Button();
+        deleteBtn = new aurelienribon.ui.components.Button();
 
         jLabel2.setText("<html><b>Legend</b>\n<br/>\n<font color=\"#3D5277\"><b>Blue</b></font> is an element that will be updated, <font color=\"#008800\"><b>green</b></font> is a new element (you selected a new library), and <font color=\"#D1B40F\"><b>orange</b></font> is an element that is not updated, or that is unknown.\n<br/><br/>\nPlease review your classpaths before proceeding. Specifically, you should look at the orange entries, and remove those that are not needed in your project. When updating a project, some libraries may have changed their names, leaving old entries undesirable.");
         jLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
@@ -188,9 +182,6 @@ public class ClasspathsPanel extends javax.swing.JPanel {
                 .addComponent(jLabel2)
                 .addContainerGap())
         );
-
-        deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_delete.png"))); // NOI18N
-        deleteBtn.setText("<html>\nDelete selected <font color=\"#D1B40F\"><b>unknown</b></font> element(s)");
 
         jPanel7.setOpaque(false);
         jPanel7.setLayout(new java.awt.GridLayout(1, 2, 10, 0));
@@ -223,7 +214,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
         );
 
         jPanel6.add(jPanel1);
@@ -253,7 +244,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jLabel6)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE))
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
         );
 
         jPanel6.add(jPanel4);
@@ -288,7 +279,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jLabel5)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
         );
 
         jPanel5.add(jPanel3);
@@ -318,7 +309,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jLabel4)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
         );
 
         jPanel5.add(jPanel2);
@@ -348,12 +339,21 @@ public class ClasspathsPanel extends javax.swing.JPanel {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addComponent(jLabel7)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
         );
 
         jPanel5.add(jPanel8);
 
         jPanel7.add(jPanel5);
+
+        validateBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_ok.png"))); // NOI18N
+        validateBtn.setText("Launch!");
+
+        backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_back.png"))); // NOI18N
+        backBtn.setText("Cancel");
+
+        deleteBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_delete.png"))); // NOI18N
+        deleteBtn.setText("<html> Delete selected <font color=\"#D1B40F\"><b>unknown</b></font> element(s)");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -366,15 +366,12 @@ public class ClasspathsPanel extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(validateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(validateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(backBtn))
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE))
+                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backBtn, validateBtn});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -382,8 +379,8 @@ public class ClasspathsPanel extends javax.swing.JPanel {
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(backBtn)
-                    .addComponent(validateBtn)
+                    .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(validateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -393,9 +390,9 @@ public class ClasspathsPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList androidList;
-    private javax.swing.JButton backBtn;
+    private aurelienribon.ui.components.Button backBtn;
     private javax.swing.JList coreList;
-    private javax.swing.JButton deleteBtn;
+    private aurelienribon.ui.components.Button deleteBtn;
     private javax.swing.JList desktopList;
     private javax.swing.JList gwtList;
     private javax.swing.JList htmlList;
@@ -419,7 +416,7 @@ public class ClasspathsPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private aurelienribon.ui.components.PaintedPanel paintedPanel1;
-    private javax.swing.JButton validateBtn;
+    private aurelienribon.ui.components.Button validateBtn;
     // End of variables declaration//GEN-END:variables
 
 }

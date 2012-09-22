@@ -173,13 +173,6 @@
             <Property name="text" type="java.lang.String" value="Package"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="browseBtn">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/res/gfx/ic_browse.png"/>
-            </Property>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JTextField" name="packageField">
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
@@ -224,6 +217,13 @@
         <Component class="javax.swing.JLabel" name="advancedSettingsLabel">
           <Properties>
             <Property name="text" type="java.lang.String" value="Show advanced settings &gt;"/>
+          </Properties>
+        </Component>
+        <Component class="aurelienribon.ui.components.Button" name="browseBtn">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/res/gfx/ic_folder.png"/>
+            </Property>
           </Properties>
         </Component>
       </SubComponents>

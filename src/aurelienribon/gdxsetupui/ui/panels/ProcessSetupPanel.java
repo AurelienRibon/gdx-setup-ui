@@ -113,8 +113,8 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
         paintedPanel1 = new aurelienribon.ui.components.PaintedPanel();
         importQuestion = new javax.swing.JLabel();
         fixHtmlQuestion = new javax.swing.JLabel();
-        startBtn = new javax.swing.JButton();
-        backBtn = new javax.swing.JButton();
+        backBtn = new aurelienribon.ui.components.Button();
+        startBtn = new aurelienribon.ui.components.Button();
 
         progressArea.setEditable(false);
         progressArea.setColumns(20);
@@ -148,11 +148,11 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        startBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_ok.png"))); // NOI18N
-        startBtn.setText("Generate!");
-
         backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_back.png"))); // NOI18N
-        backBtn.setText("Go back");
+        backBtn.setText("Cancel");
+
+        startBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_ok.png"))); // NOI18N
+        startBtn.setText("Launch!");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -163,11 +163,11 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(paintedPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -177,25 +177,25 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startBtn)
-                    .addComponent(backBtn))
-                .addGap(18, 18, 18)
+                    .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(startBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
                 .addComponent(paintedPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton backBtn;
+    private aurelienribon.ui.components.Button backBtn;
     private javax.swing.JLabel fixHtmlQuestion;
     private javax.swing.JLabel importQuestion;
     private javax.swing.JScrollPane jScrollPane1;
     private aurelienribon.ui.components.PaintedPanel paintedPanel1;
     private javax.swing.JTextArea progressArea;
-    private javax.swing.JButton startBtn;
+    private aurelienribon.ui.components.Button startBtn;
     // End of variables declaration//GEN-END:variables
 
 }
