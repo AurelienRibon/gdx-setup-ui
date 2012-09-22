@@ -33,15 +33,15 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 
 		advancedSettingsLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		advancedSettingsLabel.addMouseListener(new MouseAdapter() {
-			@Override public void mousePressed(MouseEvent e) {
-				if (clicToShowSettings) {
-					mainPanel.showAdvancedSettings();
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (clicToShowSettings && mainPanel.showAdvancedSettings()) {
+					clicToShowSettings = false;
 					advancedSettingsLabel.setText("< Hide advanced settings");
-				} else {
-					mainPanel.hideAdvancedSettings();
+				} else if (mainPanel.hideAdvancedSettings()) {
+					clicToShowSettings = true;
 					advancedSettingsLabel.setText("Show advanced settings >");
 				}
-				clicToShowSettings = !clicToShowSettings;
 			}
 		});
 

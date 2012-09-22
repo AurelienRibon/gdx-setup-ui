@@ -24,6 +24,25 @@ javax-swing-JToolBar > javax-swing-JButton {
 	-swing-margin: 1;
 }
 
+aurelienribon-ui-components-Button {
+	-ar-fill: lineargradient(0, 0, 0, 1, 0.49, #CED5DE, 0.5, #A5B7CD);
+	-ar-stroke: #FFF;
+	-ar-strokethickness: 1;
+	-ar-cornerradius: 0;
+	-swing-foreground: #0A1B37;
+	-swing-horizontalalignment: center;
+	-swing-margin: 2 5;
+	-swing-focusable: false;
+}
+
+aurelienribon-ui-components-Button:hover {
+	-ar-stroke: #A5B7CD;
+}
+
+aurelienribon-ui-components-Button:active {
+	-ar-fill: #7B8999;
+}
+
 /*******************************************************************************
  * Groups
  ******************************************************************************/
@@ -136,21 +155,10 @@ javax-swing-JToolBar > javax-swing-JButton {
 }
 
 .startButton {
-	-ar-fill: lineargradient(0, 0, 0, 1, 0.49, #CED5DE, 0.5, #A5B7CD);
-	-ar-stroke: #17263E;
 	-ar-strokethickness: 2;
 	-ar-cornerradius: 15;
-	-swing-foreground: #2A3B57;
 	-swing-font-size: 26;
 	-swing-horizontalalignment: center;
-}
-
-.startButton:hover {
-	-ar-stroke: #FFF;
-}
-
-.startButton:active {
-	-ar-fill: #7B8999;
 }
 
 /*******************************************************************************
