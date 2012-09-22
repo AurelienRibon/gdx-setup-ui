@@ -199,3 +199,7 @@ aurelienribon-ui-components-Button:active {
 }
 .versionLabel:error {-swing-foreground: #800;}
 .versionLabel:newVersion {-swing-foreground: #080;}
+
+.changeModeButton {
+	-swing-font-style: bold;
+}

@@ -96,6 +96,12 @@ public class MainPanel extends PaintedPanel {
 			}
 		});
 
+		changeModeBtn.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {
+				showInitView();
+			}
+		});
+
 		versionLabel.initAndCheck("3.0.0-beta", "versions",
 			"http://libgdx.badlogicgames.com/nightlies/config/config.txt",
 			"http://libgdx.badlogicgames.com/download.html");
@@ -299,10 +305,8 @@ public class MainPanel extends PaintedPanel {
 			.row(1f).col(1f).col(2f)
 			.beginGrid(0, 0)
 				.row(configSetupPanel.getPreferredSize().height)
-				.row(versionLabel.getPreferredSize().height)
 				.col(1f)
 				.place(0, 0, configSetupPanel)
-				.place(1, 0, versionLabel)
 			.endGrid()
 			.place(0, 1, advancedSettingsPanel);
 
@@ -320,10 +324,8 @@ public class MainPanel extends PaintedPanel {
 			.row(1f).col(1f).col(2f)
 			.beginGrid(0, 0)
 				.row(configUpdatePanel.getPreferredSize().height)
-				.row(versionLabel.getPreferredSize().height)
 				.col(1f)
 				.place(0, 0, configUpdatePanel)
-				.place(1, 0, versionLabel)
 			.endGrid()
 			.place(0, 1, advancedSettingsPanel);
 
@@ -339,11 +341,10 @@ public class MainPanel extends PaintedPanel {
 		Ctx.fireModeChangedChanged();
 
 		rootPanel.createTransition()
-			.push(new SLKeyframe(setupCfg, transitionDuration*1.3f)
-				.setStartSideForAll(RIGHT)
-				.setStartSide(BOTTOM, changeModeBtn)
-				.setEndSideForAll(LEFT)
-				.setDelay(transitionDuration*1.3f, changeModeBtn))
+			.push(new SLKeyframe(setupCfg, transitionDuration)
+				.setStartSideForNewCmps(RIGHT)
+				.setStartSide(LEFT, changeModeBtn)
+				.setEndSideForOldCmps(LEFT))
 			.play();
 	}
 
@@ -352,11 +353,10 @@ public class MainPanel extends PaintedPanel {
 		Ctx.fireModeChangedChanged();
 
 		rootPanel.createTransition()
-			.push(new SLKeyframe(updateCfg, transitionDuration*1.3f)
-				.setStartSideForAll(RIGHT)
-				.setStartSide(BOTTOM, changeModeBtn)
-				.setEndSideForAll(LEFT)
-				.setDelay(transitionDuration*1.3f, changeModeBtn))
+			.push(new SLKeyframe(updateCfg, transitionDuration)
+				.setStartSideForNewCmps(RIGHT)
+				.setStartSide(LEFT, changeModeBtn)
+				.setEndSideForOldCmps(LEFT))
 			.play();
 	}
 
@@ -364,29 +364,12 @@ public class MainPanel extends PaintedPanel {
 		Ctx.mode = Ctx.Mode.INIT;
 		Ctx.fireModeChangedChanged();
 
-		switch (Ctx.mode) {
-			case SETUP:
-				rootPanel.createTransition()
-					.push(new SLKeyframe(initCfg, transitionDuration)
-						.setStartSide(RIGHT, startLogoLabel, startQuestionLabel,
-							startSetupBtn, startUpdateBtn)
-						.setEndSide(LEFT, configSetupPanel, versionLabel, changeModeBtn,
-							librarySelectionPanel, previewPanel, goPanel)
-						.setDelay(transitionDuration, configSetupPanel, versionLabel,
-							librarySelectionPanel, previewPanel, goPanel))
-					.play();
-				break;
-
-			case UPDATE:
-				rootPanel.createTransition()
-					.push(new SLKeyframe(setupCfg, transitionDuration)
-						.setEndSide(LEFT, configUpdatePanel)
-						.setStartSide(TOP, previewPanel)
-						.setStartSide(LEFT, configSetupPanel)
-						.setDelay(transitionDuration, configSetupPanel))
-					.play();
-				break;
-		}
+		rootPanel.createTransition()
+			.push(new SLKeyframe(initCfg, transitionDuration)
+				.setStartSideForNewCmps(LEFT)
+				.setEndSideForOldCmps(RIGHT)
+				.setEndSide(LEFT, changeModeBtn))
+			.play();
 	}
 
 	public boolean showAdvancedSettings() {
@@ -394,17 +377,15 @@ public class MainPanel extends PaintedPanel {
 			case SETUP:
 				return rootPanel.createTransition()
 					.push(new SLKeyframe(setupAdvSettingsCfg, transitionDuration)
-						.setEndSide(BOTTOM, taskPanel, changeModeBtn)
-						.setEndSide(BOTTOM, librarySelectionPanel, previewPanel, goPanel)
-						.setStartSide(TOP, advancedSettingsPanel))
+						.setEndSideForOldCmps(BOTTOM)
+						.setStartSideForNewCmps(TOP))
 					.play();
 
 			case UPDATE:
 				return rootPanel.createTransition()
 					.push(new SLKeyframe(updateAdvSettingsCfg, transitionDuration)
-						.setEndSide(BOTTOM, taskPanel, changeModeBtn)
-						.setEndSide(BOTTOM, librarySelectionPanel, goPanel)
-						.setStartSide(TOP, advancedSettingsPanel))
+						.setEndSideForOldCmps(BOTTOM)
+						.setStartSideForNewCmps(TOP))
 					.play();
 		}
 
@@ -416,17 +397,15 @@ public class MainPanel extends PaintedPanel {
 			case SETUP:
 				return rootPanel.createTransition()
 					.push(new SLKeyframe(setupCfg, transitionDuration)
-						.setEndSide(TOP, advancedSettingsPanel)
-						.setStartSide(BOTTOM, librarySelectionPanel, previewPanel, goPanel)
-						.setStartSide(BOTTOM, taskPanel, changeModeBtn))
+						.setEndSideForOldCmps(TOP)
+						.setStartSideForNewCmps(BOTTOM))
 					.play();
 
 			case UPDATE:
 				return rootPanel.createTransition()
 					.push(new SLKeyframe(updateCfg, transitionDuration)
-						.setEndSide(TOP, advancedSettingsPanel)
-						.setStartSide(BOTTOM, librarySelectionPanel, goPanel)
-						.setStartSide(BOTTOM, taskPanel, changeModeBtn))
+						.setEndSideForOldCmps(TOP)
+						.setStartSideForNewCmps(BOTTOM))
 					.play();
 		}
 
