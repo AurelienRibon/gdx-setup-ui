@@ -35,6 +35,12 @@ aurelienribon-ui-components-Button {
 	-swing-focusable: false;
 }
 
+aurelienribon-ui-components-Button:disabled {
+	-ar-fill: lineargradient(0, 0, 0, 1, 0.49, #EEE, 0.5, #DDD);
+	-ar-stroke: #888;
+	-swing-foreground: #888;
+}
+
 aurelienribon-ui-components-Button:hover {
 	-ar-stroke: #384557;
 }
