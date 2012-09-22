@@ -71,7 +71,7 @@ public class LibraryManager {
 	 * a library.
 	 */
 	public void addUrl(String name, String url) {
-		libraries.add(name);
+		if (!libraries.contains(name)) libraries.add(name);
 		librariesUrls.put(name, url);
 	}
 
@@ -80,7 +80,7 @@ public class LibraryManager {
 	 * library.
 	 */
 	public void addDef(String name, LibraryDef def) {
-		libraries.add(name);
+		if (!libraries.contains(name)) libraries.add(name);
 		librariesDefs.put(name, def);
 	}
 
@@ -112,7 +112,7 @@ public class LibraryManager {
 			if (parts.length != 2) continue;
 
 			String name = parts[0].trim();
-			libraries.add(name);
+			if (!libraries.contains(name)) libraries.add(name);
 			librariesUrls.put(name, parts[1].trim());
 		}
 	}

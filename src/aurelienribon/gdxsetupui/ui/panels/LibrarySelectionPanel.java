@@ -3,6 +3,7 @@ package aurelienribon.gdxsetupui.ui.panels;
 import aurelienribon.gdxsetupui.LibraryDef;
 import aurelienribon.gdxsetupui.ui.Ctx;
 import aurelienribon.gdxsetupui.ui.MainPanel;
+import aurelienribon.ui.CompactCheckBox;
 import aurelienribon.ui.css.Style;
 import aurelienribon.utils.HttpUtils;
 import aurelienribon.utils.HttpUtils.DownloadListener;
@@ -29,7 +30,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -124,7 +124,7 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 
 	private void buildLibraryPanel(final String libraryName) {
 		ActionListener nameChkAL = new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-			if (((JCheckBox) e.getSource()).isSelected()) {
+			if (((CompactCheckBox) e.getSource()).isSelected()) {
 				if (!Ctx.cfgSetup.libraries.contains(libraryName)) Ctx.cfgSetup.libraries.add(libraryName);
 				if (!Ctx.cfgUpdate.libraries.contains(libraryName)) Ctx.cfgUpdate.libraries.add(libraryName);
 			} else {
@@ -143,7 +143,7 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 
 		LibraryDef def = Ctx.libs.getDef(libraryName);
 
-		JCheckBox nameChk = new JCheckBox(def.name);
+		CompactCheckBox nameChk = new CompactCheckBox(def.name);
 		JLabel html5Label = new JLabel(Res.getImage("gfx/ic_html5.png"));
 		JButton infoBtn = new JButton(infoAction);
 		JButton browseBtn = new JButton(browseAction);
@@ -163,6 +163,7 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 		getLatestBtn.setFocusable(false);
 
 		JToolBar toolBar = new JToolBar();
+		toolBar.setOpaque(false);
 		toolBar.setFloatable(false);
 		toolBar.add(Box.createHorizontalGlue());
 		toolBar.add(infoBtn);

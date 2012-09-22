@@ -43,6 +43,16 @@ aurelienribon-ui-components-Button:active {
 	-ar-fill: #7B8999;
 }
 
+aurelienribon-ui-CompactCheckBox {
+	-ar-stroke: #617795;
+	-ar-fill: #FFF;
+}
+
+aurelienribon-ui-CompactCheckBox:disabled {
+	-ar-stroke: #AAA;
+	-ar-fill: #FFF;
+}
+
 /*******************************************************************************
  * Groups
  ******************************************************************************/

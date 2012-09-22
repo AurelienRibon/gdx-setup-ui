@@ -200,20 +200,20 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         numberLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        genCommonPrjChk = new javax.swing.JCheckBox();
         destinationField = new javax.swing.JTextField();
         nameField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         packageField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        genAndroidPrjChk = new javax.swing.JCheckBox();
-        genDesktopPrjChk = new javax.swing.JCheckBox();
-        genHtmlPrjChk = new javax.swing.JCheckBox();
         jLabel5 = new javax.swing.JLabel();
         mainClassField = new javax.swing.JTextField();
         advancedSettingsLabel = new javax.swing.JLabel();
         browseBtn = new aurelienribon.ui.components.Button();
+        genCorePrjChk = new aurelienribon.ui.CompactCheckBox();
+        genAndroidPrjChk = new aurelienribon.ui.CompactCheckBox();
+        genDesktopPrjChk = new aurelienribon.ui.CompactCheckBox();
+        genHtmlPrjChk = new aurelienribon.ui.CompactCheckBox();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -241,10 +241,6 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
 
         jPanel1.setOpaque(false);
 
-        genCommonPrjChk.setSelected(true);
-        genCommonPrjChk.setText("generate common project (required)");
-        genCommonPrjChk.setEnabled(false);
-
         destinationField.setEditable(false);
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -256,22 +252,26 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Destination");
 
-        genAndroidPrjChk.setSelected(true);
-        genAndroidPrjChk.setText("generate android project (required)");
-        genAndroidPrjChk.setEnabled(false);
-
-        genDesktopPrjChk.setSelected(true);
-        genDesktopPrjChk.setText("generate desktop project");
-
-        genHtmlPrjChk.setSelected(true);
-        genHtmlPrjChk.setText("generate html project");
-
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel5.setText("Game class");
 
         advancedSettingsLabel.setText("Show advanced settings >");
 
         browseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_folder.png"))); // NOI18N
+
+        genCorePrjChk.setEnabled(false);
+        genCorePrjChk.setSelected(true);
+        genCorePrjChk.setText("Generate the core project (required)");
+
+        genAndroidPrjChk.setEnabled(false);
+        genAndroidPrjChk.setSelected(true);
+        genAndroidPrjChk.setText("Generate the android project (required)");
+
+        genDesktopPrjChk.setSelected(true);
+        genDesktopPrjChk.setText("Generate the desktop project");
+
+        genHtmlPrjChk.setSelected(true);
+        genHtmlPrjChk.setText("Generate the html project");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -304,10 +304,10 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
                         .addComponent(advancedSettingsLabel))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(genAndroidPrjChk)
-                            .addComponent(genCommonPrjChk)
-                            .addComponent(genDesktopPrjChk)
-                            .addComponent(genHtmlPrjChk))
+                            .addComponent(genCorePrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(genAndroidPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(genDesktopPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(genHtmlPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -332,16 +332,16 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
                     .addComponent(destinationField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(browseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(genCommonPrjChk)
+                .addComponent(genCorePrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(genAndroidPrjChk)
+                .addComponent(genAndroidPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(genDesktopPrjChk)
+                .addComponent(genDesktopPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(genHtmlPrjChk)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addComponent(genHtmlPrjChk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(advancedSettingsLabel)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {browseBtn, destinationField, jLabel1, jLabel2, jLabel3, jLabel5, mainClassField, nameField, packageField});
@@ -353,10 +353,10 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
     private javax.swing.JLabel advancedSettingsLabel;
     private aurelienribon.ui.components.Button browseBtn;
     private javax.swing.JTextField destinationField;
-    private javax.swing.JCheckBox genAndroidPrjChk;
-    private javax.swing.JCheckBox genCommonPrjChk;
-    private javax.swing.JCheckBox genDesktopPrjChk;
-    private javax.swing.JCheckBox genHtmlPrjChk;
+    private aurelienribon.ui.CompactCheckBox genAndroidPrjChk;
+    private aurelienribon.ui.CompactCheckBox genCorePrjChk;
+    private aurelienribon.ui.CompactCheckBox genDesktopPrjChk;
+    private aurelienribon.ui.CompactCheckBox genHtmlPrjChk;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
