@@ -75,6 +75,7 @@ public class ConfigSetupPanel extends javax.swing.JPanel {
 		Style.registerCssClasses(headerPanel, ".header");
 		Style.registerCssClasses(numberLabel, ".headerNumber");
 		Style.registerCssClasses(advancedSettingsLabel, ".linkLabel");
+		Style.registerCssClasses(browseBtn, ".center");
 
 		nameField.requestFocusInWindow();
 		nameField.selectAll();

@@ -178,7 +178,7 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(startQuestionLabel, ".startQuestionLabel");
 		Style.registerCssClasses(startSetupBtn, ".startButton");
 		Style.registerCssClasses(startUpdateBtn, ".startButton");
-		Style.registerCssClasses(changeModeBtn, ".bold");
+		Style.registerCssClasses(changeModeBtn, ".bold", ".center");
 
 		Component[] targets = new Component[] {
 			this, configSetupPanel, configUpdatePanel, versionLabel,

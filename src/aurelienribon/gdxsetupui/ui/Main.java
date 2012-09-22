@@ -31,7 +31,7 @@ public class Main {
 				SwingStyle.init();
 				ArStyle.init();
 
-				JFrame frame = new JFrame("Gdx-Setup-Ui");
+				JFrame frame = new JFrame("LibGDX Project Setup (gdx-setup-ui)");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setContentPane(new MainPanel());
 				frame.setSize(1100, 600);
