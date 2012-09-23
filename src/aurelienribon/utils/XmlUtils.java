@@ -24,24 +24,10 @@ import org.w3c.dom.NodeList;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class XmlUtils {
-	private static final DocumentBuilder documentBuilder;
 	private static final Transformer transformer;
 	private static final XPath xpath;
 
 	static {
-		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-		domFactory.setNamespaceAware(true);
-
-		DocumentBuilder tempDocumentBuilder = null;
-
-		try {
-			tempDocumentBuilder = domFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException ex) {
-			System.err.println("[error] XmlUtils: Cannot create a DocumentBuilder instance.");
-		}
-
-		documentBuilder = tempDocumentBuilder;
-
 		Transformer tempTransformer = null;
 
 		try {
@@ -57,8 +43,27 @@ public class XmlUtils {
 		xpath = XPathFactory.newInstance().newXPath();
 	}
 
-	public static DocumentBuilder getParser() {
-		return documentBuilder;
+	public static DocumentBuilder createParser() {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+		try {
+			dbf.setNamespaceAware(true);
+			dbf.setValidating(false);
+			dbf.setFeature("http://xml.org/sax/features/namespaces", false);
+			dbf.setFeature("http://xml.org/sax/features/validation", false);
+			dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+			dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+		} catch (ParserConfigurationException ex) {
+			throw new RuntimeException(ex);
+		}
+
+		try {
+			return dbf.newDocumentBuilder();
+		} catch (ParserConfigurationException ex) {
+			System.err.println("[error] XmlUtils: Cannot create a DocumentBuilder instance.");
+		}
+
+		return null;
 	}
 
 	public static Object xpath(String expr, Object doc, QName type) {

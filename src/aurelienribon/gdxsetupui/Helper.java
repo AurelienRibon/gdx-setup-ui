@@ -183,7 +183,7 @@ public class Helper {
 		if (!classpathFile.isFile()) return classpath;
 
 		try {
-			Document doc = XmlUtils.getParser().parse(classpathFile);
+			Document doc = XmlUtils.createParser().parse(classpathFile);
 			NodeList nodes = (NodeList) XmlUtils.xpath("classpath/classpathentry[@kind='lib' and @path]", doc, XPathConstants.NODESET);
 
 			for (int i=0; i<nodes.getLength(); i++) {
@@ -208,7 +208,7 @@ public class Helper {
 		if (!modulesFile.isFile()) return modules;
 
 		try {
-			Document doc = XmlUtils.getParser().parse(modulesFile);
+			Document doc = XmlUtils.createParser().parse(modulesFile);
 			NodeList nodes = (NodeList) XmlUtils.xpath("module/inherits[@name]", doc, XPathConstants.NODESET);
 
 			for (int i=0; i<nodes.getLength(); i++) {

@@ -130,7 +130,7 @@ public class ProjectUpdate {
 
 	private void writeClasspath(File classpathFile, List<ClasspathEntry> classpath) {
 		try {
-			Document doc = XmlUtils.getParser().parse(classpathFile);
+			Document doc = XmlUtils.createParser().parse(classpathFile);
 			Node root = (Node) XmlUtils.xpath("classpath", doc, XPathConstants.NODE);
 			NodeList libsNodes = (NodeList) XmlUtils.xpath("classpath/classpathentry[@kind='lib' and @path]", doc, XPathConstants.NODESET);
 
@@ -163,7 +163,7 @@ public class ProjectUpdate {
 
 	private void writeGwtDefinition(File gwtDefitionFile, List<GwtModule> modules) {
 		try {
-			Document doc = XmlUtils.getParser().parse(gwtDefitionFile);
+			Document doc = XmlUtils.createParser().parse(gwtDefitionFile);
 			Node root = (Node) XmlUtils.xpath("module", doc, XPathConstants.NODE);
 			NodeList nodes = (NodeList) XmlUtils.xpath("module/inherits", doc, XPathConstants.NODESET);
 
