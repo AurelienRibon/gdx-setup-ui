@@ -52,6 +52,7 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 		Style.registerCssClasses(statusAndroidLabel, ".statusLabel");
 		Style.registerCssClasses(statusDesktopLabel, ".statusLabel");
 		Style.registerCssClasses(statusHtmlLabel, ".statusLabel");
+		Style.registerCssClasses(browseBtn, ".center");
 
 		Ctx.listeners.add(new Ctx.Listener() {
 			@Override public void cfgUpdateChanged() {
@@ -224,7 +225,6 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
         numberLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         pathField = new javax.swing.JTextField();
-        browseBtn = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         advancedSettingsLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -235,6 +235,7 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
         statusAndroidLabel = new javax.swing.JLabel();
         statusDesktopLabel = new javax.swing.JLabel();
         statusHtmlLabel = new javax.swing.JLabel();
+        browseBtn = new aurelienribon.ui.components.Button();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -266,8 +267,6 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 
         pathField.setEditable(false);
 
-        browseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_browse.png"))); // NOI18N
-
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Core project path");
 
@@ -293,6 +292,8 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 
         statusHtmlLabel.setText("---");
 
+        browseBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_folder.png"))); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -304,26 +305,25 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(advancedSettingsLabel))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel2)
-                                .addComponent(jLabel5)
-                                .addComponent(jLabel6)
-                                .addComponent(jLabel1))
-                            .addComponent(jLabel3))
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pathField, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(browseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(pathField, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(browseBtn))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(statusAndroidLabel)
-                                    .addComponent(statusDesktopLabel)
-                                    .addComponent(statusHtmlLabel)
-                                    .addComponent(statusCoreLabel))
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                            .addComponent(statusAndroidLabel)
+                            .addComponent(statusDesktopLabel)
+                            .addComponent(statusHtmlLabel)
+                            .addComponent(statusCoreLabel))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -333,10 +333,11 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(pathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(browseBtn))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(pathField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(browseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -353,9 +354,9 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(statusHtmlLabel))
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(advancedSettingsLabel)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {browseBtn, jLabel3, pathField});
@@ -365,7 +366,7 @@ public class ConfigUpdatePanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel advancedSettingsLabel;
-    private javax.swing.JButton browseBtn;
+    private aurelienribon.ui.components.Button browseBtn;
     private javax.swing.JPanel headerPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
