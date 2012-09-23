@@ -139,7 +139,7 @@ public class MainPanel extends PaintedPanel {
 			@Override public void actionPerformed(ActionEvent e) {showInitView();}
 		});
 
-		JLabel aboutLabel = new JLabel("About >");
+		JLabel aboutLabel = new JLabel("About this app >");
 		Style.registerCssClasses(aboutLabel, ".linkLabel");
 		aboutLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		versionLabel.setLayout(new BorderLayout());

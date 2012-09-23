@@ -25,5 +25,3 @@ add a new library to your project at any moment, or delete an existing one!
 ![](http://www.aurelienribon.com/blog/wp-content/uploads/2012/09/gdx-setup-ui-3-RC-02.jpg)
 
 ![](http://www.aurelienribon.com/blog/wp-content/uploads/2012/09/gdx-setup-ui-3-RC-03.jpg)
-
-![](http://www.aurelienribon.com/blog/wp-content/uploads/2012/09/gdx-setup-ui-3-RC-04.jpg)

@@ -143,7 +143,7 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 
 		LibraryDef def = Ctx.libs.getDef(libraryName);
 
-		CompactCheckBox nameChk = new CompactCheckBox(def.name);
+		CompactCheckBox nameChk = new CompactCheckBox(def.name + " ");
 		JLabel html5Label = new JLabel(Res.getImage("gfx/ic_html5.png"));
 		JButton infoBtn = new JButton(infoAction);
 		JButton browseBtn = new JButton(browseAction);

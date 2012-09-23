@@ -60,15 +60,15 @@ public class AboutPanel extends javax.swing.JPanel {
 
         jLabel2.setText("<html>Developed by <b>Aurelien Ribon</b> [1], as a contribution for the awesome framework LibGDX [2].");
 
-        linkLibGDXLabel.setText("[2] libgdx.badlogicgames.com");
+        linkLibGDXLabel.setText("[2] http://libgdx.badlogicgames.com");
 
-        linkARLabel.setText("[1] www.aurelienribon.com");
+        linkARLabel.setText("[1] http://www.aurelienribon.com");
 
         jLabel1.setText("<html> Everything started as an idea to quickly setup the eclipse environment required to use LibGDX and its multiple backends. With this application, we hope you will be able to concentrate more on your ideas, and less on the IDE plumbing!");
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/logo2.png"))); // NOI18N
 
-        jLabel6.setText("<html><b>Libraries used under the hood:</b>\n");
+        jLabel6.setText("<html><b>Libraries used under the hood</b> ");
 
         linkCSSEngineLabel.setText(":: CSS Engine for Swing");
 
@@ -87,7 +87,7 @@ public class AboutPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -100,17 +100,16 @@ public class AboutPanel extends javax.swing.JPanel {
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(linkSlidingLayoutLabel)
-                            .addComponent(linkCSSEngineLabel))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(linkUTELabel)
-                            .addComponent(linkCommonsIOLabel))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(linkARLabel)
+                            .addComponent(linkARLabel)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(linkSlidingLayoutLabel)
+                                    .addComponent(linkCSSEngineLabel))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(linkUTELabel)
+                                    .addComponent(linkCommonsIOLabel))))
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
 
@@ -129,17 +128,17 @@ public class AboutPanel extends javax.swing.JPanel {
                 .addComponent(linkLibGDXLabel)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(linkCSSEngineLabel)
                         .addGap(0, 0, 0)
                         .addComponent(linkSlidingLayoutLabel))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, 0)
                         .addComponent(linkUTELabel)
                         .addGap(0, 0, 0)
                         .addComponent(linkCommonsIOLabel)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(backBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
