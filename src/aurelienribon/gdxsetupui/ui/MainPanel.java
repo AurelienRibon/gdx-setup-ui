@@ -1,6 +1,7 @@
 package aurelienribon.gdxsetupui.ui;
 
 import aurelienribon.gdxsetupui.LibraryDef;
+import aurelienribon.gdxsetupui.ui.panels.AboutPanel;
 import aurelienribon.gdxsetupui.ui.panels.AdvancedSettingsPanel;
 import aurelienribon.gdxsetupui.ui.panels.ClasspathsPanel;
 import aurelienribon.gdxsetupui.ui.panels.ConfigSetupPanel;
@@ -27,8 +28,11 @@ import aurelienribon.utils.SwingUtils;
 import aurelienribon.utils.VersionLabel;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -52,6 +56,7 @@ public class MainPanel extends PaintedPanel {
 	private final ClasspathsPanel classpathsPanel = new ClasspathsPanel(this);
 	private final ProcessSetupPanel processSetupPanel = new ProcessSetupPanel(this);
 	private final ProcessUpdatePanel processUpdatePanel = new ProcessUpdatePanel(this);
+	private final AboutPanel aboutPanel = new AboutPanel(this);
 
 	// Start panel components
 	private final JLabel startLogoLabel = new JLabel(Res.getImage("gfx/logo.png"));
@@ -73,39 +78,12 @@ public class MainPanel extends PaintedPanel {
 		setLayout(new BorderLayout());
 		add(rootPanel, BorderLayout.CENTER);
 
-		try {
-			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
-			LibraryDef def = new LibraryDef(rawDef);
-			Ctx.libs.addDef("libgdx", def);
-			Ctx.cfgSetup.libraries.add("libgdx");
-			Ctx.cfgUpdate.libraries.add("libgdx");
-			librarySelectionPanel.initializeLibgdx();
-		} catch (IOException ex) {
-			assert false;
-		}
-
-		startSetupBtn.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) {
-				showSetupView();
-			}
-		});
-
-		startUpdateBtn.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) {
-				showUpdateView();
-			}
-		});
-
-		changeModeBtn.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) {
-				showInitView();
-			}
-		});
-
 		versionLabel.initAndCheck("3.0.0-beta", "versions",
 			"http://libgdx.badlogicgames.com/nightlies/config/config.txt",
 			"http://libgdx.badlogicgames.com/download.html");
 
+		initUI();
+		initLibgdx();
 		initStyle();
 		initConfigurations();
 		rootPanel.initialize(initCfg);
@@ -126,6 +104,43 @@ public class MainPanel extends PaintedPanel {
 			public void windowClosing(WindowEvent e) {
 				Ctx.libs.cleanUpDownloads();
 			}
+		});
+	}
+
+	private void initLibgdx() {
+		try {
+			String rawDef = IOUtils.toString(Res.getStream("libgdx.txt"));
+			LibraryDef def = new LibraryDef(rawDef);
+			Ctx.libs.addDef("libgdx", def);
+			Ctx.cfgSetup.libraries.add("libgdx");
+			Ctx.cfgUpdate.libraries.add("libgdx");
+			librarySelectionPanel.initializeLibgdx();
+		} catch (IOException ex) {
+			assert false;
+		}
+	}
+
+	private void initUI() {
+		startSetupBtn.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {showSetupView();}
+		});
+
+		startUpdateBtn.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {showUpdateView();}
+		});
+
+		changeModeBtn.addActionListener(new ActionListener() {
+			@Override public void actionPerformed(ActionEvent e) {showInitView();}
+		});
+
+		JLabel aboutLabel = new JLabel("About >");
+		Style.registerCssClasses(aboutLabel, ".linkLabel");
+		aboutLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		versionLabel.setLayout(new BorderLayout());
+		versionLabel.add(aboutLabel, BorderLayout.EAST);
+
+		aboutLabel.addMouseListener(new MouseAdapter() {
+			@Override public void mousePressed(MouseEvent e) {showAboutPanel();}
 		});
 	}
 
@@ -154,10 +169,6 @@ public class MainPanel extends PaintedPanel {
 		}
 	};
 
-	public void launchUpdateProcess() {
-		processUpdatePanel.launch();
-	}
-
 	// -------------------------------------------------------------------------
 	// Style
 	// -------------------------------------------------------------------------
@@ -175,6 +186,7 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(classpathsPanel, ".groupPanel", "#classpathsPanel");
 		Style.registerCssClasses(processSetupPanel, ".groupPanel", "#processSetupPanel");
 		Style.registerCssClasses(processUpdatePanel, ".groupPanel", "#processUpdatePanel");
+		Style.registerCssClasses(aboutPanel, ".groupPanel", "#aboutPanel");
 		Style.registerCssClasses(startQuestionLabel, ".startQuestionLabel");
 		Style.registerCssClasses(startSetupBtn, ".startButton");
 		Style.registerCssClasses(startUpdateBtn, ".startButton");
@@ -184,11 +196,19 @@ public class MainPanel extends PaintedPanel {
 			this, configSetupPanel, configUpdatePanel, versionLabel,
 			librarySelectionPanel, previewPanel, goPanel, taskPanel, advancedSettingsPanel,
 			libraryInfoPanel, classpathsPanel, processSetupPanel, processUpdatePanel,
-			startQuestionLabel, startSetupBtn, startUpdateBtn, changeModeBtn
+			aboutPanel, startQuestionLabel, startSetupBtn, startUpdateBtn, changeModeBtn
 		};
 
 		Style style = new Style(Res.getUrl("css/style.css"));
 		for (Component target : targets) Style.apply(target, style);
+	}
+
+	// -------------------------------------------------------------------------
+	// Commands
+	// -------------------------------------------------------------------------
+
+	public void launchUpdateProcess() {
+		processUpdatePanel.launch();
 	}
 
 	// -------------------------------------------------------------------------
@@ -201,6 +221,7 @@ public class MainPanel extends PaintedPanel {
 	private SLConfig setupGenerationCfg;
 	private SLConfig updateAdvSettingsCfg;
 	private SLConfig updateGenerationCfg;
+	private SLConfig aboutCfg;
 
 	private boolean isProcessSetupPanelOpen = false;
 	private String currentLibraryInfo;
@@ -334,6 +355,11 @@ public class MainPanel extends PaintedPanel {
 			.row(1f).col(2f).col(1f)
 			.place(0, 0, classpathsPanel)
 			.place(0, 1, processUpdatePanel);
+
+		aboutCfg = new SLConfig(rootPanel)
+			.gap(250, 100)
+			.row(1f).col(1f)
+			.place(0, 0, aboutPanel);
 	}
 
 	public void showSetupView() {
@@ -520,5 +546,31 @@ public class MainPanel extends PaintedPanel {
 				.setStartSide(TOP, configUpdatePanel, versionLabel, librarySelectionPanel)
 				.setStartSide(BOTTOM, taskPanel, changeModeBtn, goPanel))
 			.play();
+	}
+
+	public void showAboutPanel() {
+		rootPanel.createTransition()
+			.push(new SLKeyframe(aboutCfg, transitionDuration)
+				.setEndSideForOldCmps(LEFT)
+				.setStartSideForNewCmps(RIGHT))
+			.play();
+	}
+
+	public void hideAboutPanel() {
+		switch (Ctx.mode) {
+			case SETUP:
+				rootPanel.createTransition()
+					.push(new SLKeyframe(setupCfg, transitionDuration)
+						.setEndSideForOldCmps(RIGHT)
+						.setStartSideForNewCmps(LEFT))
+					.play();
+
+			case UPDATE:
+				rootPanel.createTransition()
+					.push(new SLKeyframe(updateCfg, transitionDuration)
+						.setEndSideForOldCmps(RIGHT)
+						.setStartSideForNewCmps(LEFT))
+					.play();
+		}
 	}
 }

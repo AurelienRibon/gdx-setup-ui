@@ -76,7 +76,6 @@ aurelienribon-ui-CompactCheckBox:disabled {
 	-ar-border-font: SquareFont plain 14;
 }
 
-#selectionPanel {-ar-border-title: "Mode Selection";}
 #configSetupPanel {-ar-border-title: "Configuration";}
 #configUpdatePanel {-ar-border-title: "Project Selection";}
 #librarySelectionPanel {-ar-border-title: "Library Selection";}
@@ -87,6 +86,7 @@ aurelienribon-ui-CompactCheckBox:disabled {
 #classpathsPanel {-ar-border-title: "Classpaths Review";}
 #processSetupPanel {-ar-border-title: "Launch";}
 #processUpdatePanel {-ar-border-title: "Progress Report";}
+#aboutPanel {-ar-border-title: "About";}
 
 /*******************************************************************************
  * Root panels
@@ -227,3 +227,8 @@ aurelienribon-ui-CompactCheckBox:disabled {
 }
 .versionLabel:error {-swing-foreground: #800;}
 .versionLabel:newVersion {-swing-foreground: #080;}
+
+.aboutTitleLabel {
+	-swing-font-size: 30;
+	-swing-font-style: bold;
+}
