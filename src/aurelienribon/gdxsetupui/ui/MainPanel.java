@@ -21,6 +21,7 @@ import static aurelienribon.slidinglayout.SLSide.*;
 import aurelienribon.ui.components.Button;
 import aurelienribon.ui.components.PaintedPanel;
 import aurelienribon.ui.css.Style;
+import aurelienribon.utils.HttpUtils;
 import aurelienribon.utils.HttpUtils.DownloadListener;
 import aurelienribon.utils.HttpUtils.DownloadTask;
 import aurelienribon.utils.Res;
@@ -77,6 +78,8 @@ public class MainPanel extends PaintedPanel {
 		SwingUtils.importFont(Res.getStream("fonts/SquareFont.ttf"));
 		setLayout(new BorderLayout());
 		add(rootPanel, BorderLayout.CENTER);
+
+		HttpUtils.setReferer("http://aurelienribon-dev/gdx-setup-ui");
 
 		versionLabel.initAndCheck("3.0.0-beta", "versions",
 			"http://libgdx.badlogicgames.com/nightlies/config/config.txt",
