@@ -43,7 +43,9 @@ public class LibraryManager {
 		DownloadTask task =  HttpUtils.downloadAsync(configUrl, output, "Master config file");
 
 		task.addListener(new DownloadListener() {
-			@Override public void onComplete() {parseLibraries(output.toString());}
+			@Override public void onComplete() {
+				parseLibraries(output.toString());
+			}
 		});
 
 		return task;
@@ -60,7 +62,9 @@ public class LibraryManager {
 		DownloadTask task =  HttpUtils.downloadAsync(librariesUrls.get(name), output, "Def '" + name + "'");
 
 		task.addListener(new DownloadListener() {
-			@Override public void onComplete() {librariesDefs.put(name, new LibraryDef(output.toString()));}
+			@Override public void onComplete() {
+				registerLibraryDef(name, output);
+			}
 		});
 
 		return task;
@@ -115,5 +119,9 @@ public class LibraryManager {
 			if (!libraries.contains(name)) libraries.add(name);
 			librariesUrls.put(name, parts[1].trim());
 		}
+	}
+
+	private synchronized void registerLibraryDef(String name, ByteArrayOutputStream output) {
+		librariesDefs.put(name, new LibraryDef(output.toString()));
 	}
 }

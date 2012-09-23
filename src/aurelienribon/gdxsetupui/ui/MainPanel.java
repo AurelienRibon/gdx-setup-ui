@@ -99,6 +99,10 @@ public class MainPanel extends PaintedPanel {
 		rootPanel.setTweenManager(SLAnimator.createTweenManager());
 		taskPanel.setTweenManager(SLAnimator.createTweenManager());
 
+		if (Ctx.testLibUrl != null) Ctx.libs.addUrl("__test_url__", Ctx.testLibUrl);
+		if (Ctx.testLibDef != null) Ctx.libs.addDef("__test_def__", Ctx.testLibDef);
+		if (Ctx.testLibDef != null) librarySelectionPanel.rebuildLibraries();
+
 		SwingUtils.addWindowListener(this, new WindowAdapter() {
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -153,22 +157,12 @@ public class MainPanel extends PaintedPanel {
 	private final DownloadListener configFileDownloadListener = new DownloadListener() {
 		@Override
 		public void onComplete() {
-			if (Ctx.testLibUrl != null) Ctx.libs.addUrl("__test_url__", Ctx.testLibUrl);
-			if (Ctx.testLibDef != null) Ctx.libs.addDef("__test_def__", Ctx.testLibDef);
-			if (Ctx.testLibDef != null) librarySelectionPanel.registerLibrary("__test_def__");
-
 			for (String name : Ctx.libs.getNames()) {
 				DownloadTask task = Ctx.libs.downloadDef(name);
-				final String libraryName = name;
 
 				task.addListener(new DownloadListener() {
 					@Override public void onComplete() {
-						librarySelectionPanel.registerLibrary(libraryName);
-					}
-
-					@Override
-					public void onError(IOException ex) {
-						librarySelectionPanel.registerLibrary(null);
+						librarySelectionPanel.rebuildLibraries();
 					}
 				});
 			}

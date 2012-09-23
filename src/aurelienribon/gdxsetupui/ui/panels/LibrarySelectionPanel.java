@@ -37,7 +37,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.io.FileUtils;
@@ -47,13 +46,13 @@ import org.apache.commons.io.FilenameUtils;
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class LibrarySelectionPanel extends javax.swing.JPanel {
+	private static final Style style = new Style(Res.getUrl("css/style.css"));
 	private static final Color LIB_FOUND_COLOR = new Color(0x008800);
 	private static final Color LIB_NOTFOUND_COLOR = new Color(0x880000);
 
 	private final MainPanel mainPanel;
 	private final Map<String, File> libsSelectedFiles = new HashMap<String, File>();
 	private final Map<String, JComponent> libsNamesCmps = new HashMap<String, JComponent>();
-	private int count = 0;
 
     public LibrarySelectionPanel(MainPanel mainPanel) {
 		this.mainPanel = mainPanel;
@@ -79,42 +78,28 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 		preselectLibraryArchive("libgdx");
 	}
 
-	public void registerLibrary(String libraryName) {
-		count += 1;
-		int total = Ctx.libs.getNames().size();
+	public synchronized void rebuildLibraries() {
+		List<String> names = new ArrayList<String>(Ctx.libs.getNames());
 
-		if (count < total) {
-			librariesUpdateLabel.setText("Retrieving libraries: " + count + " / " + total);
-		} else {
-			List<String> names = new ArrayList<String>(Ctx.libs.getNames());
+		for (int i=names.size()-1; i>=0; i--) {
+			if (Ctx.libs.getDef(names.get(i)) == null)
+				names.remove(i);
+		}
 
-			Collections.sort(names, new Comparator<String>() {
-				@Override public int compare(String o1, String o2) {
-					String name1 = Ctx.libs.getDef(o1).name;
-					String name2 = Ctx.libs.getDef(o2).name;
-					return name1.compareToIgnoreCase(name2);
-				}
-			});
-
-			librariesPanel.removeAll();
-			librariesScrollPane.revalidate();
-
-			for (String name : names) {
-				if (!name.equals("libgdx")) buildLibraryPanel(name);
-				preselectLibraryArchive(name);
+		Collections.sort(names, new Comparator<String>() {
+			@Override public int compare(String o1, String o2) {
+				String name1 = Ctx.libs.getDef(o1).name;
+				String name2 = Ctx.libs.getDef(o2).name;
+				return name1.compareToIgnoreCase(name2);
 			}
+		});
 
-			Ctx.fireCfgSetupChanged();
+		librariesPanel.removeAll();
+		librariesScrollPane.revalidate();
 
-			if (Ctx.libs.getNames().size() < total) {
-				String msg = "<html>Could not retrieve the definitions for:<br/>";
-				for (String name : Ctx.libs.getNames()) {
-					if (Ctx.libs.getDef(name) == null) msg += "'" + name + "', ";
-				}
-				sectionLabel2.setHorizontalTextPosition(SwingConstants.LEFT);
-				sectionLabel2.setToolTipText(msg.substring(0, msg.length()-2));
-				sectionLabel2.setIcon(Res.getImage("gfx/ic_error.png"));
-			}
+		for (String name : names) {
+			if (!name.equals("libgdx")) buildLibraryPanel(name);
+			preselectLibraryArchive(name);
 		}
 	}
 
@@ -184,7 +169,7 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 
 		librariesPanel.add(panel);
 
-		Style.apply(librariesPanel, new Style(Res.getUrl("css/style.css")));
+		Style.apply(librariesPanel, style);
 		libsNamesCmps.put(libraryName, nameChk);
 	}
 
@@ -295,7 +280,6 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         librariesScrollPane = new javax.swing.JScrollPane();
         librariesPanel = new javax.swing.JPanel();
-        librariesUpdateLabel = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -396,10 +380,6 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
 
         librariesPanel.setOpaque(false);
         librariesPanel.setLayout(new javax.swing.BoxLayout(librariesPanel, javax.swing.BoxLayout.Y_AXIS));
-
-        librariesUpdateLabel.setText("Retrieving libraries: ...");
-        librariesPanel.add(librariesUpdateLabel);
-
         librariesScrollPane.setViewportView(librariesPanel);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -449,7 +429,6 @@ public class LibrarySelectionPanel extends javax.swing.JPanel {
     private javax.swing.JToolBar libgdxToolBar;
     private javax.swing.JPanel librariesPanel;
     private javax.swing.JScrollPane librariesScrollPane;
-    private javax.swing.JLabel librariesUpdateLabel;
     private javax.swing.JLabel numberLabel;
     private javax.swing.JLabel sectionLabel1;
     private javax.swing.JLabel sectionLabel2;
