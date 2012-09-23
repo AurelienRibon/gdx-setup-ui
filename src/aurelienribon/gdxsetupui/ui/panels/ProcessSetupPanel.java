@@ -149,7 +149,7 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
         );
 
         backBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_back.png"))); // NOI18N
-        backBtn.setText("Cancel");
+        backBtn.setText("Back");
 
         startBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_ok.png"))); // NOI18N
         startBtn.setText("Launch!");

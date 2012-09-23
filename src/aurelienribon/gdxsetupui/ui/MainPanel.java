@@ -97,7 +97,6 @@ public class MainPanel extends PaintedPanel {
 			public void windowOpened(WindowEvent e) {
 				DownloadTask task = Ctx.libs.downloadConfigFile();
 				task.addListener(configFileDownloadListener);
-				rootPanel.repaint();
 			}
 
 			@Override
@@ -234,12 +233,10 @@ public class MainPanel extends PaintedPanel {
 				.row(startLogoLabel.getPreferredSize().height)
 				.row(1f)
 				.col(1f)
-				.col(startLogoLabel.getPreferredSize().width)
-				.col(1f)
-				.place(0, 1, startLogoLabel)
-				.beginGrid(1, 1)
+				.place(0, 0, startLogoLabel)
+				.beginGrid(1, 0)
 					.row(1f).row(50).row(80).row(1f)
-					.col(1f).col(4.5f).col(1f)
+					.col(1f).col(400).col(1f)
 					.place(1, 1, startQuestionLabel)
 					.beginGrid(2, 1)
 						.row(1f)
