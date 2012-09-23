@@ -81,7 +81,7 @@ public class MainPanel extends PaintedPanel {
 
 		HttpUtils.setReferer("http://aurelienribon-dev/gdx-setup-ui");
 
-		versionLabel.initAndCheck("3.0.0-beta", "versions",
+		versionLabel.initAndCheck("3.0.0-RC", "versions",
 			"http://libgdx.badlogicgames.com/nightlies/config/config.txt",
 			"http://libgdx.badlogicgames.com/download.html");
 

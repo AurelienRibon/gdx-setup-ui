@@ -55,7 +55,7 @@ public class GoPanel extends javax.swing.JPanel {
 				}
 
 				numberLabel.setText("4");
-				goBtn.setText("Generate the projects");
+				goBtn.setText("Open the generation screen");
 				break;
 
 			case UPDATE:
@@ -70,7 +70,7 @@ public class GoPanel extends javax.swing.JPanel {
 				}
 
 				numberLabel.setText("3");
-				goBtn.setText("Update the projects");
+				goBtn.setText("Open the update screen");
 				break;
 		}
 	}
@@ -160,7 +160,7 @@ public class GoPanel extends javax.swing.JPanel {
         errorLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         goBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/res/gfx/ic_run.png"))); // NOI18N
-        goBtn.setText("Generate projects");
+        goBtn.setText("Open the generation screen");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

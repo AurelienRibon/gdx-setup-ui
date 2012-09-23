@@ -6,7 +6,7 @@
 
 	<property name="version" value="3.0.0-RC" />
 	<property name="name" value="gdx-setup-ui" />
-	<property name="mainClass" value="aurelienribon.libgdx.ui.Main" />
+	<property name="mainClass" value="aurelienribon.gdxsetupui.ui.Main" />
 
 	<!-- ****************************************************************** -->
 	<!-- Build tasks -->

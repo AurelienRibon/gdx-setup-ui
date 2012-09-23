@@ -63,7 +63,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/res/gfx/ic_run.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Generate projects"/>
+            <Property name="text" type="java.lang.String" value="Open the generation screen"/>
           </Properties>
         </Component>
       </SubComponents>
