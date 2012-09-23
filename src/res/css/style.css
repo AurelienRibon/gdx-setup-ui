@@ -87,6 +87,8 @@ aurelienribon-ui-CompactCheckBox:disabled {
 #processSetupPanel {-ar-border-title: "Launch";}
 #processUpdatePanel {-ar-border-title: "Progress Report";}
 #aboutPanel {-ar-border-title: "About";}
+#helpImportPanel {-ar-border-title: "How-to: Import Projects";}
+#helpFixHtmlPanel {-ar-border-title: "How-to: Fix GWT Error";}
 
 /*******************************************************************************
  * Root panels
@@ -202,7 +204,14 @@ aurelienribon-ui-CompactCheckBox:disabled {
 	-swing-border: matteborder(0, 0, 1, 0, #3D5277);
 }
 
-.helpNumber {-swing-font-size: 30;}
+.helpNumber {
+	-swing-font-size: 30;
+	-swing-horizontalalignment: center;
+	-swing-verticalalignment: center;
+	-swing-opaque: true;
+	-swing-background: #CED5DE;
+	-swing-foreground: #242b36;
+}
 
 .progressArea {
 	-swing-margin: 5 10;

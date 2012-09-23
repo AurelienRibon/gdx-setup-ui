@@ -31,8 +31,8 @@ public class GoPanel extends javax.swing.JPanel {
 		goBtn.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent e) {
 				switch (Ctx.mode) {
-					case SETUP: mainPanel.showGenerationCreatePanel(); break;
-					case UPDATE: mainPanel.showGenerationUpdatePanel(); break;
+					case SETUP: mainPanel.showProcessSetupPanel(); break;
+					case UPDATE: mainPanel.showProcessUpdatePanel(); break;
 				}
 			}
 		});

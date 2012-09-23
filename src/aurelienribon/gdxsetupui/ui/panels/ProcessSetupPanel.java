@@ -3,8 +3,6 @@ package aurelienribon.gdxsetupui.ui.panels;
 import aurelienribon.gdxsetupui.ProjectSetup;
 import aurelienribon.gdxsetupui.ui.Ctx;
 import aurelienribon.gdxsetupui.ui.MainPanel;
-import aurelienribon.gdxsetupui.ui.dialogs.HelpFixHtmlDialog;
-import aurelienribon.gdxsetupui.ui.dialogs.HelpImportDialog;
 import aurelienribon.ui.css.Style;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
@@ -44,19 +42,13 @@ public class ProcessSetupPanel extends javax.swing.JPanel {
 
 		importQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
-				HelpImportDialog dialog = new HelpImportDialog(null);
-				dialog.setLocationRelativeTo(ProcessSetupPanel.this);
-				dialog.pack();
-				dialog.setVisible(true);
+				mainPanel.showHelpImportPanel();
 			}
 		});
 
 		fixHtmlQuestion.addMouseListener(new MouseAdapter() {
 			@Override public void mousePressed(MouseEvent e) {
-				HelpFixHtmlDialog dialog = new HelpFixHtmlDialog(null);
-				dialog.setLocationRelativeTo(ProcessSetupPanel.this);
-				dialog.pack();
-				dialog.setVisible(true);
+				mainPanel.showHelpFixHtmlPanel();
 			}
 		});
     }

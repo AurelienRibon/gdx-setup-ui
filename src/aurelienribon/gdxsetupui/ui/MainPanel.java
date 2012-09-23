@@ -7,6 +7,8 @@ import aurelienribon.gdxsetupui.ui.panels.ClasspathsPanel;
 import aurelienribon.gdxsetupui.ui.panels.ConfigSetupPanel;
 import aurelienribon.gdxsetupui.ui.panels.ConfigUpdatePanel;
 import aurelienribon.gdxsetupui.ui.panels.GoPanel;
+import aurelienribon.gdxsetupui.ui.panels.HelpFixHtmlPanel;
+import aurelienribon.gdxsetupui.ui.panels.HelpImportPanel;
 import aurelienribon.gdxsetupui.ui.panels.LibraryInfoPanel;
 import aurelienribon.gdxsetupui.ui.panels.LibrarySelectionPanel;
 import aurelienribon.gdxsetupui.ui.panels.PreviewPanel;
@@ -47,7 +49,6 @@ public class MainPanel extends PaintedPanel {
 	// Panels
 	private final ConfigSetupPanel configSetupPanel = new ConfigSetupPanel(this);
 	private final ConfigUpdatePanel configUpdatePanel = new ConfigUpdatePanel(this);
-	private final VersionLabel versionLabel = new VersionLabel();
 	private final LibrarySelectionPanel librarySelectionPanel = new LibrarySelectionPanel(this);
 	private final PreviewPanel previewPanel = new PreviewPanel();
 	private final GoPanel goPanel = new GoPanel(this);
@@ -58,6 +59,8 @@ public class MainPanel extends PaintedPanel {
 	private final ProcessSetupPanel processSetupPanel = new ProcessSetupPanel(this);
 	private final ProcessUpdatePanel processUpdatePanel = new ProcessUpdatePanel(this);
 	private final AboutPanel aboutPanel = new AboutPanel(this);
+	private final HelpImportPanel helpImportPanel = new HelpImportPanel(this);
+	private final HelpFixHtmlPanel helpFixHtmlPanel = new HelpFixHtmlPanel(this);
 
 	// Start panel components
 	private final JLabel startLogoLabel = new JLabel(Res.getImage("gfx/logo.png"));
@@ -67,6 +70,7 @@ public class MainPanel extends PaintedPanel {
 	private final Button startUpdateBtn = new Button() {{setText("Update");}};
 
 	// Misc components
+	private final VersionLabel versionLabel = new VersionLabel();
 	private final Button changeModeBtn = new Button() {{setText("Change mode");}};
 
 	// SlidingLayout
@@ -179,7 +183,6 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(this, ".rootPanel");
 		Style.registerCssClasses(configSetupPanel, ".groupPanel", "#configSetupPanel");
 		Style.registerCssClasses(configUpdatePanel, ".groupPanel", "#configUpdatePanel");
-		Style.registerCssClasses(versionLabel, ".versionLabel");
 		Style.registerCssClasses(librarySelectionPanel, ".groupPanel", "#librarySelectionPanel");
 		Style.registerCssClasses(previewPanel, ".groupPanel", "#previewPanel");
 		Style.registerCssClasses(goPanel, ".groupPanel", "#goPanel");
@@ -189,16 +192,20 @@ public class MainPanel extends PaintedPanel {
 		Style.registerCssClasses(processSetupPanel, ".groupPanel", "#processSetupPanel");
 		Style.registerCssClasses(processUpdatePanel, ".groupPanel", "#processUpdatePanel");
 		Style.registerCssClasses(aboutPanel, ".groupPanel", "#aboutPanel");
+		Style.registerCssClasses(helpImportPanel, ".groupPanel", "#helpImportPanel");
+		Style.registerCssClasses(helpFixHtmlPanel, ".groupPanel", "#helpFixHtmlPanel");
 		Style.registerCssClasses(startQuestionLabel, ".startQuestionLabel");
 		Style.registerCssClasses(startSetupBtn, ".startButton");
 		Style.registerCssClasses(startUpdateBtn, ".startButton");
+		Style.registerCssClasses(versionLabel, ".versionLabel");
 		Style.registerCssClasses(changeModeBtn, ".bold", ".center");
 
 		Component[] targets = new Component[] {
-			this, configSetupPanel, configUpdatePanel, versionLabel,
-			librarySelectionPanel, previewPanel, goPanel, taskPanel, advancedSettingsPanel,
+			this, configSetupPanel, configUpdatePanel, librarySelectionPanel,
+			previewPanel, goPanel, taskPanel, advancedSettingsPanel,
 			libraryInfoPanel, classpathsPanel, processSetupPanel, processUpdatePanel,
-			aboutPanel, startQuestionLabel, startSetupBtn, startUpdateBtn, changeModeBtn
+			aboutPanel, helpImportPanel, helpFixHtmlPanel,
+			changeModeBtn, versionLabel, startQuestionLabel, startSetupBtn, startUpdateBtn
 		};
 
 		Style style = new Style(Res.getUrl("css/style.css"));
@@ -220,12 +227,13 @@ public class MainPanel extends PaintedPanel {
 	private SLConfig initCfg, setupCfg, updateCfg;
 	private SLConfig libraryInfoCfg;
 	private SLConfig setupAdvSettingsCfg;
-	private SLConfig setupGenerationCfg;
+	private SLConfig setupProcessCfg;
 	private SLConfig updateAdvSettingsCfg;
-	private SLConfig updateGenerationCfg;
+	private SLConfig updateProcessCfg;
 	private SLConfig aboutCfg;
+	private SLConfig helpImportCfg;
+	private SLConfig helpFixHtmlCfg;
 
-	private boolean isProcessSetupPanelOpen = false;
 	private String currentLibraryInfo;
 
 	private void initConfigurations() {
@@ -331,7 +339,7 @@ public class MainPanel extends PaintedPanel {
 			.endGrid()
 			.place(0, 1, advancedSettingsPanel);
 
-		setupGenerationCfg = new SLConfig(rootPanel)
+		setupProcessCfg = new SLConfig(rootPanel)
 			.gap(gap, gap)
 			.row(1f).col(2f).col(1f)
 			.beginGrid(0, 1)
@@ -350,7 +358,7 @@ public class MainPanel extends PaintedPanel {
 			.endGrid()
 			.place(0, 1, advancedSettingsPanel);
 
-		updateGenerationCfg = new SLConfig(rootPanel)
+		updateProcessCfg = new SLConfig(rootPanel)
 			.gap(gap, gap)
 			.row(1f).col(2f).col(1f)
 			.place(0, 0, classpathsPanel)
@@ -360,6 +368,16 @@ public class MainPanel extends PaintedPanel {
 			.gap(250, 100)
 			.row(1f).col(1f)
 			.place(0, 0, aboutPanel);
+
+		helpImportCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).col(1f)
+			.place(0, 0, helpImportPanel);
+
+		helpFixHtmlCfg = new SLConfig(rootPanel)
+			.gap(gap, gap)
+			.row(1f).col(1f)
+			.place(0, 0, helpFixHtmlPanel);
 	}
 
 	public void showSetupView() {
@@ -501,16 +519,9 @@ public class MainPanel extends PaintedPanel {
 		}
 	}
 
-	public void showGenerationCreatePanel() {
-		if (isProcessSetupPanelOpen) {
-			hideGenerationCreatePanel();
-			return;
-		}
-
-		isProcessSetupPanelOpen = true;
-
+	public void showProcessSetupPanel() {
 		rootPanel.createTransition()
-			.push(new SLKeyframe(setupGenerationCfg, transitionDuration)
+			.push(new SLKeyframe(setupProcessCfg, transitionDuration)
 				.setEndSide(TOP, configSetupPanel, versionLabel, librarySelectionPanel)
 				.setEndSide(BOTTOM, taskPanel, changeModeBtn, goPanel)
 				.setStartSide(BOTTOM, processSetupPanel))
@@ -518,8 +529,6 @@ public class MainPanel extends PaintedPanel {
 	}
 
 	public void hideGenerationCreatePanel() {
-		isProcessSetupPanelOpen = false;
-
 		rootPanel.createTransition()
 			.push(new SLKeyframe(setupCfg, transitionDuration)
 				.setEndSide(BOTTOM, processSetupPanel)
@@ -528,9 +537,9 @@ public class MainPanel extends PaintedPanel {
 			.play();
 	}
 
-	public void showGenerationUpdatePanel() {
+	public void showProcessUpdatePanel() {
 		rootPanel.createTransition()
-			.push(new SLKeyframe(updateGenerationCfg, transitionDuration)
+			.push(new SLKeyframe(updateProcessCfg, transitionDuration)
 				.setEndSide(TOP, configUpdatePanel, versionLabel, librarySelectionPanel)
 				.setEndSide(BOTTOM, taskPanel, changeModeBtn, goPanel)
 				.setStartSide(BOTTOM, classpathsPanel)
@@ -572,5 +581,29 @@ public class MainPanel extends PaintedPanel {
 						.setStartSideForNewCmps(LEFT))
 					.play();
 		}
+	}
+
+	public void showHelpImportPanel() {
+		rootPanel.createTransition()
+			.push(new SLKeyframe(helpImportCfg, transitionDuration)
+				.setEndSideForOldCmps(TOP)
+				.setStartSideForNewCmps(BOTTOM))
+			.play();
+	}
+
+	public void showHelpFixHtmlPanel() {
+		rootPanel.createTransition()
+			.push(new SLKeyframe(helpFixHtmlCfg, transitionDuration)
+				.setEndSideForOldCmps(TOP)
+				.setStartSideForNewCmps(BOTTOM))
+			.play();
+	}
+
+	public void hideHelpPanel() {
+		rootPanel.createTransition()
+			.push(new SLKeyframe(setupProcessCfg, transitionDuration)
+				.setEndSideForOldCmps(BOTTOM)
+				.setStartSideForNewCmps(TOP))
+			.play();
 	}
 }
