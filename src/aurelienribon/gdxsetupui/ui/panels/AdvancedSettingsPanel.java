@@ -45,6 +45,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		Ctx.cfgSetup.suffixCommon = coreSuffixField.getText();
 		Ctx.cfgSetup.suffixDesktop = desktopSuffixField.getText();
 		Ctx.cfgSetup.suffixAndroid = androidSuffixField.getText();
+		Ctx.cfgSetup.suffixHtml = htmlSuffixField.getText();
 		Ctx.cfgSetup.androidMinSdkVersion = androidMinSdkField.getText();
 		Ctx.cfgSetup.androidMaxSdkVersion = androidMaxSdkField.getText();
 		Ctx.cfgSetup.androidTargetSdkVersion = androidTargetSdkField.getText();
