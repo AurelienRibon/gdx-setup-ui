@@ -18,7 +18,7 @@
 
 	<target name="compile" depends="clean">
 		<mkdir dir="bin/" />
-		<javac destdir="bin/" srcdir="src/" target="1.6" source="1.6" includeAntRuntime="false">
+		<javac destdir="bin/" srcdir="src/" target="1.6" source="1.6" includeAntRuntime="false" excludes="projects/**">
 			<classpath>
 				<pathelement location="bin/" />
 				<fileset file="libs/*.jar" />
@@ -26,7 +26,11 @@
 		</javac>
 	</target>
 
-	<target name="jar" depends="compile">
+	<target name="projects">
+		<zip destfile="bin/res/projects.zip" basedir="src/projects/" />
+	</target>
+
+	<target name="jar" depends="compile,projects">
 		<copy todir="bin/res/"><fileset dir="src/res/" excludes="**/*.java"/></copy>
 		
 		<pathconvert property="classpath" pathsep=" ">
